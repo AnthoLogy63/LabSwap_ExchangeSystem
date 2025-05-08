@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 function Navbar() {
     return (
-      <div className="">
+      <div className="w-64 bg-blue-500 h-screen p-4 fixed left-0 top-0">
         <h1>MENU</h1>
 
         <ul className="space-y-4">
