@@ -8,15 +8,15 @@ import PaginaDeInicio from "./pages/PaginaDeInicio"
 function App() {
   return (
     <BrowserRouter>
-      <div className="flex">
-        <Navbar/>
-        
-        <main className="flex-1 p-6 ml-64">
+      <div className="flex min-h-screen">
+          <Navbar />
+
+        <div className="flex-1 p-6">
           <Routes>
             <Route path="/" element={<InicioDeSesion />} />
             <Route path="/inicio" element={<PaginaDeInicio />} />
           </Routes>
-        </main>
+        </div>
       </div>
     </BrowserRouter>
   )
