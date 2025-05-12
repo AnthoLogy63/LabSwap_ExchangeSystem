@@ -12,7 +12,7 @@ function PaginaDeInicio() {
         <div className="flex justify-end mb-10">
           <div className="flex items-center gap-3">
             <FaUserCircle className="text-3xl text-red-900" />
-            <span className="text-lg text-red-900 font-semibold">Pepe Carrillo</span>
+            <span className="text-lg text-red-900 font-semibold">Iniciar Sesion</span>
           </div>
         </div>
 
