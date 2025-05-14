@@ -1,26 +1,24 @@
-import { Link } from 'react-router-dom'
-import { FaHome, FaBook, FaClipboardList } from 'react-icons/fa'
+import { Link } from 'react-router-dom';
+import { Home, BookOpen, GraduationCap } from 'lucide-react';
 
 function Navbar() {
   return (
-    <div className="w-64 h-screen bg-teal-800 text-white p-6 shadow-xl rounded-r-3xl fixed top-0 left-0 z-10 flex flex-col">
-      <h2 className="text-2xl font-bold mb-10">LAB SWAP</h2>
-      <nav className="flex flex-col gap-6">
-        <Link to="/inicio" className="flex items-center gap-2 hover:text-teal-300">
-          <FaHome />
-          Inicio
+    <div className="w-64 bg-cyan-800 text-white h-screen p-6 flex flex-col justify-start">
+      <h1 className="text-3xl font-bold mb-10 tracking-widest">LAB SWAP</h1>
+      
+      <nav className="flex flex-col space-y-4">
+        <Link to="/inicio" className="flex items-center p-3 bg-cyan-600 rounded-lg hover:bg-cyan-700">
+          <Home className="mr-2" /> Inicio
         </Link>
-        <Link to="/panel" className="flex items-center gap-2 hover:text-teal-300">
-          <FaClipboardList />
-          Lista de Cursos
+        <Link to="/cursos" className="flex items-center p-3 hover:bg-cyan-700 rounded-lg">
+          <BookOpen className="mr-2" /> Lista de Cursos
         </Link>
-        <Link to="/mis-cursos" className="flex items-center gap-2 hover:text-teal-300">
-          <FaBook />
-          Mis Cursos
+        <Link to="/miscursos" className="flex items-center p-3 hover:bg-cyan-700 rounded-lg">
+          <GraduationCap className="mr-2" /> Mis Cursos
         </Link>
       </nav>
     </div>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;
