@@ -3,7 +3,7 @@ import { Home, BookOpen, GraduationCap } from 'lucide-react';
 
 function Navbar() {
   return (
-    <div className="w-64 bg-cyan-900 text-white h-screen p-6 flex flex-col justify-start">
+    <div className="w-64 bg-cyan-800 text-white h-screen p-6 flex flex-col justify-start">
       <h1 className="text-3xl font-bold mb-10 tracking-widest">LAB SWAP</h1>
       
       <nav className="flex flex-col space-y-4">
