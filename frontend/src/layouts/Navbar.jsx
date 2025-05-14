@@ -1,22 +1,24 @@
 import { Link } from 'react-router-dom';
-//import { Home, BookOpen, Users } from "lucide-react"
+import { Home, BookOpen, GraduationCap } from 'lucide-react';
 
 function Navbar() {
-    return (
-      <div className="w-64 bg-blue-500 h-screen p-4 left-0 top-0">s
-        <h1>MENU</h1>
+  return (
+    <div className="w-64 bg-cyan-900 text-white h-screen p-6 flex flex-col justify-start">
+      <h1 className="text-3xl font-bold mb-10 tracking-widest">LAB SWAP</h1>
+      
+      <nav className="flex flex-col space-y-4">
+        <Link to="/inicio" className="flex items-center p-3 bg-cyan-600 rounded-lg hover:bg-cyan-700">
+          <Home className="mr-2" /> Inicio
+        </Link>
+        <Link to="/cursos" className="flex items-center p-3 hover:bg-cyan-700 rounded-lg">
+          <BookOpen className="mr-2" /> Lista de Cursos
+        </Link>
+        <Link to="/miscursos" className="flex items-center p-3 hover:bg-cyan-700 rounded-lg">
+          <GraduationCap className="mr-2" /> Mis Cursos
+        </Link>
+      </nav>
+    </div>
+  );
+}
 
-        <ul className="space-y-4">
-          <li>
-            <Link to="/" className="hover:text-blue-400">InicioDeSesion</Link>
-          </li>
-          <li>
-            <Link to="/inicio" className="hover:text-blue-400">PaginaDeInicio</Link>
-          </li>
-        </ul>
-
-      </div>
-    );
-  }
-  
 export default Navbar;
