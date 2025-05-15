@@ -1,4 +1,4 @@
-const FiltrosCursos = ({ filtroNombre, setFiltroNombre, filtroAno, setFiltroYear, filtroGrupo, setFiltroGrupo }) => {
+const FiltrosCursos = ({ filtroNombre, setFiltroNombre, filtroYear, setFiltroYear, filtroGrupo, setFiltroGrupo }) => {
     return (
         <div className="flex flex-wrap gap-4 p-4 border border-gray-300 rounded mb-6">
             <input
@@ -10,7 +10,7 @@ const FiltrosCursos = ({ filtroNombre, setFiltroNombre, filtroAno, setFiltroYear
             />
             <select
                 className="border border-gray-400 rounded px-3 py-2"
-                value={filtroAno}
+                value={filtroYear}
                 onChange={(e) => setFiltroYear(e.target.value)}
             >
                 <option>Todos los años</option>
