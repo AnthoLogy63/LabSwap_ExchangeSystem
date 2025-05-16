@@ -4,6 +4,7 @@ import Navbar from "./layouts/Navbar"
 import UserBar from "./layouts/UserBar"
 import InicioDeSesion from "./pages/InicioDeSesion"
 import PaginaDeInicio from "./pages/PaginaDeInicio"
+import PaginaDeCursos from './pages/PaginaDeCursos';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Routes>
               <Route path="/" element={<InicioDeSesion />} />
               <Route path="/inicio" element={<PaginaDeInicio />} />
+              <Route path="/cursos" element={<PaginaDeCursos />} />
             </Routes>
           </div>
         </div>
