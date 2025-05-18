@@ -1,7 +1,7 @@
 // src/pages/PaginaDeInicio.jsx
-import publicaImg from '../../assets/PaginaDeInicio/padoru.jpg';
-import buscaImg from '../../assets/PaginaDeInicio/padoru.jpg';
-import cambiaImg from '../../assets/PaginaDeInicio/padoru.jpg';
+import publicaImg from '../assets/PaginaDeInicio/padoru.jpg';
+import buscaImg from '../assets/PaginaDeInicio/padoru.jpg';
+import cambiaImg from '../assets/PaginaDeInicio/padoru.jpg';
 
 const PaginaDeInicio = () => {
   const pasos = [

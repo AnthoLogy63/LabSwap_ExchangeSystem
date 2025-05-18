@@ -3,7 +3,7 @@ import './App.css'
 import MainLayout from './layouts/MainLayout'
 
 import InicioDeSesion from "./pages/InicioDeSesion"
-import PaginaDeInicio from "./pages/USER/PaginaDeInicio"
+import PaginaDeInicio from "./pages/PaginaDeInicio"
 import PaginaDeCursos from './pages/USER/PaginaDeCursos';
 import EdicionCursosEstudiante from './pages/USER/EdicionCursosEstudiante'
 import ContactarIntercambio from './pages/USER/ContactarIntercambio'
