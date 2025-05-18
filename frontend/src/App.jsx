@@ -2,9 +2,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
 import Navbar from "./layouts/Navbar"
 import UserBar from "./layouts/UserBar"
-import InicioDeSesion from "./pages/InicioDeSesion"
-import PaginaDeInicio from "./pages/PaginaDeInicio"
-import PaginaDeCursos from './pages/PaginaDeCursos';
+import InicioDeSesion from "./pages/USER/InicioDeSesion"
+import PaginaDeInicio from "./pages/USER/PaginaDeInicio"
+import PaginaDeCursos from './pages/USER/PaginaDeCursos';
 
 function App() {
   return (

@@ -1,3 +1,5 @@
+
+
 const FiltrosCursos = ({ filtroNombre, setFiltroNombre, filtroYear, setFiltroYear, filtroGrupo, setFiltroGrupo }) => {
     return (
         <div className="flex flex-wrap gap-4 p-4 border border-gray-300 rounded mb-6">
