@@ -17,68 +17,17 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+
         <Route path="/" element={<Login />} />
+        <Route path="/inicio" element={<MainLayout><HomePage /></MainLayout>} />
+        <Route path="/cursos" element={<MainLayout><CoursesPage /></MainLayout>} />
+        <Route path="/mis-cursos" element={<MainLayout><EditStudentCourses /></MainLayout>} />
+        <Route path="/perfil" element={<MainLayout><StudentProfile /></MainLayout>} />
+        <Route path="/intercambio" element={<MainLayout><ContactSwap /></MainLayout>} />
+        <Route path="/admin/panel-cursos" element={<MainLayout><AdminCoursesPanel /></MainLayout>} />
 
-        {/* Protected routes wrapped in MainLayout */}
-        <Route
-          path="/inicio"
-          element={
-            <MainLayout>
-              <HomePage />
-            </MainLayout>
-          }
-        />
-        <Route
-          path="/cursos"
-          element={
-            <MainLayout>
-              <CoursesPage />
-            </MainLayout>
-          }
-        />
-        <Route
-          path="/mis-cursos"
-          element={
-            <MainLayout>
-              <EditStudentCourses />
-            </MainLayout>
-          }
-        />
-        <Route
-          path="/perfil"
-          element={
-            <MainLayout>
-              <StudentProfile />
-            </MainLayout>
-          }
-        />
-        <Route
-          path="/intercambio"
-          element={
-            <MainLayout>
-              <ContactSwap />
-            </MainLayout>
-          }
-        />
-
-        {/* ADMIN */}
-        <Route
-          path="/admin/panel-cursos"
-          element={
-            <MainLayout>
-              <AdminCoursesPanel />
-            </MainLayout>
-          }
-        />
-        <Route
-          path="/admin/historial"
-          element={
-            <MainLayout>
-              <AdminHistoryPanel />
-            </MainLayout>
-          }
-        />
       </Routes>
+
     </BrowserRouter>
   );
 }
