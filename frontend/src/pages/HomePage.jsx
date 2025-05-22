@@ -3,7 +3,7 @@ import publicaImg from '../assets/PaginaDeInicio/padoru.jpg';
 import buscaImg from '../assets/PaginaDeInicio/padoru.jpg';
 import cambiaImg from '../assets/PaginaDeInicio/padoru.jpg';
 
-const PaginaDeInicio = () => {
+const HomePage = () => {
   const pasos = [
     { img: publicaImg, title: "Publica", desc: "Lorem ipsum..." },
     { img: buscaImg, title: "Busca", desc: "Lorem ipsum..." },
@@ -29,4 +29,4 @@ const PaginaDeInicio = () => {
   );
 };
 
-export default PaginaDeInicio;
+export default HomePage;

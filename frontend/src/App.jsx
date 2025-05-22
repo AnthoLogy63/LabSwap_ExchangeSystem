@@ -2,28 +2,29 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
 import MainLayout from './layouts/MainLayout'
 
-import InicioDeSesion from "./pages/InicioDeSesion"
-import PaginaDeInicio from "./pages/PaginaDeInicio"
-import PaginaDeCursos from './pages/USER/PaginaDeCursos';
-import EdicionCursosEstudiante from './pages/USER/EdicionCursosEstudiante'
-import ContactarIntercambio from './pages/USER/ContactarIntercambio'
-import PerfilDelEstudiante from './pages/USER/PerfilDelEstudiante'
+import Login from "./pages/Login";
+import HomePage from "./pages/HomePage";
+import CoursesPage from './pages/USER/CoursesPage';
+import EditStudentCourses from './pages/USER/EditStudentCourses';
+import ContactSwap from './pages/USER/ContactSwap';
+import StudentProfile from './pages/USER/StudentProfile';
 
-import PaneldeCursos_Admin from './pages/ADMIN/PaneldeCursos_Admin'
-import PanelHistorial_Admin from './pages/ADMIN/PanelHistorial-Admin'
+import AdminCoursesPanel from './pages/ADMIN/AdminCoursesPanel';
+import AdminHistoryPanel from './pages/ADMIN/AdminHistoryPanel';
+
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<InicioDeSesion />} />
+        <Route path="/" element={<Login />} />
 
-        {/* Rutas protegidas envueltas en MainLayout */}
+        {/* Protected routes wrapped in MainLayout */}
         <Route
           path="/inicio"
           element={
             <MainLayout>
-              <PaginaDeInicio />
+              <HomePage />
             </MainLayout>
           }
         />
@@ -31,7 +32,7 @@ function App() {
           path="/cursos"
           element={
             <MainLayout>
-              <PaginaDeCursos />
+              <CoursesPage />
             </MainLayout>
           }
         />
@@ -39,7 +40,7 @@ function App() {
           path="/mis-cursos"
           element={
             <MainLayout>
-              <EdicionCursosEstudiante />
+              <EditStudentCourses />
             </MainLayout>
           }
         />
@@ -47,7 +48,7 @@ function App() {
           path="/perfil"
           element={
             <MainLayout>
-              <PerfilDelEstudiante />
+              <StudentProfile />
             </MainLayout>
           }
         />
@@ -55,7 +56,7 @@ function App() {
           path="/intercambio"
           element={
             <MainLayout>
-              <ContactarIntercambio />
+              <ContactSwap />
             </MainLayout>
           }
         />
@@ -65,7 +66,7 @@ function App() {
           path="/admin/panel-cursos"
           element={
             <MainLayout>
-              <PaneldeCursos_Admin />
+              <AdminCoursesPanel />
             </MainLayout>
           }
         />
@@ -73,7 +74,7 @@ function App() {
           path="/admin/historial"
           element={
             <MainLayout>
-              <PanelHistorial_Admin />
+              <AdminHistoryPanel />
             </MainLayout>
           }
         />
@@ -82,4 +83,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

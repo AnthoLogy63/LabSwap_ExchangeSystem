@@ -1,9 +1,9 @@
 import React from 'react'
 
-const AlertaBorrarIntercambio = () => {
+const DeleteSwapAlert = () => {
   return (
     <div>AlertaBorrarIntercambio</div>
   )
 }
 
-export default AlertaBorrarIntercambio
+export default DeleteSwapAlert

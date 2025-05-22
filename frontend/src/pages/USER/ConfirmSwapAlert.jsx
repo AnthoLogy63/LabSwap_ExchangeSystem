@@ -1,9 +1,9 @@
 import React from 'react'
 
-const AlertaConfirmarIntercambio = () => {
+const ConfirmSwapAlert = () => {
   return (
     <div>AlertaConfirmarIntercambio</div>
   )
 }
 
-export default AlertaConfirmarIntercambio
+export default ConfirmSwapAlert

@@ -1,9 +1,9 @@
 import React from 'react'
 
-const ContactarIntercambio = () => {
+const ContactSwap = () => {
   return (
     <div>ContactarIntercambio</div>
   )
 }
 
-export default ContactarIntercambio
+export default ContactSwap

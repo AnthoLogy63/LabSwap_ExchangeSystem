@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 
-const InicioDeSesion = () => {
+const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -29,4 +29,4 @@ const InicioDeSesion = () => {
   );
 }
 
-export default InicioDeSesion;
+export default Login;

@@ -1,6 +1,6 @@
 import { Pencil, UserCircle2 } from 'lucide-react'
 
-function PerfilDelEstudiante() {
+function StudentProfile() {
   const user = {
     nombre: 'Pepe Carrillo Quispe Juan',
     anio: '5to',
@@ -58,4 +58,4 @@ function PerfilDelEstudiante() {
   )
 }
 
-export default PerfilDelEstudiante
+export default StudentProfile
