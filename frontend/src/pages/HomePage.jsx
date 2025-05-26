@@ -12,16 +12,16 @@ const HomePage = () => {
 
   return (
     <div className="text-left ml-20">
-      <h1 className="text-8xl font-bold mb-8">Bienvenido a Lab-Swap</h1>
+      <h1 className="text-8xl font-bold mb-8">Bienvenido a <br />Lab-Swap</h1>
       <p className="text-3xl mb-12">Una página para intercambiar los cursos que necesitas</p>
 
-      <h2 className="text-2xl font-bold mb-6">Solo con 3 pasos:</h2>
+      <h2 className="text-3xl font-bold mb-6">Solo con 3 pasos:</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
         {pasos.map((paso, idx) => (
           <div key={idx} className="flex flex-col items-center">
+            <h3 className="font-bold text-3xl mb-2">{paso.title}</h3>
             <img src={paso.img} alt={paso.title} className="mb-3 w-70" />
-            <h3 className="font-bold">{paso.title}</h3>
-            <p className="text-sm text-slate-600 max-w-xs">{paso.desc}</p>
+            <p className="text-2xl text-slate-600 max-w-xs text-center">{paso.desc}</p>
           </div>
         ))}
       </div>
