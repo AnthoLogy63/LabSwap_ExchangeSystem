@@ -28,51 +28,87 @@ const CourseFilters = ({
         <div className="px-[40px]">
         <h1 className="text-5xl font-bold text-[#08484F] mb-4">Lista de cursos</h1>
 
-        <div className="border-[1.5px] border-[#08484F] shadow-md px-6 py-4 mb-6">
+        <div className="border-[1.5px] border-[#08484F] shadow-md px-6 py-4 mb-10">
             <div className="flex items-end gap-10">
-            <div className="flex flex-col flex-1 min-w-[300px]">
-                <label className="text-xl font-semibold mb-2 text-black">Filtros</label>
-                <input
-                type="text"
-                placeholder="Buscar por nombre del curso"
-                className="text-xl border-b-2 border-gray-500 placeholder-gray-400 focus:outline-none focus:border-[#08484F] py-1 bg-transparent"
-                value={courseNameFilter}
-                onChange={(e) => setCourseNameFilter(e.target.value)}
-                />
-            </div>
+                <div className="flex flex-col w-full max-w-[50%] min-w-[250px]">
+                    <label className="text-3xl font-semibold mb-2 text-black">Filtros</label>
+                    <input
+                        type="text"
+                        placeholder="Buscar por nombre del curso"
+                        className="w-full text-2xl border-b-2 border-gray-500 placeholder-gray-400 focus:outline-none focus:border-[#08484F] py-1 bg-transparent"
+                        value={courseNameFilter}
+                        onChange={(e) => setCourseNameFilter(e.target.value)}
+                    />
+                </div>
+                
+                {/* Por año */}
+                <div className="flex flex-col min-w-[150px]">
+                    <label className="text-2xl text-black mb-2 ml-9">Por año:</label>
+                    <select
+                    className="text-left text-xl border border-gray-400 rounded-sm ml-9 px-9 py-2 bg-transparent placeholder-gray-400"
+                    value={yearFilter}
+                    onChange={(e) => setYearFilter(e.target.value)}
+                    >
+                    {yearOptions.map((option, idx) => (
+                        <option key={idx} value={option}>
+                        {option}
+                        </option>
+                    ))}
+                    </select>
+                </div>
 
-            {/* Por año */}
-            <div className="flex flex-col min-w-[150px]">
-                <label className="text-xl text-black mb-2">Por año:</label>
-                <select
-                className="border border-gray-400 rounded-sm px-3 py-1 placeholder-gray-400"
-                value={yearFilter}
-                onChange={(e) => setYearFilter(e.target.value)}
-                >
-                {yearOptions.map((option, idx) => (
-                    <option key={idx} value={option}>
-                    {option}
-                    </option>
-                ))}
-                </select>
+                {/* Por grupo */}
+                <div className="flex flex-col min-w-[150px]">
+                    <label className="text-2xl text-black mb-2 ml-5">Por grupo:</label>
+                    <select
+                    className="text-left text-xl border border-gray-400 rounded-sm ml-5 px-9 py-2 bg-transparent placeholder-gray-400"
+                    value={groupFilter}
+                    onChange={(e) => setGroupFilter(e.target.value)}
+                    >
+                    {groupOptions.map((option, idx) => (
+                        <option key={idx} value={option}>
+                        {option}
+                        </option>
+                    ))}
+                    </select>
+                </div>
             </div>
+        </div>
+        <h1 className="text-3xl font-bold text-[#08484F] mb-4">Resultados</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Tarjeta 1 */}
+        <div className="border border-gray-400 rounded-md px-4 py-4 shadow-sm">
+            <div className="flex items-center gap-4 mb-2">
+            <div className="w-10 h-10 bg-[#a02828] rounded-full flex items-center justify-center text-white text-xl">
+                👤
+            </div>
+            <h3 className="text-xl font-semibold">José Carlos</h3>
+            </div>
+            <div className="text-sm">
+            <p><span className="text-[#2e8ba5] font-semibold">Ofrezco:</span> Investigación de Operaciones - C</p>
+            <p><span className="text-[#b12a2a] font-semibold">Necesito:</span> Investigación de Operaciones - A</p>
+            </div>
+            <div className="flex justify-end mt-4">
+            <button className="bg-[#b12a2a] text-white text-sm px-4 py-1 rounded">Contactar</button>
+            </div>
+        </div>
 
-            {/* Por grupo */}
-            <div className="flex flex-col min-w-[150px]">
-                <label className="text-xl text-black mb-2">Por grupo:</label>
-                <select
-                className="border border-gray-400 rounded-sm px-3 py-1 placeholder-gray-400"
-                value={groupFilter}
-                onChange={(e) => setGroupFilter(e.target.value)}
-                >
-                {groupOptions.map((option, idx) => (
-                    <option key={idx} value={option}>
-                    {option}
-                    </option>
-                ))}
-                </select>
+        {/* Tarjeta 2 */}
+        <div className="border border-gray-400 rounded-md px-4 py-4 shadow-sm">
+            <div className="flex items-center gap-4 mb-2">
+            <div className="w-10 h-10 bg-[#a02828] rounded-full flex items-center justify-center text-white text-xl">
+                👤
             </div>
+            <h3 className="text-xl font-semibold">José Carlos</h3>
             </div>
+            <div className="text-sm">
+            <p><span className="text-[#2e8ba5] font-semibold">Ofrezco:</span> Programación de Sistemas - B</p>
+            <p><span className="text-[#b12a2a] font-semibold">Necesito:</span> Investigación de Operaciones - A</p>
+            </div>
+            <div className="flex justify-end mt-4">
+            <button className="bg-[#b12a2a] text-white text-sm px-4 py-1 rounded">Contactar</button>
+            </div>
+        </div>
         </div>
         </div>
     );
