@@ -30,20 +30,19 @@ const CourseFilters = ({
 
         <div className="border-[1.5px] border-[#08484F] shadow-md px-6 py-4 mb-6">
             <div className="flex items-end gap-10">
-            <div className="flex flex-col flex-1 min-w-[300px]">
-                <label className="text-xl font-semibold mb-2 text-black">Filtros</label>
+            <div className="flex flex-col w-full max-w-[50%] min-w-[250px]">
+                <label className="text-3xl font-semibold mb-2 text-black">Filtros</label>
                 <input
-                type="text"
-                placeholder="Buscar por nombre del curso"
-                className="text-xl border-b-2 border-gray-500 placeholder-gray-400 focus:outline-none focus:border-[#08484F] py-1 bg-transparent"
-                value={courseNameFilter}
-                onChange={(e) => setCourseNameFilter(e.target.value)}
+                    type="text"
+                    placeholder="Buscar por nombre del curso"
+                    className="w-full text-xl border-b-2 border-gray-500 placeholder-gray-400 focus:outline-none focus:border-[#08484F] py-1 bg-transparent"
+                    value={courseNameFilter}
+                    onChange={(e) => setCourseNameFilter(e.target.value)}
                 />
             </div>
-
             {/* Por año */}
             <div className="flex flex-col min-w-[150px]">
-                <label className="text-xl text-black mb-2">Por año:</label>
+                <label className="text-2xl text-black mb-2">Por año:</label>
                 <select
                 className="border border-gray-400 rounded-sm px-3 py-1 placeholder-gray-400"
                 value={yearFilter}
@@ -59,7 +58,7 @@ const CourseFilters = ({
 
             {/* Por grupo */}
             <div className="flex flex-col min-w-[150px]">
-                <label className="text-xl text-black mb-2">Por grupo:</label>
+                <label className="text-2xl text-black mb-2">Por grupo:</label>
                 <select
                 className="border border-gray-400 rounded-sm px-3 py-1 placeholder-gray-400"
                 value={groupFilter}
