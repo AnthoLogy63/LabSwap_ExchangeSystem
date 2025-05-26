@@ -75,6 +75,41 @@ const CourseFilters = ({
             </div>
         </div>
         <h1 className="text-3xl font-bold text-[#08484F] mb-4">Resultados</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Tarjeta 1 */}
+        <div className="border border-gray-400 rounded-md px-4 py-4 shadow-sm">
+            <div className="flex items-center gap-4 mb-2">
+            <div className="w-10 h-10 bg-[#a02828] rounded-full flex items-center justify-center text-white text-xl">
+                👤
+            </div>
+            <h3 className="text-xl font-semibold">José Carlos</h3>
+            </div>
+            <div className="text-sm">
+            <p><span className="text-[#2e8ba5] font-semibold">Ofrezco:</span> Investigación de Operaciones - C</p>
+            <p><span className="text-[#b12a2a] font-semibold">Necesito:</span> Investigación de Operaciones - A</p>
+            </div>
+            <div className="flex justify-end mt-4">
+            <button className="bg-[#b12a2a] text-white text-sm px-4 py-1 rounded">Contactar</button>
+            </div>
+        </div>
+
+        {/* Tarjeta 2 */}
+        <div className="border border-gray-400 rounded-md px-4 py-4 shadow-sm">
+            <div className="flex items-center gap-4 mb-2">
+            <div className="w-10 h-10 bg-[#a02828] rounded-full flex items-center justify-center text-white text-xl">
+                👤
+            </div>
+            <h3 className="text-xl font-semibold">José Carlos</h3>
+            </div>
+            <div className="text-sm">
+            <p><span className="text-[#2e8ba5] font-semibold">Ofrezco:</span> Programación de Sistemas - B</p>
+            <p><span className="text-[#b12a2a] font-semibold">Necesito:</span> Investigación de Operaciones - A</p>
+            </div>
+            <div className="flex justify-end mt-4">
+            <button className="bg-[#b12a2a] text-white text-sm px-4 py-1 rounded">Contactar</button>
+            </div>
+        </div>
+        </div>
         </div>
     );
 };
