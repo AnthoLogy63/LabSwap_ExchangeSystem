@@ -19,7 +19,7 @@ const HomePage = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
         {pasos.map((paso, idx) => (
           <div key={idx} className="flex flex-col items-center">
-            <img src={paso.img} alt={paso.title} className="mb-3 w-86" />
+            <img src={paso.img} alt={paso.title} className="mb-3 w-70" />
             <h3 className="font-bold">{paso.title}</h3>
             <p className="text-sm text-slate-600 max-w-xs">{paso.desc}</p>
           </div>
