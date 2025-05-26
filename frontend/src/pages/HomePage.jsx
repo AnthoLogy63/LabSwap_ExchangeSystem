@@ -5,9 +5,9 @@ import cambiaImg from '../assets/PaginaDeInicio/generic.jpg';
 
 const HomePage = () => {
   const pasos = [
-    { img: publicaImg, title: "Publica", desc: "Lorem ipsum..." },
-    { img: buscaImg, title: "Busca", desc: "Lorem ipsum..." },
-    { img: cambiaImg, title: "Cambia", desc: "Lorem ipsum..." },
+    { img: publicaImg, title: "Publica", desc: "Sube tu informacion y cupos que puedes intercambiar" },
+    { img: buscaImg, title: "Busca", desc: "Mira los cursos en los que estas interesado" },
+    { img: cambiaImg, title: "Cambia", desc: "Intercambia cupos con otra persona y consigue el horario que quieres" },
   ];
 
   return (
