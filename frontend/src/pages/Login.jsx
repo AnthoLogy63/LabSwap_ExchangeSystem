@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../context/authContext"
+import abet from "../assets/PaginaDeInicio/abet.png" // Importa la imagen si es necesario
 
 const Login = () => {
   const navigate = useNavigate()
@@ -42,7 +43,7 @@ const Login = () => {
 
       {/* Imagen inferior */}
       <div className="mt-10 w-[95%] max-w-5xl mx-auto h-44 bg-gray-200 text-gray-600 rounded-lg flex items-center justify-center shadow">
-        Aquí irá la imagen institucional
+        <img src={abet} alt="ABET Logo" className="w-full h-full object-cover" />
       </div>
     </div>
   )
