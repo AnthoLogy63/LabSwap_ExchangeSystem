@@ -62,6 +62,42 @@ const sampleExchanges = [
         offer: "Estructura de Datos y Algoritmos - B",
         need: "Estructura de Datos y Algoritmos - E",
     },
+    {
+        id: 4,
+        name: "Ana Pérez",
+        offer: "Fundamentos de la Programación 1 - C",
+        need: "Fundamentos de la Programación 1 - B",
+    },
+    {
+        id: 5,
+        name: "Luis Ramírez",
+        offer: "Programación de Sistemas - A",
+        need: "Programación de Sistemas - F",
+    },
+    {
+        id: 6,
+        name: "María Gómez",
+        offer: "Sistemas Operativos - D",
+        need: "Sistemas Operativos - B",
+    },
+    {
+        id: 7,
+        name: "Carlos López",
+        offer: "Métodos Numéricos - E",
+        need: "Métodos Numéricos - A",
+    },
+    {
+        id: 8,
+        name: "Sofía Martínez",
+        offer: "Programación Web - B",
+        need: "Programación Web - D",
+    },
+    {
+        id: 9,
+        name: "Jorge Torres",
+        offer: "Organización y Métodos- A",
+        need: "Organización y Métodos - C",
+    },
 ];
 
 const CourseFilters = ({
@@ -123,8 +159,7 @@ const CourseFilters = ({
             </div>
         </div>
             <h1 className="text-3xl font-bold text-[#08484F] mb-4">Resultados</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {sampleExchanges.map(({ id, name, offer, need }) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[600px] overflow-y-auto custom-scrollbar pr-4">                {sampleExchanges.map(({ id, name, offer, need }) => (
                     <ExchangeCard key={id} name={name} offer={offer} need={need} />
                 ))}
             </div>
