@@ -22,21 +22,23 @@ const ExchangeCard = ({ name, offer, need }) => (
         <div className="w-10 h-10 bg-[#a02828] rounded-full flex items-center justify-center text-white text-xl">
             👤
         </div>
-        <h3 className="text-xl font-semibold">{name}</h3>
+            <h3 className="text-2xl">{name}</h3>
         </div>
         <div className="flex items-start justify-between border-y border-gray-300 py-3 mb-4 text-lg">
-        <div className="w-1/2 pr-2">
-            <p className="text-[#2e8ba5] font-semibold">Ofrezco:</p>
-            <p>{offer}</p>
+        <div className="w-1/2 pr-2 pl-2">
+            <p className="text-2xl text-[#2e8ba5] font-semibold">Ofrezco:</p>
+            <p className="text-xl">{offer}</p>
         </div>
-        <div className="w-px bg-black h-full mx-2"></div>
-        <div className="w-1/2 pl-2">
-            <p className="text-[#b12a2a] font-semibold">Necesito:</p>
-            <p>{need}</p>
+
+        <div className="w-[3px] bg-gray-600 self-stretch"></div>
+
+        <div className="w-1/2 pl-6">
+            <p className="text-2xl text-[#b12a2a] font-semibold">Necesito:</p>
+            <p className="text-xl">{need}</p>
         </div>
         </div>
         <div className="flex justify-end">
-        <button className="bg-[#b12a2a] text-white text-sm px-4 py-1 rounded-xl">Contactar</button>
+        <button className="text-xl bg-[#b12a2a] text-white text-sm px-4 py-1 rounded-xl">Contactar</button>
         </div>
     </div>
 );
@@ -45,8 +47,8 @@ const sampleExchanges = [
     {
         id: 1,
         name: "José Carlos",
-        offer: "Investigación de Operaciones - C",
-        need: "Investigación de Operaciones - A",
+        offer: "Investigación de Operaciones - D",
+        need: "Investigación de Operaciones - C",
     },
     {
         id: 2,
@@ -57,8 +59,8 @@ const sampleExchanges = [
     {
         id: 3,
         name: "Manuel Merino",
-        offer: "Investigación de Operaciones - C",
-        need: "Investigación de Operaciones - A",
+        offer: "Estructura de Datos y Algoritmos - B",
+        need: "Estructura de Datos y Algoritmos - E",
     },
 ];
 
