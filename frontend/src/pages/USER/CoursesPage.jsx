@@ -16,6 +16,52 @@ const groupOptions = [
     "Grupo Z"
 ];
 
+const ExchangeCard = ({ name, offer, need }) => (
+    <div className="border-[1.5px] border-[#08484F] rounded-md px-4 py-4 shadow-sm">
+        <div className="flex items-center gap-4 mb-4">
+        <div className="w-10 h-10 bg-[#a02828] rounded-full flex items-center justify-center text-white text-xl">
+            👤
+        </div>
+        <h3 className="text-xl font-semibold">{name}</h3>
+        </div>
+        <div className="flex items-start justify-between border-y border-gray-300 py-3 mb-4 text-lg">
+        <div className="w-1/2 pr-2">
+            <p className="text-[#2e8ba5] font-semibold">Ofrezco:</p>
+            <p>{offer}</p>
+        </div>
+        <div className="w-px bg-black h-full mx-2"></div>
+        <div className="w-1/2 pl-2">
+            <p className="text-[#b12a2a] font-semibold">Necesito:</p>
+            <p>{need}</p>
+        </div>
+        </div>
+        <div className="flex justify-end">
+        <button className="bg-[#b12a2a] text-white text-sm px-4 py-1 rounded-xl">Contactar</button>
+        </div>
+    </div>
+);
+
+const sampleExchanges = [
+    {
+        id: 1,
+        name: "José Carlos",
+        offer: "Investigación de Operaciones - C",
+        need: "Investigación de Operaciones - A",
+    },
+    {
+        id: 2,
+        name: "Pedro Castillo",
+        offer: "Programación de Sistemas - B",
+        need: "Programación de Sistemas - A",
+    },
+    {
+        id: 3,
+        name: "Manuel Merino",
+        offer: "Investigación de Operaciones - C",
+        need: "Investigación de Operaciones - A",
+    },
+];
+
 const CourseFilters = ({
     courseNameFilter,
     setCourseNameFilter,
@@ -74,79 +120,11 @@ const CourseFilters = ({
                 </div>
             </div>
         </div>
-        <h1 className="text-3xl font-bold text-[#08484F] mb-4">Resultados</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Tarjeta 1 */}
-            <div className="border border-gray-400 rounded-md px-4 py-4 shadow-sm">
-                <div className="flex items-center gap-4 mb-4">
-                <div className="w-10 h-10 bg-[#a02828] rounded-full flex items-center justify-center text-white text-xl">
-                    👤
-                </div>
-                <h3 className="text-xl font-semibold">José Carlos</h3>
-                </div>
-                <div className="flex items-start justify-between border-y border-gray-300 py-3 mb-4 text-lg">
-                <div className="w-1/2 pr-2">
-                    <p className="text-[#2e8ba5] font-semibold">Ofrezco:</p>
-                    <p>Investigación de Operaciones - C</p>
-                </div>
-                <div className="w-px bg-black h-full mx-2"></div>
-                <div className="w-1/2 pl-2">
-                    <p className="text-[#b12a2a] font-semibold">Necesito:</p>
-                    <p>Investigación de Operaciones - A</p>
-                </div>
-                </div>
-                <div className="flex justify-end">
-                <button className="bg-[#b12a2a] text-white text-sm px-4 py-1 rounded">Contactar</button>
-                </div>
-            </div>
-
-            {/* Tarjeta 2 */}
-            <div className="border border-gray-400 rounded-md px-4 py-4 shadow-sm">
-                <div className="flex items-center gap-4 mb-4">
-                <div className="w-10 h-10 bg-[#a02828] rounded-full flex items-center justify-center text-white text-xl">
-                    👤
-                </div>
-                <h3 className="text-xl font-semibold">José Carlos</h3>
-                </div>
-                <div className="flex items-start justify-between border-y border-gray-300 py-3 mb-4 text-lg">
-                <div className="w-1/2 pr-2">
-                    <p className="text-[#2e8ba5] font-semibold">Ofrezco:</p>
-                    <p>Programación de Sistemas - B</p>
-                </div>
-                <div className="w-px bg-black h-full mx-2"></div>
-                <div className="w-1/2 pl-2">
-                    <p className="text-[#b12a2a] font-semibold">Necesito:</p>
-                    <p>Investigación de Operaciones - A</p>
-                </div>
-                </div>
-                <div className="flex justify-end">
-                <button className="bg-[#b12a2a] text-white text-sm px-4 py-1 rounded">Contactar</button>
-                </div>
-            </div>
-
-            {/* Tarjeta 3 */}
-            <div className="border border-gray-400 rounded-md px-4 py-4 shadow-sm">
-                <div className="flex items-center gap-4 mb-4">
-                <div className="w-10 h-10 bg-[#a02828] rounded-full flex items-center justify-center text-white text-xl">
-                    👤
-                </div>
-                <h3 className="text-xl font-semibold">José Carlos</h3>
-                </div>
-                <div className="flex items-start justify-between border-y border-gray-300 py-3 mb-4 text-lg">
-                <div className="w-1/2 pr-2">
-                    <p className="text-[#2e8ba5] font-semibold">Ofrezco:</p>
-                    <p>Investigación de Operaciones - C</p>
-                </div>
-                <div className="w-px bg-black h-full mx-2"></div>
-                <div className="w-1/2 pl-2">
-                    <p className="text-[#b12a2a] font-semibold">Necesito:</p>
-                    <p>Investigación de Operaciones - A</p>
-                </div>
-                </div>
-                <div className="flex justify-end">
-                <button className="bg-[#b12a2a] text-white text-sm px-4 py-1 rounded">Contactar</button>
-                </div>
-            </div>
+            <h1 className="text-3xl font-bold text-[#08484F] mb-4">Resultados</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {sampleExchanges.map(({ id, name, offer, need }) => (
+                    <ExchangeCard key={id} name={name} offer={offer} need={need} />
+                ))}
             </div>
         </div>
     );
