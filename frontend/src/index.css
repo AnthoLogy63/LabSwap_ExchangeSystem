@@ -5,3 +5,16 @@
 body {
   font-family: 'Alegreya Sans', sans-serif;
 }
+
+::-webkit-scrollbar {
+  width: 15px;
+  background-color: none;
+  border: 2px solid black;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: black;
+  border-radius: 10px;
+  max-height: 200px;
+}

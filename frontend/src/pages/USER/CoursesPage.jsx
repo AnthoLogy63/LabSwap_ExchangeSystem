@@ -159,7 +159,8 @@ const CourseFilters = ({
             </div>
         </div>
             <h1 className="text-3xl font-bold text-[#08484F] mb-4">Resultados</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[600px] overflow-y-auto custom-scrollbar pr-4">                {sampleExchanges.map(({ id, name, offer, need }) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[600px] overflow-y-auto custom-scrollbar pr-4">
+                {sampleExchanges.map(({ id, name, offer, need }) => (
                     <ExchangeCard key={id} name={name} offer={offer} need={need} />
                 ))}
             </div>
