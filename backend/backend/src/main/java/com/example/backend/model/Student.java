@@ -3,6 +3,7 @@ package com.example.backend.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.UUID;
 @Data
 @Entity
 @Table(name = "students")
@@ -19,4 +20,11 @@ public class Student {
 
     @Column(name = "profile_image_path")
     private String profileImagePath;
+
+    @PrePersist
+    public void generateStudentCode() {
+        if (studentCode == null || studentCode.isEmpty()) {
+            this.studentCode = "EST" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        }
+    }
 }

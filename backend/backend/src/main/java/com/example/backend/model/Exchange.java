@@ -2,6 +2,7 @@ package com.example.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -37,4 +38,13 @@ public class Exchange {
     @ManyToOne
     @JoinColumn(name = "adminConfirmationCode")
     private AdminConfirmation adminConfirmation;
+
+    @PrePersist
+    public void generateExchangeCode() {
+        if (exchangeCode == null || exchangeCode.isEmpty()) {
+            this.exchangeCode = "EXC" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        }
+    }
+
+
 }
