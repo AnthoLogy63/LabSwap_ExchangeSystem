@@ -40,11 +40,7 @@ const ExchangeCard = ({ name, offer, need }) => (
         </div>
         </div>
         <div className="flex justify-end">
-        <Link to="/intercambio">
-            <button className="text-xl bg-[#b12a2a] text-white text-sm px-4 py-1 rounded-xl">
-                Contactar
-            </button>
-        </Link>
+        <button className="text-xl bg-[#b12a2a] text-white text-sm px-4 py-1 rounded-xl">Contactar</button>
         </div>
     </div>
 );
@@ -125,7 +121,7 @@ const CourseFilters = ({
                     <input
                         type="text"
                         placeholder="Buscar por nombre del curso"
-                        className="w-full text-2xl border-b-2 border-gray-500 placeholder-gray-400 focus:outline-none focus:border-[#08484F] py-1 bg-transparent"
+                        className="input-ph w-full text-2xl border-b-2 border-gray-500 placeholder-gray-400 focus:outline-none focus:border-[#08484F] py-1 bg-transparent"
                         value={courseNameFilter}
                         onChange={(e) => setCourseNameFilter(e.target.value)}
                     />
