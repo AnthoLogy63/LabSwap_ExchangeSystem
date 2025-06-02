@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
 
 const yearOptions = [
     "Todos los años",
@@ -38,7 +40,11 @@ const ExchangeCard = ({ name, offer, need }) => (
         </div>
         </div>
         <div className="flex justify-end">
-        <button className="text-xl bg-[#b12a2a] text-white text-sm px-4 py-1 rounded-xl">Contactar</button>
+        <Link to="/intercambio">
+            <button className="text-xl bg-[#b12a2a] text-white text-sm px-4 py-1 rounded-xl">
+                Contactar
+            </button>
+        </Link>
         </div>
     </div>
 );
