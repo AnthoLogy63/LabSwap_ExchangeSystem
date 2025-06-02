@@ -1,6 +1,6 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import './App.css'
-import MainLayout from './layouts/MainLayout'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import './App.css';
+import MainLayout from './layouts/MainLayout';
 
 import Login from "./pages/Login";
 import HomePage from "./pages/HomePage";
@@ -12,22 +12,83 @@ import StudentProfile from './pages/USER/StudentProfile';
 import AdminCoursesPanel from './pages/ADMIN/AdminCoursesPanel';
 import AdminHistoryPanel from './pages/ADMIN/AdminHistoryPanel';
 
+import { useAuth } from './context/authContext';
+
+const ProtectedRoute = ({ children, allowedRoles }) => {
+  const { user } = useAuth();
+
+  if (!user) return <Navigate to="/" />;
+  if (!allowedRoles.includes(user.role)) return <Navigate to="/" />;
+  
+  return children;
+};
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         <Route path="/" element={<Login />} />
-        <Route path="/inicio" element={<MainLayout><HomePage /></MainLayout>} />
-        <Route path="/cursos" element={<MainLayout><CoursesPage /></MainLayout>} />
-        <Route path="/mis-cursos" element={<MainLayout><EditStudentCourses /></MainLayout>} />
-        <Route path="/perfil" element={<MainLayout><StudentProfile /></MainLayout>} />
-        <Route path="/intercambio" element={<MainLayout><ContactSwap /></MainLayout>} />
-        <Route path="/admin/panel-cursos" element={<MainLayout><AdminCoursesPanel /></MainLayout>} />
 
+        {/* Rutas para usuarios */}
+        <Route
+          path="/inicio"
+          element={
+            <ProtectedRoute allowedRoles={['user']}>
+              <MainLayout><HomePage /></MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cursos"
+          element={
+            <ProtectedRoute allowedRoles={['user']}>
+              <MainLayout><CoursesPage /></MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/mis-cursos"
+          element={
+            <ProtectedRoute allowedRoles={['user']}>
+              <MainLayout><EditStudentCourses /></MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/perfil"
+          element={
+            <ProtectedRoute allowedRoles={['user']}>
+              <MainLayout><StudentProfile /></MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/intercambio"
+          element={
+            <ProtectedRoute allowedRoles={['user']}>
+              <MainLayout><ContactSwap /></MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Rutas para admins */}
+        <Route
+          path="/admin/panel-cursos"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <MainLayout><AdminCoursesPanel /></MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/historial"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <MainLayout><AdminHistoryPanel /></MainLayout>
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-
     </BrowserRouter>
   );
 }
