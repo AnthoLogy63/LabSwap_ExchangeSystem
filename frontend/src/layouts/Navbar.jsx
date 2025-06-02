@@ -6,7 +6,12 @@ const Navbar = () => {
   const location = useLocation()
   const { userRole } = useAuth();
 
-  const isActive = (path) => location.pathname === path
+  const isActive = (paths) => {
+    if (Array.isArray(paths)) {
+      return paths.some((path) => location.pathname.startsWith(path));
+    }
+    return location.pathname === paths; 
+  };
 
   return (
     <nav className="bg-[#0E6F79] text-white w-60 min-h-screen p-4">
@@ -31,7 +36,7 @@ const Navbar = () => {
               <Link
                 to="/cursos"
                 className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-colors ${
-                  isActive("/cursos")
+                  isActive(["/cursos", "/intercambio"])
                     ? "bg-white text-[#0E6F79] font-semibold"
                     : "hover:bg-[#0C5E6A]"
                 }`}
