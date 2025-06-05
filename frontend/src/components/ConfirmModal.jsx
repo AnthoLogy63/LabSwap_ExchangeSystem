@@ -1,22 +1,21 @@
-// src/components/ConfirmModal.jsx
 import React from 'react';
 
-export default function ConfirmModal({ message, onConfirm, onCancel }) {
+export default function ConfirmModal({ message, onConfirm, onCancel, title = "Confirmación Para Borrar Oferta de Curso" }) {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-xl shadow-xl p-6 w-[90%] max-w-md text-center">
-        <h2 className="text-xl font-semibold mb-4">Confirmación</h2>
-        <p className="mb-6">{message}</p>
-        <div className="flex justify-center gap-4">
+      <div className="bg-white rounded-2xl shadow-lg p-8 w-[90%] max-w-md border-4 border-cyan-900">
+        <h2 className="text-2xl font-bold text-teal-900 text-center mb-4">{title}</h2>
+        <p className="text-lg text-gray-700 text-center mb-6">{message}</p>
+        <div className="flex justify-center gap-6">
           <button
             onClick={onCancel}
-            className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded"
+            className="bg-teal-700 hover:bg-teal-800 text-white px-5 py-2 rounded-lg transition-colors"
           >
             Cancelar
           </button>
           <button
             onClick={onConfirm}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+            className="bg-[#b12a2a] hover:bg-red-800 text-white px-5 py-2 rounded-lg transition-colors"
           >
             Confirmar
           </button>

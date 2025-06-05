@@ -10,7 +10,7 @@ function StudentProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-start pt-10">
+    <div className="min-h-screen bg-[#FFFFFF] flex items-start pt-10">
       <div className="ml-50 w-full flex justify-center">
         <div className="bg-white p-12 max-w-4xl w-[100%] mx-auto rounded-xl shadow-2xl">
           <div className="flex justify-center mb-6">

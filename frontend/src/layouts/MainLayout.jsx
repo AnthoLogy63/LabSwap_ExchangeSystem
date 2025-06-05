@@ -13,7 +13,7 @@ const MainLayout = ({ children }) => {
       {user && !isLoginPage && <Navbar />}
       <div className="flex-1 flex flex-col">
         {user && !isLoginPage && <UserBar />}
-        <main className="p-4 flex-grow bg-gray-100">
+        <main className="p-4 flex-grow bg-[#FFFFFF]">
           {children || <Outlet />}
         </main>
       </div>
