@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import ConfirmSwapModal from "./ConfirmSwapModal"; // Nuevo modal importado
+import ConfirmSwapModal from "../../components/ConfirmSwapModal"; // Nuevo modal importado
 
 const ContactSwap = () => {
   const navigate = useNavigate();

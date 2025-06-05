@@ -18,7 +18,7 @@ const ConfirmSwapModal = ({ onClose, onConfirm }) => {
           <div>
             <span className="font-semibold text-teal-800">Estas Solicitando (Obtendrás) el curso de:</span> Programación de Sistemas - Grupo B
           </div>
-          <p className="text-sm italic text-gray-600 mt-2">
+          <p className="text-sm italic text-gray-600 mt-2 text-center">
             Nota: El estado del intercambio de curso se verá en el apartado de “Mis cursos”, es necesaria la verificación del encargado de Laboratorio y el otro Estudiante.
           </p>
           <div>
