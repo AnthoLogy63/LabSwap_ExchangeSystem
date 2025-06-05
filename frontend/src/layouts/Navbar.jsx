@@ -13,15 +13,21 @@ const Navbar = () => {
   const location = useLocation();
   const { user, logout } = useAuth();
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (paths) => {
+    if (Array.isArray(paths)) {
+      return paths.some((path) => location.pathname.startsWith(path));
+    }
+    return location.pathname === paths;
+  };
+
 
   // Componente reutilizable para enlaces de navegación
-  const navLink = (to, icon, label) => (
+  const navLink = (to, icon, label, activePaths = to) => (
     <li>
       <Link
         to={to}
         className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-colors ${
-          isActive(to)
+          isActive(activePaths)
             ? 'bg-white text-[#0E6F79] font-semibold'
             : 'hover:bg-[#0C5E6A]'
         }`}
@@ -40,7 +46,7 @@ const Navbar = () => {
           {user?.role === 'user' && (
             <>
               {navLink('/inicio', <Home size={20} />, 'Inicio')}
-              {navLink('/cursos', <BookOpen size={20} />, 'Lista de Cursos')}
+              {navLink('/cursos', <BookOpen size={20} />, 'Lista de Cursos', ['/cursos', '/intercambio'])}
               {navLink('/mis-cursos', <GraduationCap size={20} />, 'Mis Cursos')}
             </>
           )}
