@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import ConfirmModal from "../../components/ConfirmModal";
 
 const ContactSwap = () => {
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   // Datos simulados, en la práctica esto vendría de props o del backend
   const student = {
@@ -14,6 +16,13 @@ const ContactSwap = () => {
     correoAdicional: "pcarrilla@gmail.com",
     ofrece: "Investigación de Operaciones - C",
     necesita: "Investigación de Operaciones - A",
+  };
+
+  const handleConfirm = () => {
+    console.log("Solicitud de contacto enviada.");
+    setShowModal(false);
+    // Aquí podrías redirigir, hacer una petición, etc.
+    // Por ejemplo: navigate("/student-profile");
   };
 
   return (
@@ -53,10 +62,8 @@ const ContactSwap = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-8 border p-6 rounded-md shadow-md bg-white">
-        {/* Sección izquierda: datos personales */}
         <div className="md:col-span-1">
           <div className="grid grid-cols-2 gap-x-6 text-base text-gray-800">
-            {/* Etiquetas */}
             <div className="space-y-4 text-left font-semibold text-2xl">
               <div>Año:</div>
               <div>Número:</div>
@@ -64,7 +71,6 @@ const ContactSwap = () => {
               <div>Correo adicional:</div>
             </div>
 
-            {/* Valores */}
             <div className="space-y-4 text-left text-2xl">
               <div>{student.anio}</div>
               <div>{student.numero}</div>
@@ -73,7 +79,6 @@ const ContactSwap = () => {
             </div>
           </div>
 
-          {/* Recuadro azul debajo solo de los datos */}
           <div className="mt-6 bg-cyan-100 p-4 rounded-md flex text-2xl">
             <div className="flex-1 pr-4">
               <span className="text-teal-700 font-semibold">Ofrezco:</span><br />
@@ -88,26 +93,35 @@ const ContactSwap = () => {
             </div>
           </div>
         </div>
- 
-        {/* Sección derecha: mensaje de confirmación y botón */}
+
         <div className="flex flex-col justify-between text-2xl">
           <div>
             <h3 className="font-semibold mb-2">Confirmar Intercambio de curso:</h3>
-            <div className="bg-gray-100 p-4 rounded-md text-xl mb-4 ">
+            <div className="bg-gray-100 p-4 rounded-md text-xl mb-4">
               Luego de presionar “Confirmar Intercambio” necesitarás subir una copia
               de tu DNI de las dos caras, para validar el intercambio de cursos. Dicha
               información será enviada al encargado de laboratorio para su validación.
             </div>
           </div>
           <div className="flex justify-end">
-            <button className="bg-[#b12a2a] text-white text-sm px-4 py-2 rounded-md">
+            <button
+              className="bg-[#b12a2a] text-white text-sm px-4 py-2 rounded-md"
+              onClick={() => setShowModal(true)}
+            >
               Enviar Solicitud
             </button>
           </div>
         </div>
-
       </div>
-      
+
+      {/* Modal de confirmación */}
+      {showModal && (
+        <ConfirmModal
+          message="¿Estás seguro de que deseas contactar a este estudiante para el intercambio?"
+          onConfirm={handleConfirm}
+          onCancel={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };
