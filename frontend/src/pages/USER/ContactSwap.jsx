@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import ConfirmModal from "../../components/ConfirmModal";
+import ConfirmSwapModal from "./ConfirmSwapModal"; // Nuevo modal importado
 
 const ContactSwap = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
-  // Datos simulados, en la práctica esto vendría de props o del backend
   const student = {
     nombre: "José Carlos Quispe Zapata",
     anio: "5to",
@@ -21,8 +20,6 @@ const ContactSwap = () => {
   const handleConfirm = () => {
     console.log("Solicitud de contacto enviada.");
     setShowModal(false);
-    // Aquí podrías redirigir, hacer una petición, etc.
-    // Por ejemplo: navigate("/student-profile");
   };
 
   return (
@@ -114,12 +111,11 @@ const ContactSwap = () => {
         </div>
       </div>
 
-      {/* Modal de confirmación */}
+      {/* Modal separado */}
       {showModal && (
-        <ConfirmModal
-          message="¿Estás seguro de que deseas contactar a este estudiante para el intercambio?"
+        <ConfirmSwapModal
+          onClose={() => setShowModal(false)}
           onConfirm={handleConfirm}
-          onCancel={() => setShowModal(false)}
         />
       )}
     </div>
