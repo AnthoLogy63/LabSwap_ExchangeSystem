@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Trash2 } from "lucide-react";
+import ConfirmDeleteModal from "../../components/ConfirmDeleteModal";
 
 const courses = [
   "Investigación de Operaciones",
@@ -54,6 +55,9 @@ const EditStudentCourses = () => {
     const [offerGroup, setOfferGroup] = useState(groups[0]);
     const [needCourse, setNeedCourse] = useState(courses[0]);
     const [needGroup, setNeedGroup] = useState(groups[0]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedCourseId, setSelectedCourseId] = useState(null);
+
 
     // Handler para eliminar un curso ofrecido
     const handleDelete = (id) => {
@@ -103,7 +107,10 @@ const EditStudentCourses = () => {
               style={{ minWidth: "400px" }}
             >
               <button
-                onClick={() => handleDelete(id)}
+                onClick={() => {
+                  setSelectedCourseId(id);
+                  setIsModalOpen(true);
+                }}
                 className="absolute top-3 right-3 bg-[#0e8a99] p-2 rounded-md text-white"
                 title="Eliminar curso"
               >
@@ -217,9 +224,17 @@ const EditStudentCourses = () => {
         </div>
       </div>
     </div>
+    <ConfirmDeleteModal
+      isOpen={isModalOpen}
+      onCancel={() => setIsModalOpen(false)}
+      onConfirm={() => {
+        handleDelete(selectedCourseId);
+        setIsModalOpen(false);
+      }}
+    />
+
   </div>
   );
 };
 
 export default EditStudentCourses;
-
