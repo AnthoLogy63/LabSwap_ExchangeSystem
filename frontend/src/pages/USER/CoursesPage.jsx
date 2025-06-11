@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { RefreshCw } from 'lucide-react';
 
 
 const yearOptions = [
@@ -161,6 +162,19 @@ const CourseFilters = ({
                         </option>
                     ))}
                     </select>
+                </div>
+
+                {/* Botón de actualizar */}
+                <div className="self-start ml-auto">
+                    <button
+                    onClick={() => {
+                        window.location.reload();
+                    }}
+                    className="ml-auto text-[#08484F] hover:text-[#2e8ba5] transition-colors"
+                    title="Actualizar cursos"
+                    >
+                    <RefreshCw size={28} strokeWidth={2.5} />
+                    </button>
                 </div>
             </div>
         </div>
