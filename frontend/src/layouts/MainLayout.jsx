@@ -13,7 +13,11 @@ const MainLayout = ({ children }) => {
       {user && !isLoginPage && <Navbar />}
       <div className="flex-1 flex flex-col">
         {user && !isLoginPage && <UserBar />}
+<<<<<<< HEAD
         <main className="p-4 flex-grow">
+=======
+        <main className="p-4 flex-grow bg-[#FFFFFF]">
+>>>>>>> 7a6922db350c571a6545b120769bc34b4d9bd4b4
           {children || <Outlet />}
         </main>
       </div>
