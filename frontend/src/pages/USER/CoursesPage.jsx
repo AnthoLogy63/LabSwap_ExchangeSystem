@@ -16,7 +16,7 @@ const groupOptions = [
     "Todos los grupos",
     "Grupo A",
     "Grupo B",
-    "Grupo Z"
+    "Grupo C"
 ];
 
 const ExchangeCard = ({ name, offer, need }) => (
