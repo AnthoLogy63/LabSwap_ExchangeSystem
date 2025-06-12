@@ -1,8 +1,8 @@
 package com.example.backend.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -15,7 +15,14 @@ public class Course {
 
     private String courseName;
     private int courseYear;
+    @PrePersist
+    
+    public void generateCourseCode() {
+        if (courseCode == null || courseCode.isEmpty()) {
+            String prefix = "CRS";
+            long timestamp = System.currentTimeMillis() % 1000000;
+            this.courseCode = prefix + String.format("%06d", timestamp);
+        }
+    }
 
-    @Column
-    private String availableGroups;
 }

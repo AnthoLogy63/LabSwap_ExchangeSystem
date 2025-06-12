@@ -8,6 +8,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "exchanges")
 public class Exchange {
+
     @Id
     private String exchangeCode;
 
@@ -20,12 +21,12 @@ public class Exchange {
     private Student student2;
 
     @ManyToOne
-    @JoinColumn(name = "courseCode1")
-    private Course course1;
+    @JoinColumn(name = "offeredCourseGroupCode")
+    private CourseGroup offeredCourseGroup;
 
     @ManyToOne
-    @JoinColumn(name = "courseCode2")
-    private Course course2;
+    @JoinColumn(name = "desiredCourseGroupCode")
+    private CourseGroup desiredCourseGroup;
 
     @ManyToOne
     @JoinColumn(name = "studentConfirmationCode1")
@@ -42,9 +43,19 @@ public class Exchange {
     @PrePersist
     public void generateExchangeCode() {
         if (exchangeCode == null || exchangeCode.isEmpty()) {
-            this.exchangeCode = "EXC" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            String prefix = "EXC";
+            long timestamp = System.currentTimeMillis() % 1000000;
+            this.exchangeCode = prefix + String.format("%06d", timestamp);
         }
     }
 
 
+    // Métodos explícitos necesarios si Swagger o serialización los exige
+    public CourseGroup getOfferedCourseGroup() {
+        return offeredCourseGroup;
+    }
+
+    public CourseGroup getDesiredCourseGroup() {
+        return desiredCourseGroup;
+    }
 }

@@ -25,6 +25,10 @@ public class ExchangeController {
             throw new IllegalArgumentException("Debe especificar el estudiante 1");
         }
 
+        if (exchange.getOfferedCourseGroup() == null || exchange.getDesiredCourseGroup() == null) {
+            throw new IllegalArgumentException("Debe especificar tanto el curso/grupo ofrecido como el deseado");
+        }
+
         String studentCode = exchange.getStudent1().getStudentCode();
         long count = exchangeRepository.countByStudent1_StudentCode(studentCode);
         String newCode = studentCode + "-" + String.format("%03d", count + 1);
@@ -45,7 +49,6 @@ public class ExchangeController {
             @Parameter(description = "Código del intercambio") @PathVariable String code) {
         return exchangeRepository.findById(code).orElse(null);
     }
-    
 
     @Operation(summary = "Obtener intercambios por código de estudiante")
     @GetMapping("/student/{studentCode}")

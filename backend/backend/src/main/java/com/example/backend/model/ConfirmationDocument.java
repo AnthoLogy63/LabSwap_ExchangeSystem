@@ -18,9 +18,12 @@ public class ConfirmationDocument {
     private StudentConfirmation studentConfirmation;
 
     @PrePersist
-    public void generateAdminConfirmationCode() {
+    public void generateDocumentCode() {
         if (documentCode == null || documentCode.isEmpty()) {
-            this.documentCode = "ACF" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            String prefix = "DOC";
+            long timestamp = System.currentTimeMillis() % 1000000;
+            this.documentCode = prefix + String.format("%06d", timestamp);
         }
     }
+
 }

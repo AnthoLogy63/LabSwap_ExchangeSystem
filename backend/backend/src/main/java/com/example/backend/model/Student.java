@@ -3,17 +3,27 @@ package com.example.backend.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.UUID;
 @Data
 @Entity
 @Table(name = "students")
 public class Student {
+
     @Id
     private String studentCode;
+
     private String studentName;
-    private String studentEmail;
+
+    @Column(nullable = false)
+    private String studentEmail; 
+
+    @Column(name = "alt_email")
+    private String studentAltEmail; 
+
+    @Column(nullable = false)
     private String studentPhone;
-    private int yearStudy;   
+
+    @Column(nullable = false)
+    private int yearStudy;
 
     @Column(name = "profile_image_name")
     private String profileImageName;
@@ -24,7 +34,9 @@ public class Student {
     @PrePersist
     public void generateStudentCode() {
         if (studentCode == null || studentCode.isEmpty()) {
-            this.studentCode = "EST" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            String prefix = "STU";
+            long timestamp = System.currentTimeMillis() % 1000000;
+            this.studentCode = prefix + String.format("%06d", timestamp);
         }
     }
 }

@@ -45,17 +45,6 @@ public class CourseController {
         return courseRepository.findByCourseYear(year);
     }
 
-    @Operation(summary = "Filtrar cursos por grupo")
-    @GetMapping("/group/{group}")
-    public List<Course> getByGroup(
-            @Parameter(description = "Grupo del curso (A, B, C...)") @PathVariable String group) {
-        return courseRepository.findAll().stream()
-                .filter(course -> course.getAvailableGroups() != null &&
-                        List.of(course.getAvailableGroups().split(","))
-                                .contains(group.toUpperCase()))
-                .toList();
-    }
-
     @Operation(summary = "Obtener solo los nombres de todos los cursos")
     @GetMapping("/names")
     public List<String> getAllCourseNames() {
@@ -73,26 +62,5 @@ public class CourseController {
                 .map(Course::getCourseName)
                 .distinct()
                 .toList();
-    }
-
-    @Operation(summary = "Obtener nombres de cursos por grupo")
-    @GetMapping("/names/group/{group}")
-    public List<String> getCourseNamesByGroup(
-            @Parameter(description = "Grupo del curso (A, B, C...)") @PathVariable String group) {
-        return courseRepository.findAll().stream()
-                .filter(course -> course.getAvailableGroups() != null &&
-                        List.of(course.getAvailableGroups().split(","))
-                                .contains(group.toUpperCase()))
-                .map(Course::getCourseName)
-                .distinct()
-                .toList();
-    }
-
-    @Operation(summary = "Registrar un nuevo curso (opcional)")
-    @PostMapping
-    public void createCourse(@RequestBody Course course) {
-        course.setCourseName(course.getCourseName().toUpperCase());
-        course.setAvailableGroups(course.getAvailableGroups().toUpperCase());
-        courseRepository.save(course);
     }
 }

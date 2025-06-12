@@ -23,8 +23,11 @@ public class StudentConfirmation {
     @PrePersist
     public void generateStudentConfirmationCode() {
         if (studentConfirmationCode == null || studentConfirmationCode.isEmpty()) {
-            this.studentConfirmationCode = "SCF" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            String prefix = "SCF";
+            long timestamp = System.currentTimeMillis() % 1000000;
+            this.studentConfirmationCode = prefix + String.format("%06d", timestamp);
         }
-}
+    }
+
 
 }
