@@ -25,7 +25,6 @@ public class AuthController {
     @Autowired
     private JwtService jwtService;
 
-    // Reemplaza esto con tu Client ID de Google OAuth
     private static final String CLIENT_ID = "548081973466-hc4jt3cbs4fhafppl96kjfrkhvj7nvta.apps.googleusercontent.com";
 
     @PostMapping("/google")
