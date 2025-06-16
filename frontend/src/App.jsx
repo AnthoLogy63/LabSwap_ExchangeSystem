@@ -12,7 +12,7 @@ import StudentProfile from './pages/USER/StudentProfile';
 import AdminCoursesPanel from './pages/ADMIN/AdminCoursesPanel';
 import AdminHistoryPanel from './pages/ADMIN/AdminHistoryPanel';
 
-import { useAuth } from './context/authContext';
+import { useAuth } from './context/AuthContext';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
@@ -33,7 +33,7 @@ function App() {
         <Route
           path="/inicio"
           element={
-            <ProtectedRoute allowedRoles={['user']}>
+            <ProtectedRoute allowedRoles={['student']}>
               <MainLayout><HomePage /></MainLayout>
             </ProtectedRoute>
           }
@@ -41,7 +41,7 @@ function App() {
         <Route
           path="/cursos"
           element={
-            <ProtectedRoute allowedRoles={['user']}>
+            <ProtectedRoute allowedRoles={['student']}>
               <MainLayout><CoursesPage /></MainLayout>
             </ProtectedRoute>
           }
@@ -49,7 +49,7 @@ function App() {
         <Route
           path="/mis-cursos"
           element={
-            <ProtectedRoute allowedRoles={['user']}>
+            <ProtectedRoute allowedRoles={['student']}>
               <MainLayout><EditStudentCourses /></MainLayout>
             </ProtectedRoute>
           }
@@ -57,7 +57,7 @@ function App() {
         <Route
           path="/perfil"
           element={
-            <ProtectedRoute allowedRoles={['user']}>
+            <ProtectedRoute allowedRoles={['student']}>
               <MainLayout><StudentProfile /></MainLayout>
             </ProtectedRoute>
           }
@@ -65,7 +65,7 @@ function App() {
         <Route
           path="/intercambio"
           element={
-            <ProtectedRoute allowedRoles={['user']}>
+            <ProtectedRoute allowedRoles={['student']}>
               <MainLayout><ContactSwap /></MainLayout>
             </ProtectedRoute>
           }

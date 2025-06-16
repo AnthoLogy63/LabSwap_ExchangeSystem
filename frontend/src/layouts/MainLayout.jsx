@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import UserBar from './UserBar';
-import { useAuth } from '../context/authContext';
+import { useAuth } from '../context/AuthContext';
 
 const MainLayout = ({ children }) => {
   const { user } = useAuth();

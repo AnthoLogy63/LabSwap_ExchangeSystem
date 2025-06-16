@@ -7,7 +7,7 @@ import {
   History,
   LogOut,
 } from 'lucide-react';
-import { useAuth } from '../context/authContext';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
   const location = useLocation();
@@ -43,7 +43,7 @@ const Navbar = () => {
       <div>
         <h1 className="text-3xl font-bold mb-10 tracking-wide">LAB SWAP</h1>
         <ul className="flex flex-col gap-3">
-          {user?.role === 'user' && (
+          {user?.role === 'student' && (
             <>
               {navLink('/inicio', <Home size={20} />, 'Inicio')}
               {navLink('/cursos', <BookOpen size={20} />, 'Lista de Cursos', ['/cursos', '/intercambio'])}

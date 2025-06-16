@@ -1,17 +1,24 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
 import abet from "../assets/PaginaDeInicio/abet.png";
-import { useAuth } from "../context/authContext";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const { login, user } = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (user?.role === "user") navigate("/inicio");
+    if (user?.role === "student") navigate("/inicio");
     else if (user?.role === "admin") navigate("/admin/panel-cursos");
   }, [user, navigate]);
+
+  const handleGoogleLogin = async (credential) => {
+    setLoading(true);
+    await login(credential);
+    setLoading(false);
+  };
 
   return (
     <div className="min-h-screen bg-teal-800 flex flex-col justify-center py-10">
@@ -23,14 +30,18 @@ const Login = () => {
 
         <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm text-center">
           <h2 className="text-2xl font-semibold mb-6 text-gray-800">Inicia sesión</h2>
-          <GoogleLogin
-            onSuccess={credentialResponse => {
-              login(credentialResponse.credential);
-            }}
-            onError={() => {
-              alert('Falló el inicio de sesión');
-            }}
-          />
+          {loading ? (
+            <div className="my-8 text-teal-700">Cargando...</div>
+          ) : (
+            <GoogleLogin
+              onSuccess={credentialResponse => {
+                handleGoogleLogin(credentialResponse.credential);
+              }}
+              onError={() => {
+                alert('Falló el inicio de sesión');
+              }}
+            />
+          )}
           <p className="text-sm text-gray-600 mt-4">Solo se permite acceso institucional</p>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Pencil, UserCircle2 } from 'lucide-react';
-import { useAuth } from '../../src/context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 function UserBar() {
   const { user } = useAuth();
