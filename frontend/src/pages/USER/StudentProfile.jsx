@@ -1,4 +1,4 @@
-import { useAuth } from '../../../src/context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { Pencil, UserCircle2 } from 'lucide-react';
 
 
