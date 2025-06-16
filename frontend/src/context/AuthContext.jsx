@@ -1,5 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'; 
-import { jwtDecode } from "jwt-decode";
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
@@ -10,50 +9,28 @@ export const AuthProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    if (!user?.email || !user.email.endsWith("@unsa.edu.pe")) {
-      logout();
+    if (user) {
+      console.log("Usuario cargado:", user);
     }
-  }, []);
+  }, [user]);
 
+  // Ahora login recibe googleToken (credential)
   const login = async (googleToken) => {
     try {
-      const decoded = jwtDecode(googleToken);
-      const email = decoded.email;
-      const name = decoded.name;
-
-      if (!email.endsWith('@unsa.edu.pe')) {
-        alert('Solo se permite acceso con correo institucional');
-        return;
-      }
-      /*
+      // Enviar el token de Google al backend para validarlo y obtener el usuario y token del sistema
       const response = await fetch("http://localhost:8080/api/auth/google", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ 
-          email,
-          name
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ credential: googleToken }),
       });
 
       if (!response.ok) throw new Error("Fallo en la autenticación con el backend");
 
       const data = await response.json();
 
-      const authData = {
-        email: data.email,
-        name: data.name,
-        role: data.role,
-        token: data.token
-      };
-      */
-      // Simulación de respuesta del backend
-      const role = email === 'fgarambel@unsa.edu.pe' ? 'admin' : 'user';
-      const authData = { email, name, role };
-
-      setUser(authData);
-      localStorage.setItem('auth', JSON.stringify(authData));
+      // data = { token, email, name, role }
+      setUser(data);
+      localStorage.setItem('auth', JSON.stringify(data));
     } catch (error) {
       alert('Hubo un problema al autenticar con el servidor.');
       console.error(error);
