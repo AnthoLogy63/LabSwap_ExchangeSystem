@@ -1,0 +1,90 @@
+package com.example.backend.controller;
+
+import com.example.backend.model.Student;
+import com.example.backend.repo.StudentRepository;
+import com.example.backend.security.JwtService;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:5173")
+public class AuthController {
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @Autowired
+    private JwtService jwtService;
+
+    // Reemplaza esto con tu Client ID de Google OAuth
+    private static final String CLIENT_ID = "548081973466-hc4jt3cbs4fhafppl96kjfrkhvj7nvta.apps.googleusercontent.com";
+
+    @PostMapping("/google")
+    public Map<String, String> loginWithGoogle(@RequestBody Map<String, String> body) throws Exception {
+        String credential = body.get("credential");
+
+        if (credential == null) {
+            throw new RuntimeException("No se recibió el token de Google");
+        }
+
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                GoogleNetHttpTransport.newTrustedTransport(),
+                JacksonFactory.getDefaultInstance())
+                .setAudience(Collections.singletonList(CLIENT_ID))
+                .build();
+
+        GoogleIdToken idToken = verifier.verify(credential);
+
+        if (idToken == null) {
+            throw new RuntimeException("Token de Google inválido");
+        }
+
+        GoogleIdToken.Payload payload = idToken.getPayload();
+        String email = payload.getEmail();
+        String name = (String) payload.get("name");
+
+        if (!email.endsWith("@unsa.edu.pe")) {
+            throw new RuntimeException("Solo se permiten correos institucionales");
+        }
+
+        // Buscar si ya existe
+        Student student = studentRepository.findByStudentEmail(email).orElse(null);
+
+        if (student == null) {
+            Student nuevo = new Student();
+            nuevo.setStudentEmail(email);
+            nuevo.setStudentName(name);
+            // Asignar valores mínimos requeridos por tu modelo (rellena o pon defaults si es necesario)
+            nuevo.setStudentPhone(""); // o puedes pedir el teléfono en el frontend después
+            nuevo.setYearStudy(1);
+            student = studentRepository.save(nuevo);
+        } else {
+            // Actualizar nombre si cambió
+            if (!student.getStudentName().equals(name)) {
+                student.setStudentName(name);
+                student = studentRepository.save(student);
+            }
+        }
+
+        boolean isAdmin = email.equals("admin@unsa.edu.pe");
+        String role = isAdmin ? "admin" : "student";
+
+        String token = jwtService.generateToken(email, name, role);
+
+        return Map.of(
+            "token", token,
+            "email", email,
+            "name", name,
+            "role", role
+        );
+    }
+}
