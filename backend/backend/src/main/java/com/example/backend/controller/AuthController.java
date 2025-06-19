@@ -10,7 +10,6 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -30,11 +29,13 @@ public class AuthController {
     @PostMapping("/google")
     public Map<String, String> loginWithGoogle(@RequestBody Map<String, String> body) throws Exception {
         String credential = body.get("credential");
+        String selectedRole = body.get("role"); // Recibe el rol desde el frontend
 
-        if (credential == null) {
-            throw new RuntimeException("No se recibió el token de Google");
+        if (credential == null || selectedRole == null) {
+            throw new RuntimeException("Faltan datos en la solicitud");
         }
 
+        // Verifica el token de Google
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                 GoogleNetHttpTransport.newTrustedTransport(),
                 JacksonFactory.getDefaultInstance())
@@ -51,39 +52,42 @@ public class AuthController {
         String email = payload.getEmail();
         String name = (String) payload.get("name");
 
+        // Validación general: solo correos institucionales UNSA
         if (!email.endsWith("@unsa.edu.pe")) {
             throw new RuntimeException("Solo se permiten correos institucionales");
         }
 
-        // Buscar si ya existe
+        // Validación especial: solo ciertos correos pueden ser administradores
+        if ("lluquecon".equals(selectedRole) && !email.equals("lluquecon@unsa.edu.pe")) {
+            throw new RuntimeException("Este correo no tiene permiso de administrador");
+        }
+
+        // Buscar si ya existe el estudiante
         Student student = studentRepository.findByStudentEmail(email).orElse(null);
 
         if (student == null) {
             Student nuevo = new Student();
             nuevo.setStudentEmail(email);
             nuevo.setStudentName(name);
-            // Asignar valores mínimos requeridos por tu modelo (rellena o pon defaults si es necesario)
-            nuevo.setStudentPhone(""); // o puedes pedir el teléfono en el frontend después
-            nuevo.setYearStudy(1);
+            nuevo.setStudentPhone(""); // default temporal
+            nuevo.setYearStudy(1);     // default temporal
             student = studentRepository.save(nuevo);
         } else {
-            // Actualizar nombre si cambió
             if (!student.getStudentName().equals(name)) {
                 student.setStudentName(name);
                 student = studentRepository.save(student);
             }
         }
 
-        boolean isAdmin = email.equals("admin@unsa.edu.pe");
-        String role = isAdmin ? "admin" : "student";
+        // Generar JWT con el rol asignado
+        String token = jwtService.generateToken(email, name, selectedRole);
 
-        String token = jwtService.generateToken(email, name, role);
-
+        // Devolver datos al frontend
         return Map.of(
-            "token", token,
-            "email", email,
-            "name", name,
-            "role", role
+                "token", token,
+                "email", email,
+                "name", name,
+                "role", selectedRole
         );
     }
 }

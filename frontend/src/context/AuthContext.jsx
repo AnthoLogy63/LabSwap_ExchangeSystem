@@ -14,26 +14,34 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
-  // Ahora login recibe googleToken (credential)
-  const login = async (googleToken) => {
+  const login = async (googleToken, selectedRole) => {
     try {
-      // Enviar el token de Google al backend para validarlo y obtener el usuario y token del sistema
       const response = await fetch("http://localhost:8080/api/auth/google", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ credential: googleToken }),
+        body: JSON.stringify({
+          credential: googleToken,
+          role: selectedRole,
+        }),
       });
 
-      if (!response.ok) throw new Error("Fallo en la autenticación con el backend");
+      if (!response.ok) {
+        const errorText = await response.text();
+
+        // 🛠️ PARCHE: analiza el mensaje del backend
+        if (errorText.includes("permiso")) {
+          throw new Error("Este correo no tiene permiso de administrador");
+        }
+
+        // Otros errores genéricos
+        throw new Error("Fallo en la autenticación con el servidor");
+      }
 
       const data = await response.json();
-
-      // data = { token, email, name, role }
       setUser(data);
       localStorage.setItem('auth', JSON.stringify(data));
     } catch (error) {
-      alert('Hubo un problema al autenticar con el servidor.');
-      console.error(error);
+      throw error;
     }
   };
 

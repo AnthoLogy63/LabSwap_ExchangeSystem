@@ -11,7 +11,7 @@ const HomePage = () => {
   ];
 
   return (
-    <div className="bg-[#FFFFFF] text-left ml-20">
+    <div className="text-left ml-20">
       <h1 className="text-8xl font-bold mb-8">Bienvenido a <br />Lab-Swap</h1>
       <p className="text-3xl mb-12">Una página para intercambiar los cursos que necesitas</p>
 
