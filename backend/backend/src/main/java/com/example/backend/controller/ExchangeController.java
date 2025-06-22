@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.model.Exchange;
+import com.example.backend.model.ExchangeDTO;
 import com.example.backend.repo.ExchangeRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "Intercambios", description = "Operaciones para gestionar intercambios entre estudiantes")
 @RestController
@@ -112,5 +114,43 @@ public class ExchangeController {
             exchange.setAdminConfirmation(updatedExchange.getAdminConfirmation());
             return exchangeRepository.save(exchange);
         }).orElseThrow(() -> new IllegalArgumentException("Intercambio no encontrado con código: " + exchangeCode));
+    }
+
+    @Operation(summary = "Obtener intercambios pendientes para revisión del administrador")
+    @GetMapping("/pendientes")
+    public List<ExchangeDTO> getPendingExchanges() {
+        List<Exchange> pendientes = exchangeRepository.findByAdminConfirmation_ConfirmationStatus(0); // 0 = PENDIENTE
+        return pendientes.stream().map(ExchangeDTO::from).toList();
+    }
+
+    @Operation(summary = "Actualizar estado del intercambio por el administrador")
+    @PutMapping("/{exchangeCode}/status")
+    public Exchange updateAdminStatus(
+            @PathVariable String exchangeCode,
+            @RequestBody Map<String, String> body) {
+
+        String estado = body.get("estado");
+        if (estado == null) {
+            throw new IllegalArgumentException("Debes proporcionar el campo 'estado' en el cuerpo del JSON.");
+        }
+
+        int nuevoEstado;
+        switch (estado.toUpperCase()) {
+            case "ACEPTADO" -> nuevoEstado = 1;
+            case "RECHAZADO" -> nuevoEstado = 2;
+            default -> throw new IllegalArgumentException("Estado inválido. Usa ACEPTADO o RECHAZADO.");
+        }
+
+        return exchangeRepository.findById(exchangeCode).map(exchange -> {
+            exchange.getAdminConfirmation().setConfirmationStatus(nuevoEstado);
+            return exchangeRepository.save(exchange);
+        }).orElseThrow(() -> new IllegalArgumentException("Intercambio no encontrado con código: " + exchangeCode));
+    }
+
+    @Operation(summary = "Obtener historial de intercambios aceptados o rechazados")
+    @GetMapping("/historial")
+    public List<ExchangeDTO> getExchangeHistory() {
+        List<Exchange> historial = exchangeRepository.findByAdminConfirmation_ConfirmationStatusNot(0);
+        return historial.stream().map(ExchangeDTO::from).toList();
     }
 }
