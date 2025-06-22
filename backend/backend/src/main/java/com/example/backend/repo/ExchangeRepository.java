@@ -12,4 +12,8 @@ public interface ExchangeRepository extends JpaRepository<Exchange, String> {
     List<Exchange> findByStudent2_StudentCode(String studentCode);
 
     long countByStudent1_StudentCode(String studentCode);
+
+    // ✅ Nuevos métodos para el backend del administrador:
+    List<Exchange> findByAdminConfirmation_ConfirmationStatus(int status); // Para "pendientes"
+    List<Exchange> findByAdminConfirmation_ConfirmationStatusNot(int status); // Para "historial"
 }
