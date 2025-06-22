@@ -2,7 +2,8 @@ package com.example.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.UUID;
+
+import java.util.Date;
 
 @Data
 @Entity
@@ -40,22 +41,11 @@ public class Exchange {
     @JoinColumn(name = "adminConfirmationCode")
     private AdminConfirmation adminConfirmation;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
     @PrePersist
-    public void generateExchangeCode() {
-        if (exchangeCode == null || exchangeCode.isEmpty()) {
-            String prefix = "EXC";
-            long timestamp = System.currentTimeMillis() % 1000000;
-            this.exchangeCode = prefix + String.format("%06d", timestamp);
-        }
-    }
-
-
-    // Métodos explícitos necesarios si Swagger o serialización los exige
-    public CourseGroup getOfferedCourseGroup() {
-        return offeredCourseGroup;
-    }
-
-    public CourseGroup getDesiredCourseGroup() {
-        return desiredCourseGroup;
+    public void setCreatedAt() {
+        this.createdAt = new Date();
     }
 }

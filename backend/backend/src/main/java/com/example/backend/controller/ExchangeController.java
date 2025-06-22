@@ -1,7 +1,10 @@
 package com.example.backend.controller;
 
+import com.example.backend.model.AdminConfirmation;
 import com.example.backend.model.Exchange;
+import com.example.backend.model.StudentConfirmation;
 import com.example.backend.repo.ExchangeRepository;
+import com.example.backend.repo.StudentConfirmationRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,9 +21,12 @@ public class ExchangeController {
     @Autowired
     private ExchangeRepository exchangeRepository;
 
+    @Autowired
+    private StudentConfirmationRepository studentConfirmationRepository;
+
     @Operation(summary = "Registrar un nuevo intercambio")
     @PostMapping
-    public void createExchange(@RequestBody Exchange exchange) {
+    public Exchange createExchange(@RequestBody Exchange exchange) {
         if (exchange.getStudent1() == null || exchange.getStudent1().getStudentCode() == null) {
             throw new IllegalArgumentException("Debe especificar el estudiante 1");
         }
@@ -29,13 +35,28 @@ public class ExchangeController {
             throw new IllegalArgumentException("Debe especificar tanto el curso/grupo ofrecido como el deseado");
         }
 
-        String studentCode = exchange.getStudent1().getStudentCode();
-        long count = exchangeRepository.countByStudent1_StudentCode(studentCode);
-        String newCode = studentCode + "-" + String.format("%03d", count + 1);
+        long count = exchangeRepository.count();
+        String newCode = "EXC" + String.format("%06d", count + 1);
         exchange.setExchangeCode(newCode);
 
-        exchangeRepository.save(exchange);
+        // Confirmación para estudiante 1
+        StudentConfirmation conf1 = new StudentConfirmation();
+        conf1.setStudentConfirmationCode("SCF" + newCode + "-" + exchange.getStudent1().getStudentCode());
+        conf1.setConfirmationStatus(0);
+        conf1.setStudent(exchange.getStudent1());
+        studentConfirmationRepository.save(conf1);
+        exchange.setStudentConfirmation1(conf1);
+
+        // Confirmación del administrador
+        AdminConfirmation adminConf = new AdminConfirmation();
+        adminConf.setAdminConfirmationCode("ADM" + newCode);
+        adminConf.setConfirmationStatus(0); // Pendiente
+        adminConf.setConfirmationDate(null); // aún sin confirmar
+        exchange.setAdminConfirmation(adminConf);
+
+        return exchangeRepository.save(exchange);
     }
+
 
     @Operation(summary = "Obtener todos los intercambios")
     @GetMapping
@@ -66,17 +87,32 @@ public class ExchangeController {
         exchangeRepository.deleteById(id);
     }
 
-    @Operation(summary = "Actualizar estudiante 2 de un intercambio")
+    @Operation(summary = "Confirmar y asignar al Estudiante 2")
     @PutMapping("/{exchangeCode}/student2")
-    public Exchange updateStudent2(
+    public Exchange addStudent2WithConfirmation(
             @Parameter(description = "Código del intercambio") @PathVariable String exchangeCode,
             @RequestBody Exchange updatedExchange) {
 
         return exchangeRepository.findById(exchangeCode).map(exchange -> {
+            if (updatedExchange.getStudent2() == null || updatedExchange.getStudent2().getStudentCode() == null) {
+                throw new IllegalArgumentException("Debe proporcionar un estudiante 2 válido");
+            }
+
             exchange.setStudent2(updatedExchange.getStudent2());
+
+            // Crear confirmación para estudiante 2
+            StudentConfirmation conf2 = new StudentConfirmation();
+            conf2.setStudentConfirmationCode("SCF" + exchangeCode + "-" + updatedExchange.getStudent2().getStudentCode());
+            conf2.setConfirmationStatus(0); // Pendiente
+            conf2.setStudent(updatedExchange.getStudent2());
+
+            studentConfirmationRepository.save(conf2);
+            exchange.setStudentConfirmation2(conf2);
+
             return exchangeRepository.save(exchange);
         }).orElseThrow(() -> new IllegalArgumentException("Intercambio no encontrado con código: " + exchangeCode));
     }
+
 
     @Operation(summary = "Confirmar estudiante 1 en un intercambio")
     @PutMapping("/{exchangeCode}/studentConfirmation1")
@@ -90,19 +126,7 @@ public class ExchangeController {
         }).orElseThrow(() -> new IllegalArgumentException("Intercambio no encontrado con código: " + exchangeCode));
     }
 
-    @Operation(summary = "Confirmar estudiante 2 en un intercambio")
-    @PutMapping("/{exchangeCode}/studentConfirmation2")
-    public Exchange updateStudentConfirmation2(
-            @Parameter(description = "Código del intercambio") @PathVariable String exchangeCode,
-            @RequestBody Exchange updatedExchange) {
-
-        return exchangeRepository.findById(exchangeCode).map(exchange -> {
-            exchange.setStudentConfirmation2(updatedExchange.getStudentConfirmation2());
-            return exchangeRepository.save(exchange);
-        }).orElseThrow(() -> new IllegalArgumentException("Intercambio no encontrado con código: " + exchangeCode));
-    }
-
-    @Operation(summary = "Confirmación del administrador en un intercambio")
+    @Operation(summary = "Confirmar decision de administrador en un intercambio")
     @PutMapping("/{exchangeCode}/adminConfirmation")
     public Exchange updateAdminConfirmation(
             @Parameter(description = "Código del intercambio") @PathVariable String exchangeCode,
@@ -112,5 +136,50 @@ public class ExchangeController {
             exchange.setAdminConfirmation(updatedExchange.getAdminConfirmation());
             return exchangeRepository.save(exchange);
         }).orElseThrow(() -> new IllegalArgumentException("Intercambio no encontrado con código: " + exchangeCode));
+    }
+
+    @Operation(summary = "Estado de confirmación del estudiante 1")
+    @GetMapping("/{exchangeCode}/status/student1")
+    public int getStudent1ConfirmationStatus(@PathVariable String exchangeCode) {
+        return exchangeRepository.findById(exchangeCode)
+                .map(exchange -> exchange.getStudentConfirmation1() != null
+                        ? exchange.getStudentConfirmation1().getConfirmationStatus()
+                        : -1)
+                .orElseThrow(() -> new IllegalArgumentException("Intercambio no encontrado con código: " + exchangeCode));
+    }
+
+    @Operation(summary = "Estado de confirmación del estudiante 2")
+    @GetMapping("/{exchangeCode}/status/student2")
+    public int getStudent2ConfirmationStatus(@PathVariable String exchangeCode) {
+        return exchangeRepository.findById(exchangeCode)
+                .map(exchange -> exchange.getStudentConfirmation2() != null
+                        ? exchange.getStudentConfirmation2().getConfirmationStatus()
+                        : -1)
+                .orElseThrow(() -> new IllegalArgumentException("Intercambio no encontrado con código: " + exchangeCode));
+    }
+
+    @Operation(summary = "Estado de confirmación del administrador")
+    @GetMapping("/{exchangeCode}/status/admin")
+    public int getAdminConfirmationStatus(@PathVariable String exchangeCode) {
+        return exchangeRepository.findById(exchangeCode)
+                .map(exchange -> exchange.getAdminConfirmation() != null
+                        ? exchange.getAdminConfirmation().getConfirmationStatus()
+                        : -1)
+                .orElseThrow(() -> new IllegalArgumentException("Intercambio no encontrado con código: " + exchangeCode));
+    }
+
+    @Operation(summary = "Obtener todos los intercambios completamente confirmados (estudiante 1, estudiante 2 y admin)")
+    @GetMapping("/fully-confirmed")
+    public List<Exchange> getFullyConfirmedExchanges() {
+        return exchangeRepository.findAll().stream()
+                .filter(e ->
+                        e.getStudentConfirmation1() != null &&
+                        e.getStudentConfirmation1().getConfirmationStatus() == 1 &&
+                        e.getStudentConfirmation2() != null &&
+                        e.getStudentConfirmation2().getConfirmationStatus() == 1 &&
+                        e.getAdminConfirmation() != null &&
+                        e.getAdminConfirmation().getConfirmationStatus() == 1
+                )
+                .toList();
     }
 }

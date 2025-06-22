@@ -10,20 +10,8 @@ public class AdminConfirmation {
 
     @Id
     private String adminConfirmationCode;
-    private int confirmationStatus; 
+
+    private int confirmationStatus; // 0 = pendiente, 1 = confirmado, 2 = rechazado
+
     private String confirmationDate;
-
-    @ManyToOne
-    @JoinColumn(name = "exchangeCode")
-    private Exchange exchange;
-
-    @PrePersist
-    public void generateAdminConfirmationCode() {
-        if (adminConfirmationCode == null || adminConfirmationCode.isEmpty()) {
-            String prefix = "ADM";
-            long timestamp = System.currentTimeMillis() % 1000000;
-            this.adminConfirmationCode = prefix + String.format("%06d", timestamp);
-        }
-    }
-
 }

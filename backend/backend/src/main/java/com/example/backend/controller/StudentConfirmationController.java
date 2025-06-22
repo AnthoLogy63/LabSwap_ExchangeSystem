@@ -30,15 +30,7 @@ public class StudentConfirmationController {
     public List<StudentConfirmation> getByStudent(@PathVariable String studentCode) {
         return repo.findByStudent_StudentCode(studentCode);
     }
-
-    @Operation(summary = "Consultar si un estudiante ha confirmado un intercambio")
-    @GetMapping("/status/{studentCode}/{exchangeCode}")
-    public Optional<StudentConfirmation> getStatus(
-            @PathVariable String studentCode,
-            @PathVariable String exchangeCode) {
-        return repo.findByStudent_StudentCodeAndExchange_ExchangeCode(studentCode, exchangeCode);
-    }
-
+    
     @Operation(summary = "Actualizar confirmación si aún no está confirmada")
     @PutMapping("/{id}")
     public void updateConfirmation(@PathVariable String id, @RequestBody StudentConfirmation update) {
