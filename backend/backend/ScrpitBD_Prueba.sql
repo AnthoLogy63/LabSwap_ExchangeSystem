@@ -129,107 +129,24 @@ VALUES
 -- SEXTA PARTE - INTERCAMBIOS
 -- ========================================
 
--- Intercambio 1: Juan y Maria (confirmados)
 INSERT INTO exchanges (
   exchange_code,
-  student1_code,
-  student2_code,
+  student_code1,
+  student_code2,
   offered_course_group_code,
   desired_course_group_code,
-  student_confirmation1_code,
-  student_confirmation2_code,
-  admin_confirmation_code
-) VALUES (
-  'EXC000001',
-  'STU00001',
-  'STU00002',
-  '1701106_A',
-  '1701212_B',
-  'SCFEXC000001-STU00001',
-  'SCFEXC000001-STU00002',
-  'ADMEXC000001'
-);
-
--- Intercambio 2: Pedro y Laura (confirmados)
-INSERT INTO exchanges (
-  exchange_code,
-  student1_code,
-  student2_code,
-  offered_course_group_code,
-  desired_course_group_code,
-  student_confirmation1_code,
-  student_confirmation2_code,
-  admin_confirmation_code
-) VALUES (
-  'EXC000002',
-  'STU00003',
-  'STU00004',
-  '1701213_C',
-  '1702122_A',
-  'SCFEXC000002-STU00003',
-  'SCFEXC000002-STU00004',
-  'ADMEXC000002'
-);
-
--- Intercambio 3: Carla y Jose (confirmados)
-INSERT INTO exchanges (
-  exchange_code,
-  student1_code,
-  student2_code,
-  offered_course_group_code,
-  desired_course_group_code,
-  student_confirmation1_code,
-  student_confirmation2_code,
-  admin_confirmation_code
-) VALUES (
-  'EXC000003',
-  'STU00005',
-  'STU00006',
-  '1702124_B',
-  '1702226_D',
-  'SCFEXC000003-STU00005',
-  'SCFEXC000003-STU00006',
-  'ADMEXC000003'
-);
-
--- Intercambio 4: Ana y Luis (confirmados)
-INSERT INTO exchanges (
-  exchange_code,
-  student1_code,
-  student2_code,
-  offered_course_group_code,
-  desired_course_group_code,
-  student_confirmation1_code,
-  student_confirmation2_code,
-  admin_confirmation_code
-) VALUES (
-  'EXC000004',
-  'STU00007',
-  'STU00008',
-  '1702228_E',
-  '1702231_C',
-  'SCFEXC000004-STU00007',
-  'SCFEXC000004-STU00008',
-  'ADMEXC000004'
-);
-
--- Intercambio 5: Jorge y Beatriz (confirmados)
-INSERT INTO exchanges (
-  exchange_code,
-  student1_code,
-  student2_code,
-  offered_course_group_code,
-  desired_course_group_code,
-  student_confirmation1_code,
-  student_confirmation2_code,
-  admin_confirmation_code
-) VALUES (
-  'EXC000005',
-  'STU00009',
-  'STU00010',
-  '1703133_B',
-  '1703136_A',
-  'SCFEXC000005-STU00009',
-  'SCFEXC000005-STU00010',
-  'ADMEXC000005'
-);
+  student_confirmation_code1,
+  student_confirmation_code2,
+  admin_confirmation_code,
+  created_at
+) VALUES 
+('EXC000001', 'STU00001', 'STU00002', '1701106_A', '1701212_B', 'SCFEXC000001-STU00001', 'SCFEXC000001-STU00002', 'ADMEXC000001', NOW()),
+('EXC000002', 'STU00003', 'STU00004', '1701213_C', '1702122_A', 'SCFEXC000002-STU00003', 'SCFEXC000002-STU00004', 'ADMEXC000002', NOW()),
+('EXC000003', 'STU00005', 'STU00006', '1702124_B', '1702226_D', 'SCFEXC000003-STU00005', 'SCFEXC000003-STU00006', 'ADMEXC000003', NOW()),
+('EXC000004', 'STU00007', 'STU00008', '1702228_E', '1702231_C', 'SCFEXC000004-STU00007', 'SCFEXC000004-STU00008', 'ADMEXC000004', NOW()),
+('EXC000005', 'STU00009', 'STU00010', '1703133_B', '1703136_A', 'SCFEXC000005-STU00009', 'SCFEXC000005-STU00010', 'ADMEXC000005', NOW()),
+('EXC000006', 'STU00011', 'STU00012', '1703134_C', '1703137_B', 'SCFEXC000006-STU00011', 'SCFEXC000006-STU00012', 'ADMEXC000006', NOW()),
+('EXC000007', 'STU00013', 'STU00014', '1703138_A', '1703239_E', 'SCFEXC000007-STU00013', 'SCFEXC000007-STU00014', 'ADMEXC000007', NOW()),
+('EXC000008', 'STU00015', 'STU00016', '1703240_B', '1703241_C', 'SCFEXC000008-STU00015', 'SCFEXC000008-STU00016', 'ADMEXC000008', NOW()),
+('EXC000009', 'STU00017', 'STU00018', '1703242_D', '1703243_A', 'SCFEXC000009-STU00017', 'SCFEXC000009-STU00018', 'ADMEXC000009', NOW()),
+('EXC000010', 'STU00019', 'STU00020', '1703244_E', '1704147_B', 'SCFEXC000010-STU00019', 'SCFEXC000010-STU00020', 'ADMEXC000010', NOW());

@@ -3,7 +3,6 @@ package com.example.backend.controller;
 import com.example.backend.model.AdminConfirmation;
 import com.example.backend.model.Exchange;
 import com.example.backend.model.StudentConfirmation;
-import com.example.backend.model.ExchangeDTO;
 import com.example.backend.repo.ExchangeRepository;
 import com.example.backend.repo.StudentConfirmationRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @Tag(name = "Intercambios", description = "Operaciones para gestionar intercambios entre estudiantes")
 @RestController
