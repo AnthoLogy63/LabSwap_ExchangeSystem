@@ -182,4 +182,20 @@ public class ExchangeController {
                 )
                 .toList();
     }
+
+    @Operation(summary = "Obtener intercambios confirmados por ambos estudiantes pero pendientes por el administrador")
+    @GetMapping("/awaiting-admin")
+    public List<Exchange> getExchangesAwaitingAdminConfirmation() {
+        return exchangeRepository.findAll().stream()
+                .filter(e ->
+                    e.getStudentConfirmation1() != null &&
+                    e.getStudentConfirmation1().getConfirmationStatus() == 1 &&
+                    e.getStudentConfirmation2() != null &&
+                    e.getStudentConfirmation2().getConfirmationStatus() == 1 &&
+                    e.getAdminConfirmation() != null &&
+                    e.getAdminConfirmation().getConfirmationStatus() == 0
+                )
+                .toList();
+    }
+
 }
