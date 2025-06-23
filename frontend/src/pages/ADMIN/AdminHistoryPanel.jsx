@@ -49,7 +49,7 @@ const AdminHistoryPanel = () => {
           <div className="flex flex-col md:flex-row w-full md:w-[60%]">
             {/* Columna Izquierda */}
             <div className="md:w-1/2 border-r border-black pr-6 mb-4 md:mb-0">
-              <p className="text-xl font-semibold text-[#08484F] mb-1">{entry.offeredCourse}</p>
+              <p className="text-2xl font-semibold text-[#08484F] mb-4">{entry.offeredCourse}</p>
               <p className="text-lg">
                 <span className="font-bold">Alumno:</span> {entry.studentName}
               </p>
@@ -60,7 +60,7 @@ const AdminHistoryPanel = () => {
 
             {/* Columna Derecha */}
             <div className="md:w-1/2 pl-6">
-              <p className="text-xl font-semibold text-[#b12a2a] mb-1">{entry.desiredCourse}</p>
+              <p className="text-2xl font-semibold text-[#b12a2a] mb-4">{entry.desiredCourse}</p>
               <p className="text-lg">
                 <span className="font-bold">Alumno:</span> {entry.studentName}
               </p>
