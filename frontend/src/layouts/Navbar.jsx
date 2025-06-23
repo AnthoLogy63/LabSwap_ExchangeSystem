@@ -46,7 +46,7 @@ const Navbar = () => {
       {/* Botón hamburguesa (solo visible en móviles) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`md:hidden fixed top-4 left-4 z-50 bg-[#0E6F79] text-white p-2 rounded-md shadow-md transition-opacity duration-200 ${
+        className={`md:hidden fixed top-0 left-2 z-50 bg-[#0E6F79] text-white p-2 rounded-md shadow-md transition-opacity duration-200 ${
     isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
   }`}
       >
