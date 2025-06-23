@@ -189,7 +189,7 @@ const EditStudentCourses = () => {
 
           <button
             onClick={handleSave}
-            className="bg-[#b12a2a] text-white px-8 py-3 rounded-md text-lg"
+            className="mt-1 bg-[#b12a2a] text-white px-8 py-3 rounded-md text-xl w-full sm:w-auto self-start"
           >
             Guardar Curso
           </button>
