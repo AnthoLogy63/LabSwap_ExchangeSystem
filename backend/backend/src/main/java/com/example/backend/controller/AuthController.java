@@ -83,12 +83,23 @@ public class AuthController {
         String token = jwtService.generateToken(email, name, selectedRole);
 
         // Devolver datos al frontend
-        return Map.of(
+        if ("student".equals(selectedRole)) {
+            return Map.of(
+                "token", token,
+                "email", email,
+                "name", name,
+                "role", selectedRole,
+                "studentCode", student.getStudentCode()
+            );
+        } else {
+            // Para admin
+            return Map.of(
                 "token", token,
                 "email", email,
                 "name", name,
                 "role", selectedRole
-        );
+            );
+        }
     }
 }
 
