@@ -33,7 +33,7 @@ function StudentProfile() {
             <Pencil className="w-4 h-4 mt-1 text-gray-500 cursor-pointer" />
 
             <div className="font-semibold text-right">Correo UNSA:</div>
-            <div className="col-span-2 border-l pl-4">{user.email}</div>
+            <div className="col-span-2 border-l pl-4 break-words text-wrap">{user.email}</div>
 
             <div className="font-semibold text-right">Correo adicional:</div>
             <div className="col-span-1 border-l pl-4">-</div>
