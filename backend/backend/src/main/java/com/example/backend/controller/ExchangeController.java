@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.example.backend.model.ExchangeDTO;
+
 
 import java.util.List;
 
@@ -197,5 +199,22 @@ public class ExchangeController {
                 )
                 .toList();
     }
+
+    @Operation(summary = "Obtener intercambios pendientes para el administrador (en formato DTO)")
+    @GetMapping("/pendientes")
+    public List<ExchangeDTO> getPendingExchanges() {
+        return exchangeRepository.findAll().stream()
+                .filter(e ->
+                        e.getStudentConfirmation1() != null &&
+                        e.getStudentConfirmation1().getConfirmationStatus() == 1 &&
+                        e.getStudentConfirmation2() != null &&
+                        e.getStudentConfirmation2().getConfirmationStatus() == 1 &&
+                        e.getAdminConfirmation() != null &&
+                        e.getAdminConfirmation().getConfirmationStatus() == 0
+                )
+                .map(ExchangeDTO::from)
+                .toList();
+    }
+
 
 }
