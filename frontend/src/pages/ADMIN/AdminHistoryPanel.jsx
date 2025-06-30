@@ -62,11 +62,14 @@ const AdminHistoryPanel = () => {
           </div>
 
           {/* Botón */}
-          <div className="w-full md:w-[15%] mt-4 md:mt-0 flex justify-center md:justify-end">
-            <button className="w-full md:w-auto bg-[#1db4c4] text-white px-8 py-2 font-medium text-lg sm:text-xl rounded-xl hover:bg-[#168d9b] transition">
-              Revisar Datos
-            </button>
-          </div>
+            <div className="w-full md:w-[15%] mt-4 md:mt-0 flex justify-center md:justify-end">
+              <button
+                className="w-full md:w-auto bg-[#1db4c4] text-white px-8 py-2 font-medium text-lg sm:text-xl rounded-xl hover:bg-[#168d9b] transition"
+                onClick={() => alert(JSON.stringify(entry, null, 2))}
+              >
+                Revisar Datos
+              </button>
+            </div>
 
           {/* Estado */}
             <div className="w-full md:w-[15%] mt-4 md:mt-0 flex justify-center md:justify-end">
