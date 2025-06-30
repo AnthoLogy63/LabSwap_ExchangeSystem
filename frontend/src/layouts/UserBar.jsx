@@ -22,7 +22,13 @@ function UserBar() {
             max-w-[180px] sm:max-w-[200px] md:max-w-none
             overflow-visible
           ">
-            {user?.name || 'Invitado'}
+            {(() => {
+              if (!user?.name) return 'Invitado';
+              const parts = user.name.split(' ');
+              const firstName = parts[0] || '';
+              const firstLastName = parts[2] || '';
+              return `${firstName} ${firstLastName}`;
+            })()}
           </span>
 
 
