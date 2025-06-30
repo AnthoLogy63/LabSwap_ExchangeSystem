@@ -14,6 +14,7 @@ import com.example.backend.model.ExchangeDTO;
 
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "Intercambios", description = "Operaciones para gestionar intercambios entre estudiantes")
 @RestController
@@ -215,6 +216,29 @@ public class ExchangeController {
                 .map(ExchangeDTO::from)
                 .toList();
     }
+
+    @Operation(summary = "Actualizar el estado del intercambio (aceptar o rechazar) por el administrador")
+    @PutMapping("/{exchangeCode}/status")
+    public Exchange updateExchangeStatus(
+            @PathVariable String exchangeCode,
+            @RequestBody Map<String, String> body) {
+
+        String estado = body.get("estado"); // debe ser "ACEPTADO" o "RECHAZADO"
+
+        return exchangeRepository.findById(exchangeCode).map(exchange -> {
+            if (exchange.getAdminConfirmation() != null) {
+                if (estado.equalsIgnoreCase("ACEPTADO")) {
+                    exchange.getAdminConfirmation().setConfirmationStatus(1);
+                } else if (estado.equalsIgnoreCase("RECHAZADO")) {
+                    exchange.getAdminConfirmation().setConfirmationStatus(2);
+                } else {
+                    throw new IllegalArgumentException("Estado inválido: " + estado);
+                }
+            }
+            return exchangeRepository.save(exchange);
+        }).orElseThrow(() -> new IllegalArgumentException("Intercambio no encontrado con código: " + exchangeCode));
+}
+
 
 
 }
