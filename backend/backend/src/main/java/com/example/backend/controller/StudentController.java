@@ -53,6 +53,7 @@ public class StudentController {
             student.setStudentEmail(updated.getStudentEmail());
             student.setStudentPhone(updated.getStudentPhone());
             student.setYearStudy(updated.getYearStudy());
+            //student.setAlEmail(updated.getAlEmail());
             studentRepository.save(student);
         }
     }
@@ -76,4 +77,13 @@ public class StudentController {
             studentRepository.save(student);
         }
     }
+
+    @Operation(summary = "Obtener un estudiante por correo")
+    @GetMapping("/by-email")
+    public Student getStudentByEmail(@RequestParam String email) {
+        return studentRepository.findByStudentEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Estudiante no encontrado con correo: " + email));
+    }
+
+
 }
