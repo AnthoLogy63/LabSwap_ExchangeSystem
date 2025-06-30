@@ -98,7 +98,7 @@ const EditStudentCourses = () => {
   return (
     <div className="px-4 sm:px-6 lg:px-10 py-6 overflow-x-hidden">
       <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#08484F] mb-6">
-        Mis cursos ofrecidos
+        Mis intercambios ofrecidos
       </h1>
 
       <div className="flex flex-col lg:flex-row gap-10">
@@ -111,7 +111,7 @@ const EditStudentCourses = () => {
                   setIsModalOpen(true);
                 }}
                 className="absolute top-3 right-3 bg-[#0e8a99] p-2 rounded-md text-white"
-                title="Eliminar curso"
+                title="Eliminar intercambio"
               >
                 <Trash2 size={24} />
               </button>
@@ -142,7 +142,7 @@ const EditStudentCourses = () => {
         </div>
 
         <div className="w-full lg:w-[50%] flex flex-col gap-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#08484F]">Agregar Curso</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#08484F]">Agregar Intercambio</h2>
 
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex flex-col gap-3 flex-1">
@@ -201,17 +201,26 @@ const EditStudentCourses = () => {
             onMouseEnter={validateForm}
             className={`mt-1 px-8 py-3 rounded-md text-xl w-full sm:w-auto self-start ${isFormInvalid ? "bg-gray-400 text-white cursor-not-allowed" : "bg-[#b12a2a] text-white hover:bg-[#911f1f]"}`}
           >
-            Guardar Curso
+            Guardar Intercambio
           </button>
 
           <div className="mt-10">
-            <h3 className="text-[#08484F] font-semibold text-lg mb-2">Ver Horario de los Diferentes Cursos:</h3>
-            <p className="text-sm text-gray-700 mb-4">Este horario muestra los cursos de laboratorio por año y nombre.</p>
+            <h3 className="text-[#08484F] font-semibold text-lg mb-2">
+              Consulta los Horarios de Laboratorio:
+            </h3>
+            <p className="text-sm text-gray-700 mb-4">
+              Revisa aquí los horarios actuales de los cursos de laboratorio, organizados por año y grupo.
+            </p>
             <button
-              onClick={() => window.open("https://docs.google.com/spreadsheets/d/1xTh5I9-Sku6mKflHPA82tWTzKQb80P5e/edit?gid=21586119#gid=21586119", "_blank")}
+              onClick={() =>
+                window.open(
+                  "https://docs.google.com/spreadsheets/d/1xTh5I9-Sku6mKflHPA82tWTzKQb80P5e/edit?gid=21586119#gid=21586119",
+                  "_blank"
+                )
+              }
               className="bg-[#b12a2a] text-white px-8 py-3 rounded-md text-lg"
             >
-              Abrir Horario Digital
+              Ver Horarios en Google Sheets
             </button>
           </div>
         </div>
