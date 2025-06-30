@@ -19,11 +19,11 @@ export default function HomePage() {
           </Link>
           <Link to="/cursos" className="flex items-center gap-3 p-4 text-white hover:bg-teal-600/30">
             <BookOpen className="h-5 w-5" />
-            <span>Lista de Cursos</span>
+            <span>Lista de Intercambios</span>
           </Link>
           <Link to="/mis-cursos" className="flex items-center gap-3 p-4 text-white hover:bg-teal-600/30">
             <Users className="h-5 w-5" />
-            <span>Mis Cursos</span>
+            <span>Mis Intercambios</span>
           </Link>
         </nav>
       </div>

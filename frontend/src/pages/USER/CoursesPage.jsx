@@ -18,6 +18,9 @@ const groupOptions = [
   "Grupo C",
   "Grupo D",
   "Grupo E",
+  "Grupo F",
+  "Grupo G",
+  "Grupo H"
 ];
 
 const ExchangeCard = ({ name, offer, need }) => (
@@ -88,7 +91,7 @@ const CourseFilters = () => {
   return (
     <div className="px-4 sm:px-8 md:px-12 py-8">
       <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#08484F] mb-6">
-        Lista de cursos
+        Lista de intercambios
       </h1>
 
       <div className="border-[1.5px] border-[#08484F] shadow-md px-4 sm:px-6 py-6 mb-10 rounded-md bg-white">

@@ -10,14 +10,22 @@ function UserBar() {
       <div className="flex justify-end items-center">
         <Link
           to="/perfil"
-          className="flex items-center gap-2 hover:underline hover:text-red-700 transition max-w-full"
+          className="flex items-center gap-2 hover:underline hover:text-red-700 transition max-w-full md:ml-2 lg:ml-4"
         >
           <div className="bg-[#761A11] p-1 rounded-full shrink-0">
             <UserCircle2 className="text-white w-8 h-8" />
           </div>
-          <span className="font-medium text-red-900 text-sm sm:text-base md:text-lg lg:text-xl truncate max-w-[180px]">
+          <span className="
+            font-medium text-red-900 
+            text-sm sm:text-base md:text-lg lg:text-xl 
+            truncate 
+            max-w-[180px] sm:max-w-[200px] md:max-w-none
+            overflow-visible
+          ">
             {user?.name || 'Invitado'}
           </span>
+
+
         </Link>
       </div>
     </div>

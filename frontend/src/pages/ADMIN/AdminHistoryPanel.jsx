@@ -5,15 +5,20 @@ const AdminHistoryPanel = () => {
   const [history, setHistory] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/exchanges")
-      .then((res) => {
-        console.log("👉 Datos del backend:", res.data);
-        setHistory(res.data);
-      })
-      .catch((err) => {
-        console.error("Error al obtener historial:", err);
-      });
-  }, []);
+  axios.get("http://localhost:8080/exchanges")
+    .then((res) => {
+      const confirmedExchanges = res.data.filter(
+        (entry) =>
+          entry.adminConfirmation?.confirmationStatus === 1 ||
+          entry.adminConfirmation?.confirmationStatus === 2
+      );
+      setHistory(confirmedExchanges);
+    })
+    .catch((err) => {
+      console.error("Error al obtener historial:", err);
+    });
+}, []);
+
 
   return (
     <div className="px-[20px] sm:px-[60px] py-[40px] pb-[100px] bg-white min-h-screen overflow-y-auto h-screen">
@@ -64,20 +69,24 @@ const AdminHistoryPanel = () => {
           </div>
 
           {/* Estado */}
-          <div className="w-full md:w-[15%] mt-4 md:mt-0 flex justify-center md:justify-end">
-            <p className="text-2xl sm:text-4xl text-center mt-1">
-              <span className="font-bold">Estado:<br /></span>
-              <span
-                className={
-                  entry.adminConfirmation?.confirmationStatus === 1
-                    ? "text-[#1db4c4] font-semibold"
-                    : "text-[#b12a2a] font-semibold"
-                }
-              >
-                {entry.adminConfirmation?.confirmationStatus === 1 ? "ACEPTADO" : "RECHAZADO"}
-              </span>
-            </p>
-          </div>
+            <div className="w-full md:w-[15%] mt-4 md:mt-0 flex justify-center md:justify-end">
+              <p className="text-2xl sm:text-4xl text-center mt-1">
+                <span className="font-bold">Estado:<br /></span>
+                <span
+                  className={
+                    entry.adminConfirmation?.confirmationStatus === 1
+                      ? "text-[#1db4c4] font-semibold"
+                      : "text-[#b12a2a] font-semibold"
+                  }
+                >
+                  {entry.adminConfirmation?.confirmationStatus === 1
+                    ? "ACEPTADO"
+                    : entry.adminConfirmation?.confirmationStatus === 2
+                    ? "RECHAZADO"
+                    : "DESCONOCIDO"}
+                </span>
+              </p>
+            </div>
         </div>
       ))}
     </div>
