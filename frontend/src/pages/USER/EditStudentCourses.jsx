@@ -121,7 +121,7 @@ const EditStudentCourses = () => {
 
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex flex-col gap-3 flex-1">
-              <label className="text-1xl sm:text-lg font-semibold text-[#08484F]">Elige el curso</label>
+              <label className="text-1xl sm:text-lg font-semibold text-[#08484F]">Selecciona el curso de laboratorio</label>
               <select
                 className="border border-gray-400 p-2 rounded text-xl"
                 value={offerCourse}
@@ -133,7 +133,8 @@ const EditStudentCourses = () => {
                   </option>
                 ))}
               </select>
-              <label className="text-1xl sm:text-lg font-semibold text-[#08484F]">Elige el grupo que ofreces</label>
+
+              <label className="text-1xl sm:text-lg font-semibold text-[#08484F]">Tu grupo actual:</label>
               <select
                 className="border border-gray-400 p-2 rounded text-xl"
                 value={offerGroup}
@@ -143,7 +144,8 @@ const EditStudentCourses = () => {
                   <option key={idx} value={group}>Grupo {group}</option>
                 ))}
               </select>
-              <label className="text-sm sm:text-lg font-semibold text-[#08484F]">Elige el grupo que quieres</label>
+
+              <label className="text-1xl sm:text-lg font-semibold text-[#08484F]">Grupo que deseas:</label>
               <select
                 className="border border-gray-400 p-2 rounded text-xl"
                 value={needGroup}
@@ -153,7 +155,7 @@ const EditStudentCourses = () => {
                   <option key={idx} value={group}>Grupo {group}</option>
                 ))}
               </select>
-            </div> 
+            </div>
           </div>
 
           <button
