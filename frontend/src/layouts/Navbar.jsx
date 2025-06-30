@@ -15,7 +15,7 @@ import { useState } from 'react';
 const Navbar = () => {
   const location = useLocation();
   const { user, logout } = useAuth();
-  const [isOpen, setIsOpen] = useState(false); // controla visibilidad del navbar en móvil
+  const [isOpen, setIsOpen] = useState(false);
 
   const isActive = (paths) => {
     if (Array.isArray(paths)) {
@@ -28,7 +28,7 @@ const Navbar = () => {
     <li>
       <Link
         to={to}
-        onClick={() => setIsOpen(false)} // Cierra el menú al navegar
+        onClick={() => setIsOpen(false)}
         className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-colors ${
           isActive(activePaths)
             ? 'bg-white text-[#0E6F79] font-semibold'
@@ -43,24 +43,22 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Botón hamburguesa (solo visible en móviles) */}
+      {/* Botón hamburguesa en móviles */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`md:hidden fixed top-0 left-2 z-50 bg-[#0E6F79] text-white p-2 rounded-md shadow-md transition-opacity duration-200 ${
-    isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
-  }`}
+        className={`md:hidden fixed top-2 left-2 z-50 bg-[#0E6F79] text-white p-2 rounded-md shadow-md transition-opacity duration-200`}
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      {/* Navbar */}
+      {/* Menú lateral */}
       <nav
         className={`bg-[#0E6F79] text-white w-60 min-h-screen p-4 flex flex-col justify-between 
         fixed top-0 left-0 z-40 transition-transform duration-300 ease-in-out 
         ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
         md:translate-x-0 md:static md:flex`}
-        
       >
+        {/* Parte superior con enlaces */}
         <div>
           <h1 className="text-3xl font-bold mb-10 tracking-wide">LAB SWAP</h1>
           <ul className="flex flex-col gap-3">
@@ -81,18 +79,21 @@ const Navbar = () => {
           </ul>
         </div>
 
-        {user && (
-          <button
-            onClick={logout}
-            className="mt-10 flex items-center gap-2 text-white hover:text-red-400 transition-colors"
-          >
-            <LogOut size={20} />
-            Cerrar sesión
-          </button>
-        )}
+        {/* Siempre visible abajo */}
+        <div className="mt-10">
+          {user && (
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 text-white hover:text-red-400 transition-colors"
+            >
+              <LogOut size={20} />
+              Cerrar sesión
+            </button>
+          )}
+        </div>
       </nav>
 
-      {/* Fondo semitransparente al abrir menú en móvil */}
+      {/* Fondo oscuro en móviles cuando el menú está abierto */}
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}

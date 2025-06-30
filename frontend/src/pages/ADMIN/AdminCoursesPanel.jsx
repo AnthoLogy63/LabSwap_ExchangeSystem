@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 const AdminCoursesPanel = () => {
   const [exchanges, setExchanges] = useState([]);
 
-  // Obtener intercambios pendientes
   const fetchExchanges = async () => {
     try {
       const res = await fetch("http://localhost:8080/exchanges/pendientes");
@@ -28,7 +27,6 @@ const AdminCoursesPanel = () => {
 
       if (!res.ok) throw new Error("No se pudo actualizar el estado");
       alert(`Intercambio ${status.toLowerCase()} correctamente`);
-
       setExchanges((prev) => prev.filter((e) => e.exchangeCode !== exchangeCode));
     } catch (err) {
       console.error("Error al actualizar:", err);
@@ -37,7 +35,7 @@ const AdminCoursesPanel = () => {
   };
 
   return (
-    <div className="px-[60px] py-[40px] bg-white min-h-screen overflow-y-auto">
+    <div className="h-screen overflow-y-auto px-[60px] py-[40px] bg-white scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
       <h1 className="text-6xl font-bold text-[#08484F] mb-8">Intercambios Pendientes</h1>
 
       {exchanges.length === 0 ? (
@@ -48,7 +46,6 @@ const AdminCoursesPanel = () => {
             key={index}
             className="flex flex-col md:flex-row justify-between items-center bg-[#e9fbff] rounded-2xl px-8 py-6 mb-6 shadow-sm"
           >
-            {/* Cursos y alumnos */}
             <div className="flex flex-col md:flex-row w-full md:w-[60%]">
               {/* Ofrecido */}
               <div className="md:w-1/2 border-r border-black pr-6 mb-4 md:mb-0">
