@@ -15,24 +15,32 @@ const EditStudentCourses = () => {
   const [studentCourses, setStudentCourses] = useState([]);
   const [courses, setCourses] = useState([]);
   const [offerCourse, setOfferCourse] = useState("");
-  const [offerGroup, setOfferGroup] = useState(groups[0]);
-  const [needCourse, setNeedCourse] = useState("");
-  const [needGroup, setNeedGroup] = useState(groups[0]);
+  const [offerGroup, setOfferGroup] = useState("");
+  const [needGroup, setNeedGroup] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
 
+  // Validaciones individuales
+  const [errorCurso, setErrorCurso] = useState(false);
+  const [errorGrupoActual, setErrorGrupoActual] = useState(false);
+  const [errorGrupoDeseado, setErrorGrupoDeseado] = useState(false);
+  const [errorGruposIguales, setErrorGruposIguales] = useState(false);
+
+  // Validación global
+  const isFormInvalid =
+    !offerCourse ||
+    !offerGroup ||
+    !needGroup ||
+    offerGroup === needGroup;
+
   useEffect(() => {
-    axios.get("http://localhost:8080/courses")
+    axios
+      .get("http://localhost:8080/courses")
       .then((res) => {
         const sortedCourses = res.data.sort((a, b) =>
           a.courseName.localeCompare(b.courseName)
         );
         setCourses(sortedCourses);
-
-        if (sortedCourses.length > 0) {
-          setOfferCourse(sortedCourses[0].courseName);
-          setNeedCourse(sortedCourses[0].courseName);
-        }
       })
       .catch((err) => console.error("Error al obtener cursos:", err));
   }, []);
@@ -50,20 +58,38 @@ const EditStudentCourses = () => {
   };
 
   const handleSave = () => {
-    const newId = studentCourses.length > 0
-      ? Math.max(...studentCourses.map((c) => c.id)) + 1
-      : 1;
+    const newId =
+      studentCourses.length > 0
+        ? Math.max(...studentCourses.map((c) => c.id)) + 1
+        : 1;
 
     const newCourse = {
       id: newId,
       offerCourse,
       offerGroup,
-      needCourse,
+      needCourse: offerCourse, // mismo curso
       needGroup,
       status: "confirmation_required",
     };
 
     setStudentCourses([...studentCourses, newCourse]);
+
+    // Reset
+    setOfferCourse("");
+    setOfferGroup("");
+    setNeedGroup("");
+
+    setErrorCurso(false);
+    setErrorGrupoActual(false);
+    setErrorGrupoDeseado(false);
+    setErrorGruposIguales(false);
+  };
+
+  const validateForm = () => {
+    setErrorCurso(!offerCourse);
+    setErrorGrupoActual(!offerGroup);
+    setErrorGrupoDeseado(!needGroup);
+    setErrorGruposIguales(offerGroup && needGroup && offerGroup === needGroup);
   };
 
   return (
@@ -73,94 +99,155 @@ const EditStudentCourses = () => {
       </h1>
 
       <div className="flex flex-col lg:flex-row gap-10">
-        {/* Lista de cursos ofrecidos */}
+        {/* Lista de cursos */}
         <div className="w-full lg:w-[50%] p-4 rounded-md space-y-6 max-h-[600px] overflow-y-auto pr-4 lg:pr-8">
-          {studentCourses.map(({ id, offerCourse, offerGroup, needCourse, needGroup, status }) => (
-            <div key={id} className="bg-[#d9f0f6] rounded-md p-6 relative">
-              <button
-                onClick={() => {
-                  setSelectedCourseId(id);
-                  setIsModalOpen(true);
-                }}
-                className="absolute top-3 right-3 bg-[#0e8a99] p-2 rounded-md text-white"
-                title="Eliminar curso"
+          {studentCourses.map(
+            ({ id, offerCourse, offerGroup, needGroup, status }) => (
+              <div
+                key={id}
+                className="bg-[#d9f0f6] rounded-md p-6 relative"
               >
-                <Trash2 size={24} />
-              </button>
-
-              <div className="flex flex-col sm:flex-row justify-between border-b border-gray-400 pb-3 mb-3 gap-4">
-                <div className="flex-1">
-                  <p className="text-teal-700 font-semibold text-2xl">Ofreces:</p>
-                  <p className="text-xl">{`${offerCourse} - ${offerGroup}`}</p>
-                </div>
-                <div className="sm:border-l sm:border-gray-600 sm:px-8 flex-1">
-                  <p className="text-red-700 font-semibold text-2xl">Necesitas:</p>
-                  <p className="text-xl">{`${needCourse} - ${needGroup}`}</p>
-                </div>
-              </div>
-
-              <p className="text-base">
-                <b>Estado: </b>{statusMessages[status]}
-              </p>
-
-              {status === "confirmation_required" && (
                 <button
-                  onClick={() => handleConfirm(id)}
-                  className="mt-4 bg-red-700 text-white px-6 py-2 rounded-md text-lg"
+                  onClick={() => {
+                    setSelectedCourseId(id);
+                    setIsModalOpen(true);
+                  }}
+                  className="absolute top-3 right-3 bg-[#0e8a99] p-2 rounded-md text-white"
+                  title="Eliminar curso"
                 >
-                  Confirmar Intercambio
+                  <Trash2 size={24} />
                 </button>
-              )}
-            </div>
-          ))}
+
+                <div className="flex flex-col sm:flex-row justify-between border-b border-gray-400 pb-3 mb-3 gap-4">
+                  <div className="flex-1">
+                    <p className="text-teal-700 font-semibold text-2xl">
+                      Ofreces:
+                    </p>
+                    <p className="text-xl">
+                      {`${offerCourse} - ${offerGroup}`}
+                    </p>
+                  </div>
+                  <div className="sm:border-l sm:border-gray-600 sm:px-8 flex-1">
+                    <p className="text-red-700 font-semibold text-2xl">
+                      Necesitas:
+                    </p>
+                    <p className="text-xl">
+                      {`${offerCourse} - ${needGroup}`}
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-base">
+                  <b>Estado: </b>
+                  {statusMessages[status]}
+                </p>
+
+                {status === "confirmation_required" && (
+                  <button
+                    onClick={() => handleConfirm(id)}
+                    className="mt-4 bg-red-700 text-white px-6 py-2 rounded-md text-lg"
+                  >
+                    Confirmar Intercambio
+                  </button>
+                )}
+              </div>
+            )
+          )}
         </div>
 
-        {/* Formulario para agregar curso */}
+        {/* Formulario */}
         <div className="w-full lg:w-[50%] flex flex-col gap-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#08484F]">Agregar Curso</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#08484F]">
+            Agregar Curso
+          </h2>
 
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex flex-col gap-3 flex-1">
-              <label className="text-1xl sm:text-lg font-semibold text-[#08484F]">Selecciona el curso de laboratorio</label>
+              <label className="text-lg font-semibold text-[#08484F]">
+                Curso de laboratorio
+              </label>
               <select
                 className="border border-gray-400 p-2 rounded text-xl"
                 value={offerCourse}
                 onChange={(e) => setOfferCourse(e.target.value)}
+                onBlur={validateForm}
               >
+                <option value="">-- Selecciona un curso --</option>
                 {courses.map((course) => (
-                  <option key={course.courseCode} value={course.courseName}>
+                  <option
+                    key={course.courseCode}
+                    value={course.courseName}
+                  >
                     {course.courseName}
                   </option>
                 ))}
               </select>
+              {errorCurso && (
+                <p className="text-red-600 text-sm font-medium">
+                  Debes seleccionar un curso.
+                </p>
+              )}
 
-              <label className="text-1xl sm:text-lg font-semibold text-[#08484F]">Tu grupo actual:</label>
+              <label className="text-lg font-semibold text-[#08484F]">
+                Tu grupo actual
+              </label>
               <select
                 className="border border-gray-400 p-2 rounded text-xl"
                 value={offerGroup}
                 onChange={(e) => setOfferGroup(e.target.value)}
+                onBlur={validateForm}
               >
-                {groups.map((group, idx) => (
-                  <option key={idx} value={group}>Grupo {group}</option>
+                <option value="">-- Selecciona tu grupo --</option>
+                {groups.map((g, i) => (
+                  <option key={i} value={g}>
+                    Grupo {g}
+                  </option>
                 ))}
               </select>
+              {errorGrupoActual && (
+                <p className="text-red-600 text-sm font-medium">
+                  Debes seleccionar tu grupo actual.
+                </p>
+              )}
 
-              <label className="text-1xl sm:text-lg font-semibold text-[#08484F]">Grupo que deseas:</label>
+              <label className="text-lg font-semibold text-[#08484F]">
+                Grupo que deseas
+              </label>
               <select
                 className="border border-gray-400 p-2 rounded text-xl"
                 value={needGroup}
                 onChange={(e) => setNeedGroup(e.target.value)}
+                onBlur={validateForm}
               >
-                {groups.map((group, idx) => (
-                  <option key={idx} value={group}>Grupo {group}</option>
+                <option value="">-- Selecciona grupo deseado --</option>
+                {groups.map((g, i) => (
+                  <option key={i} value={g}>
+                    Grupo {g}
+                  </option>
                 ))}
               </select>
+              {errorGrupoDeseado && (
+                <p className="text-red-600 text-sm font-medium">
+                  Debes seleccionar un grupo al que deseas cambiarte.
+                </p>
+              )}
+              {errorGruposIguales && (
+                <p className="text-red-600 text-sm font-medium">
+                  No puedes seleccionar el mismo grupo para intercambiar.
+                </p>
+              )}
             </div>
           </div>
 
           <button
             onClick={handleSave}
-            className="mt-1 bg-[#b12a2a] text-white px-8 py-3 rounded-md text-xl w-full sm:w-auto self-start"
+            disabled={isFormInvalid}
+            onMouseEnter={validateForm}
+            className={`mt-1 px-8 py-3 rounded-md text-xl w-full sm:w-auto self-start
+              ${isFormInvalid
+                ? "bg-gray-400 text-white cursor-not-allowed"
+                : "bg-[#b12a2a] text-white hover:bg-[#911f1f]"}
+            `}
           >
             Guardar Curso
           </button>
