@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { UserCircle2 } from 'lucide-react';
 
 const yearOptions = [
   "Todos los años",
@@ -26,9 +27,9 @@ const groupOptions = [
 const ExchangeCard = ({ name, offer, need }) => (
   <div className="border-[1.5px] border-[#08484F] rounded-md px-4 py-4 shadow-sm bg-white">
     <div className="flex items-center gap-4 mb-4">
-      <div className="w-10 h-10 bg-[#a02828] rounded-full flex items-center justify-center text-white text-xl">
-        👤
-      </div>
+      <div className="bg-[#761A11] p-1 rounded-full shrink-0">
+            <UserCircle2 className="text-white w-8 h-8" />
+          </div>
       <h3 className="text-lg sm:text-xl md:text-2xl">{name}</h3>
     </div>
 
