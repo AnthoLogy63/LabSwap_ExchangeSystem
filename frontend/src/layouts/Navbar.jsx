@@ -44,20 +44,23 @@ const Navbar = () => {
   return (
     <>
       {/* Botón hamburguesa en móviles */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`md:hidden fixed top-2 left-2 z-50 bg-[#0E6F79] text-white p-2 rounded-md shadow-md transition-opacity duration-200`}
-      >
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="md:hidden fixed top-2 left-2 z-50 bg-[#0E6F79] text-white p-2 rounded-md shadow-md transition-opacity duration-200"
+        >
+          <Menu size={24} />
+        </button>
+      )}
 
       {/* Menú lateral */}
       <nav
-        className={`bg-[#0E6F79] text-white w-60 min-h-screen p-4 flex flex-col justify-between 
+        className={`bg-[#0E6F79] text-white w-60 h-screen p-4 flex flex-col 
         fixed top-0 left-0 z-40 transition-transform duration-300 ease-in-out 
         ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
-        md:translate-x-0 md:static md:flex`}
+        md:translate-x-0 md:static md:flex overflow-y-auto`}
       >
+
         {/* Parte superior con enlaces */}
         <div>
           <h1 className="text-3xl font-bold mb-10 tracking-wide">LAB SWAP</h1>
@@ -80,11 +83,11 @@ const Navbar = () => {
         </div>
 
         {/* Siempre visible abajo */}
-        <div className="mt-10">
+        <div className="mt-auto mb-6">
           {user && (
             <button
               onClick={logout}
-              className="flex items-center gap-2 text-white hover:text-red-400 transition-colors"
+              className="flex items-center gap-2 text-white hover:text-red-400 transition-colors px-4"
             >
               <LogOut size={20} />
               Cerrar sesión

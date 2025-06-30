@@ -35,62 +35,64 @@ const AdminCoursesPanel = () => {
   };
 
   return (
-    <div className="h-screen overflow-y-auto px-[60px] py-[40px] bg-white scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
-      <h1 className="text-6xl font-bold text-[#08484F] mb-8">Intercambios Pendientes</h1>
+    <div className="h-screen overflow-y-auto px-4 sm:px-8 md:px-[60px] py-[40px] bg-white scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+      <h1 className="text-4xl md:text-6xl font-bold text-[#08484F] mb-8 text-center sm:text-left">
+        Intercambios Pendientes
+      </h1>
 
       {exchanges.length === 0 ? (
-        <p className="text-gray-600">No hay intercambios pendientes.</p>
+        <p className="text-gray-600 text-center">No hay intercambios pendientes.</p>
       ) : (
         exchanges.map((exchange, index) => (
           <div
             key={index}
-            className="flex flex-col md:flex-row justify-between items-center bg-[#e9fbff] rounded-2xl px-8 py-6 mb-6 shadow-sm"
+            className="flex flex-col md:flex-row justify-between items-center bg-[#e9fbff] rounded-2xl px-4 sm:px-6 md:px-8 py-6 mb-6 shadow-sm gap-6"
           >
-            <div className="flex flex-col md:flex-row w-full md:w-[60%]">
+            <div className="flex flex-col md:flex-row w-full md:w-[60%] gap-4">
               {/* Ofrecido */}
-              <div className="md:w-1/2 border-r border-black pr-6 mb-4 md:mb-0">
-                <p className="text-2xl font-semibold text-[#08484F] mb-4">
+              <div className="md:w-1/2 border-b md:border-b-0 md:border-r border-black pr-0 md:pr-6 pb-4 md:pb-0">
+                <p className="text-2xl font-semibold text-[#08484F] mb-2">
                   {exchange.offeredCourseName}
                 </p>
-                <p className="text-lg">
+                <p className="text-base md:text-lg">
                   <span className="font-bold">Alumno:</span> {exchange.offeringStudentName}
                 </p>
-                <p className="text-lg">
+                <p className="text-base md:text-lg break-all">
                   <span className="font-bold">Correo:</span> {exchange.offeringStudentEmail}
                 </p>
               </div>
 
               {/* Deseado */}
-              <div className="md:w-1/2 pl-6">
-                <p className="text-2xl font-semibold text-[#b12a2a] mb-4">
+              <div className="md:w-1/2 pl-0 md:pl-6">
+                <p className="text-2xl font-semibold text-[#b12a2a] mb-2">
                   {exchange.desiredCourseName}
                 </p>
-                <p className="text-lg">
+                <p className="text-base md:text-lg">
                   <span className="font-bold">Alumno:</span> {exchange.receivingStudentName}
                 </p>
-                <p className="text-lg">
+                <p className="text-base md:text-lg break-all">
                   <span className="font-bold">Correo:</span> {exchange.receivingStudentEmail}
                 </p>
               </div>
             </div>
 
             {/* Botones */}
-            <div className="flex flex-col md:flex-row w-full md:w-[30%] mt-4 md:mt-0 gap-4 justify-center items-center">
+            <div className="flex flex-col md:flex-row w-full md:w-[30%] gap-2 justify-center items-center mt-4 md:mt-0">
               <button
-                className="bg-[#1db4c4] text-white px-8 py-2 text-lg rounded-xl hover:bg-[#168d9b] transition"
+                className="bg-[#1db4c4] text-white px-6 py-2 text-base md:text-lg rounded-xl hover:bg-[#168d9b] transition w-full md:w-auto"
                 onClick={() => alert(JSON.stringify(exchange, null, 2))}
               >
                 Revisar Datos
               </button>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                 <button
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl font-semibold"
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl font-semibold text-base md:text-lg"
                   onClick={() => handleStatusUpdate(exchange.exchangeCode, "ACEPTADO")}
                 >
                   ✓ Aceptar
                 </button>
                 <button
-                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl font-semibold"
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl font-semibold text-base md:text-lg"
                   onClick={() => handleStatusUpdate(exchange.exchangeCode, "RECHAZADO")}
                 >
                   ✗ Rechazar
