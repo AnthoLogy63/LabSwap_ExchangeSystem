@@ -1,19 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Trash2 } from "lucide-react";
 import ConfirmDeleteModal from "../../components/ConfirmDeleteModal";
 
-const courses = [
-  "Investigación de Operaciones",
-  "Programación de Sistemas",
-  "Estructura de Datos",
-  "Fundamentos de la Programación 1",
-  "Sistemas Operativos",
-  "Métodos Numéricos",
-  "Programación Web",
-  "Organización y Métodos"
-];
-
-const groups = ["A", "B", "C", "D", "E", "F", "G", "Z"];
+const groups = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
 const statusMessages = {
   confirmation_required: "Es necesaria tu confirmación para el intercambio",
@@ -22,39 +12,30 @@ const statusMessages = {
 };
 
 const EditStudentCourses = () => {
-  const [studentCourses, setStudentCourses] = useState([
-    {
-      id: 1,
-      offerCourse: "Investigación de Operaciones",
-      offerGroup: "C",
-      needCourse: "Investigación de Operaciones",
-      needGroup: "A",
-      status: "confirmation_required",
-    },
-    {
-      id: 2,
-      offerCourse: "Investigación de Operaciones",
-      offerGroup: "C",
-      needCourse: "Investigación de Operaciones",
-      needGroup: "A",
-      status: "waiting_acceptance",
-    },
-    {
-      id: 3,
-      offerCourse: "Investigación de Operaciones",
-      offerGroup: "C",
-      needCourse: "Investigación de Operaciones",
-      needGroup: "A",
-      status: "under_review",
-    },
-  ]);
-
-  const [offerCourse, setOfferCourse] = useState(courses[0]);
+  const [studentCourses, setStudentCourses] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [offerCourse, setOfferCourse] = useState("");
   const [offerGroup, setOfferGroup] = useState(groups[0]);
-  const [needCourse, setNeedCourse] = useState(courses[0]);
+  const [needCourse, setNeedCourse] = useState("");
   const [needGroup, setNeedGroup] = useState(groups[0]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
+
+  useEffect(() => {
+    axios.get("http://localhost:8080/courses")
+      .then((res) => {
+        const sortedCourses = res.data.sort((a, b) =>
+          a.courseName.localeCompare(b.courseName)
+        );
+        setCourses(sortedCourses);
+
+        if (sortedCourses.length > 0) {
+          setOfferCourse(sortedCourses[0].courseName);
+          setNeedCourse(sortedCourses[0].courseName);
+        }
+      })
+      .catch((err) => console.error("Error al obtener cursos:", err));
+  }, []);
 
   const handleDelete = (id) => {
     setStudentCourses(studentCourses.filter((c) => c.id !== id));
@@ -95,10 +76,7 @@ const EditStudentCourses = () => {
         {/* Lista de cursos ofrecidos */}
         <div className="w-full lg:w-[50%] p-4 rounded-md space-y-6 max-h-[600px] overflow-y-auto pr-4 lg:pr-8">
           {studentCourses.map(({ id, offerCourse, offerGroup, needCourse, needGroup, status }) => (
-            <div
-              key={id}
-              className="bg-[#d9f0f6] rounded-md p-6 relative"
-            >
+            <div key={id} className="bg-[#d9f0f6] rounded-md p-6 relative">
               <button
                 onClick={() => {
                   setSelectedCourseId(id);
@@ -143,16 +121,19 @@ const EditStudentCourses = () => {
 
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex flex-col gap-3 flex-1">
-              <label className="text-1xl sm:text-lg font-semibold text-[#08484F]">Lo que ofrecerás</label>
+              <label className="text-1xl sm:text-lg font-semibold text-[#08484F]">Elige el curso</label>
               <select
                 className="border border-gray-400 p-2 rounded text-xl"
                 value={offerCourse}
                 onChange={(e) => setOfferCourse(e.target.value)}
               >
-                {courses.map((course, idx) => (
-                  <option key={idx} value={course}>{course}</option>
+                {courses.map((course) => (
+                  <option key={course.courseCode} value={course.courseName}>
+                    {course.courseName}
+                  </option>
                 ))}
               </select>
+              <label className="text-1xl sm:text-lg font-semibold text-[#08484F]">Elige el grupo que ofreces</label>
               <select
                 className="border border-gray-400 p-2 rounded text-xl"
                 value={offerGroup}
@@ -162,19 +143,7 @@ const EditStudentCourses = () => {
                   <option key={idx} value={group}>Grupo {group}</option>
                 ))}
               </select>
-            </div>
-
-            <div className="flex flex-col gap-3 flex-1">
-              <label className="text-sm sm:text-lg font-semibold text-[#08484F]">Lo que necesitas</label>
-              <select
-                className="border border-gray-400 p-2 rounded text-xl"
-                value={needCourse}
-                onChange={(e) => setNeedCourse(e.target.value)}
-              >
-                {courses.map((course, idx) => (
-                  <option key={idx} value={course}>{course}</option>
-                ))}
-              </select>
+              <label className="text-sm sm:text-lg font-semibold text-[#08484F]">Elige el grupo que quieres</label>
               <select
                 className="border border-gray-400 p-2 rounded text-xl"
                 value={needGroup}
@@ -184,7 +153,7 @@ const EditStudentCourses = () => {
                   <option key={idx} value={group}>Grupo {group}</option>
                 ))}
               </select>
-            </div>
+            </div> 
           </div>
 
           <button
