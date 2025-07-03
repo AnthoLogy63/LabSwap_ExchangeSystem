@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Trash2 } from "lucide-react";
 import ConfirmDeleteModal from "../../components/ConfirmDeleteModal";
+import { useAuth } from "../../context/AuthContext";
 
 const statusMessages = {
   confirmation_required: "Es necesaria tu confirmación para el intercambio",
@@ -10,6 +11,8 @@ const statusMessages = {
 };
 
 const EditStudentCourses = () => {
+  const { user } = useAuth();
+
   const [studentCourses, setStudentCourses] = useState([]);
   const [courses, setCourses] = useState([]);
   const [offerCourse, setOfferCourse] = useState("");
@@ -53,39 +56,61 @@ const EditStudentCourses = () => {
     }
   }, [offerCourse, courses]);
 
-  const handleDelete = (id) => {
-    setStudentCourses(studentCourses.filter((c) => c.id !== id));
-  };
+  useEffect(() => {
+    if (!user || !user.studentCode) return;
 
-  const handleConfirm = (id) => {
+    axios.get(`http://localhost:8080/exchanges/student/${user.studentCode}`)
+      .then((res) => {
+        setStudentCourses(res.data);
+      })
+      .catch((err) => {
+        console.error("Error al obtener intercambios del estudiante:", err);
+      });
+  }, [user]);
+
+  const handleConfirm = (exchangeCode) => {
     setStudentCourses(
       studentCourses.map((c) =>
-        c.id === id ? { ...c, status: "waiting_acceptance" } : c
+        c.exchangeCode === exchangeCode ? { ...c, status: "waiting_acceptance" } : c
       )
     );
   };
 
-  const handleSave = () => {
-    const newId = studentCourses.length > 0 ? Math.max(...studentCourses.map(c => c.id)) + 1 : 1;
+  const handleSave = async () => {
+    validateForm();
+    if (isFormInvalid) return;
 
-    const newCourse = {
-      id: newId,
-      offerCourse,
-      offerGroup,
-      needCourse: offerCourse,
-      needGroup,
-      status: "confirmation_required"
+    if (!user || !user.studentCode) {
+      console.error("No se encontró el studentCode del usuario logueado");
+      return;
+    }
+
+    const selectedCourse = courses.find((c) => c.courseName === offerCourse);
+    if (!selectedCourse) return;
+
+    const payload = {
+      student1: {
+        studentCode: user.studentCode
+      },
+      offeredCourseGroup: {
+        courseGroupCode: `${selectedCourse.courseCode}_${offerGroup}`
+      },
+      desiredCourseGroup: {
+        courseGroupCode: `${selectedCourse.courseCode}_${needGroup}`
+      }
     };
 
-    setStudentCourses([...studentCourses, newCourse]);
-    setOfferCourse("");
-    setOfferGroup("");
-    setNeedGroup("");
-    setAvailableGroups([]);
-    setErrorCurso(false);
-    setErrorGrupoActual(false);
-    setErrorGrupoDeseado(false);
-    setErrorGruposIguales(false);
+    try {
+      const response = await axios.post("http://localhost:8080/exchanges", payload);
+      console.log("Intercambio creado:", response.data);
+      setStudentCourses([...studentCourses, response.data]);
+      setOfferCourse("");
+      setOfferGroup("");
+      setNeedGroup("");
+      setAvailableGroups([]);
+    } catch (err) {
+      console.error("Error al crear intercambio:", err);
+    }
   };
 
   const validateForm = () => {
@@ -103,42 +128,61 @@ const EditStudentCourses = () => {
 
       <div className="flex flex-col lg:flex-row gap-10">
         <div className="w-full lg:w-[50%] p-4 rounded-md space-y-6 max-h-[600px] overflow-y-auto pr-4 lg:pr-8">
-          {studentCourses.map(({ id, offerCourse, offerGroup, needGroup, status }) => (
-            <div key={id} className="bg-[#d9f0f6] rounded-md p-6 relative">
-              <button
-                onClick={() => {
-                  setSelectedCourseId(id);
-                  setIsModalOpen(true);
-                }}
-                className="absolute top-3 right-3 bg-[#0e8a99] p-2 rounded-md text-white"
-                title="Eliminar intercambio"
-              >
-                <Trash2 size={24} />
-              </button>
+          {studentCourses.map((exchange) => {
+            const {
+              exchangeCode,
+              offeredCourseGroup,
+              desiredCourseGroup,
+              studentConfirmation1
+            } = exchange;
 
-              <div className="flex flex-col sm:flex-row justify-between border-b border-gray-400 pb-3 mb-3 gap-4">
-                <div className="flex-1">
-                  <p className="text-teal-700 font-semibold text-2xl">Ofreces:</p>
-                  <p className="text-xl">{`${offerCourse} - ${offerGroup}`}</p>
-                </div>
-                <div className="sm:border-l sm:border-gray-600 sm:px-8 flex-1">
-                  <p className="text-red-700 font-semibold text-2xl">Necesitas:</p>
-                  <p className="text-xl">{`${offerCourse} - ${needGroup}`}</p>
-                </div>
-              </div>
+            const offerCourseName = offeredCourseGroup.course.courseName;
+            const offerGroupName = offeredCourseGroup.groupName;
+            const desiredGroupName = desiredCourseGroup.groupName;
+            const confirmationStatus = studentConfirmation1?.confirmationStatus;
 
-              <p className="text-base"><b>Estado: </b>{statusMessages[status]}</p>
+            const statusKey =
+              confirmationStatus === 0 ? "confirmation_required" :
+              confirmationStatus === 1 ? "waiting_acceptance" :
+              "under_review";
 
-              {status === "confirmation_required" && (
+            return (
+              <div key={exchangeCode} className="bg-[#d9f0f6] rounded-md p-6 relative">
                 <button
-                  onClick={() => handleConfirm(id)}
-                  className="mt-4 bg-red-700 text-white px-6 py-2 rounded-md text-lg"
+                  onClick={() => {
+                    setSelectedCourseId(exchangeCode);
+                    setIsModalOpen(true);
+                  }}
+                  className="absolute top-3 right-3 bg-[#0e8a99] p-2 rounded-md text-white"
+                  title="Eliminar intercambio"
                 >
-                  Confirmar Intercambio
+                  <Trash2 size={24} />
                 </button>
-              )}
-            </div>
-          ))}
+
+                <div className="flex flex-col sm:flex-row justify-between border-b border-gray-400 pb-3 mb-3 gap-4">
+                  <div className="flex-1">
+                    <p className="text-teal-700 font-semibold text-2xl">Ofreces:</p>
+                    <p className="text-xl">{`${offerCourseName} - ${offerGroupName}`}</p>
+                  </div>
+                  <div className="sm:border-l sm:border-gray-600 sm:px-8 flex-1">
+                    <p className="text-red-700 font-semibold text-2xl">Necesitas:</p>
+                    <p className="text-xl">{`${offerCourseName} - ${desiredGroupName}`}</p>
+                  </div>
+                </div>
+
+                <p className="text-base"><b>Estado: </b>{statusMessages[statusKey]}</p>
+
+                {statusKey === "confirmation_required" && (
+                  <button
+                    onClick={() => handleConfirm(exchangeCode)}
+                    className="mt-4 bg-red-700 text-white px-6 py-2 rounded-md text-lg"
+                  >
+                    Confirmar Intercambio
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         <div className="w-full lg:w-[50%] flex flex-col gap-6">
@@ -201,7 +245,7 @@ const EditStudentCourses = () => {
             onMouseEnter={validateForm}
             className={`mt-1 px-8 py-3 rounded-md text-xl w-full sm:w-auto self-start ${isFormInvalid ? "bg-gray-400 text-white cursor-not-allowed" : "bg-[#b12a2a] text-white hover:bg-[#911f1f]"}`}
           >
-            Guardar Intercambio
+            Crear Intercambio
           </button>
 
           <div className="mt-10">
@@ -230,7 +274,7 @@ const EditStudentCourses = () => {
         isOpen={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         onConfirm={() => {
-          handleDelete(selectedCourseId);
+          // Eliminar lógica se implementará después si es necesario
           setIsModalOpen(false);
         }}
       />
