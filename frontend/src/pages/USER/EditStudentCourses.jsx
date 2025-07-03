@@ -76,6 +76,16 @@ const EditStudentCourses = () => {
     );
   };
 
+  const handleDelete = async (exchangeCode) => {
+    try {
+      await axios.delete(`http://localhost:8080/exchanges/${exchangeCode}`);
+      setStudentCourses((prev) => prev.filter((c) => c.exchangeCode !== exchangeCode));
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error("Error al eliminar el intercambio:", err);
+    }
+  };
+
   const handleSave = async () => {
     validateForm();
     if (isFormInvalid) return;
@@ -188,6 +198,7 @@ const EditStudentCourses = () => {
         <div className="w-full lg:w-[50%] flex flex-col gap-6">
           <h2 className="text-2xl sm:text-3xl font-bold text-[#08484F]">Agregar Intercambio</h2>
 
+          {/* Formulario */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex flex-col gap-3 flex-1">
               <label className="text-lg font-semibold text-[#08484F]">Curso de laboratorio</label>
@@ -274,8 +285,9 @@ const EditStudentCourses = () => {
         isOpen={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         onConfirm={() => {
-          // Eliminar lógica se implementará después si es necesario
-          setIsModalOpen(false);
+          if (selectedCourseId) {
+            handleDelete(selectedCourseId);
+          }
         }}
       />
     </div>
