@@ -13,35 +13,36 @@ function StudentProfile() {
     studentEmail: user.email,
   });
 
-  useEffect(() => {
-    const fetchStudentData = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/students/by-email?email=${user.email}`);
-        if (!response.ok) throw new Error("No se pudo cargar el estudiante");
-        const data = await response.json();
-        setStudent(data);
-        setForm({
-          studentPhone: data.studentPhone || "",
-          altEmail: data.altEmail || "",
-          yearStudy: data.yearStudy || "",
-          studentEmail: data.studentEmail || user.email,
-        });
+  // 🔁 Esta función ahora está fuera del useEffect para poder reutilizarla
+  const fetchStudentData = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/students/by-email?email=${user.email}`);
+      if (!response.ok) throw new Error("No se pudo cargar el estudiante");
+      const data = await response.json();
+      setStudent(data);
+      setForm({
+        studentPhone: data.studentPhone || "",
+        altEmail: data.studentAltEmail || "",
+        yearStudy: data.yearStudy || "",
+        studentEmail: data.studentEmail || user.email,
+      });
 
-        // Forzar que completen sus datos
-        if (!data.studentPhone || !data.altEmail || !data.yearStudy) {
-          alert("Por favor, completa tus datos antes de continuar.");
-          setEditMode(true);
-        }
-
-      } catch (err) {
-        console.error("Error al cargar datos del estudiante", err);
+      // ✅ Solo forzamos edición si los campos están vacíos
+      if (!data.studentPhone || !data.studentAltEmail || !data.yearStudy) {
+        alert("Por favor, completa tus datos antes de continuar.");
+        setEditMode(true);
       }
-    };
+    } catch (err) {
+      console.error("Error al cargar datos del estudiante", err);
+    }
+  };
 
+  // 👇 Llamada inicial
+  useEffect(() => {
     if (user?.email) {
       fetchStudentData();
     }
-  }, [user]);
+  }, [user.email]);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -57,15 +58,19 @@ function StudentProfile() {
       const res = await fetch(`http://localhost:8080/students/${student.studentCode}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...student,
+          studentPhone: form.studentPhone,
+          studentAltEmail: form.altEmail,
+          yearStudy: form.yearStudy,
+        }),
       });
 
       if (!res.ok) throw new Error("Error al guardar cambios");
 
       alert("Datos actualizados con éxito");
       setEditMode(false);
-      setStudent((prev) => ({ ...prev, ...form }));
-
+      await fetchStudentData(); // 🔁 Carga los datos actualizados
     } catch (err) {
       alert("Error al guardar datos");
       console.error(err);
@@ -139,7 +144,7 @@ function StudentProfile() {
                   className="border px-2 py-1 w-full"
                 />
               ) : (
-                student?.altEmail || "-"
+                student?.studentAltEmail || "-"
               )}
             </div>
             <Pencil className="w-4 h-4 mt-1 text-gray-500" />

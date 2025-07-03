@@ -53,7 +53,7 @@ public class StudentController {
             student.setStudentEmail(updated.getStudentEmail());
             student.setStudentPhone(updated.getStudentPhone());
             student.setYearStudy(updated.getYearStudy());
-            //student.setAlEmail(updated.getAlEmail());
+            student.setStudentAltEmail(updated.getStudentAltEmail());
             studentRepository.save(student);
         }
     }
