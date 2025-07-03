@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Pencil, UserCircle2 } from "lucide-react";
 
@@ -13,7 +13,10 @@ function StudentProfile() {
     studentEmail: user.email,
   });
 
-  // 🔁 Esta función ahora está fuera del useEffect para poder reutilizarla
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
+
   const fetchStudentData = async () => {
     try {
       const response = await fetch(`http://localhost:8080/students/by-email?email=${user.email}`);
@@ -27,7 +30,10 @@ function StudentProfile() {
         studentEmail: data.studentEmail || user.email,
       });
 
-      // ✅ Solo forzamos edición si los campos están vacíos
+      if (data.profileImageName) {
+        setImagePreview(`http://localhost:8080/students/${data.studentCode}/profile-image`);
+      }
+
       if (!data.studentPhone || !data.studentAltEmail || !data.yearStudy) {
         alert("Por favor, completa tus datos antes de continuar.");
         setEditMode(true);
@@ -37,7 +43,6 @@ function StudentProfile() {
     }
   };
 
-  // 👇 Llamada inicial
   useEffect(() => {
     if (user?.email) {
       fetchStudentData();
@@ -70,7 +75,7 @@ function StudentProfile() {
 
       alert("Datos actualizados con éxito");
       setEditMode(false);
-      await fetchStudentData(); // 🔁 Carga los datos actualizados
+      await fetchStudentData();
     } catch (err) {
       alert("Error al guardar datos");
       console.error(err);
@@ -89,10 +94,59 @@ function StudentProfile() {
     <div className="min-h-screen bg-white flex items-start pt-10">
       <div className="w-full flex justify-center">
         <div className="bg-white p-12 max-w-4xl w-full mx-auto rounded-xl shadow-2xl">
-          <div className="flex justify-center mb-6">
-            <div className="bg-red-800 p-5 rounded-full">
-              <UserCircle2 className="text-white w-12 h-12" />
+          <div className="flex justify-center mb-6 relative">
+            <div
+              className="w-28 h-28 rounded-full bg-red-800 border-4 border-white overflow-hidden relative cursor-pointer hover:opacity-90 transition"
+              onClick={() => fileInputRef.current.click()}
+              title="Cambiar foto de perfil"
+            >
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="Foto de perfil"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <UserCircle2 className="text-white w-12 h-12" />
+                </div>
+              )}
+
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition">
+                <Pencil className="text-white w-6 h-6" />
+              </div>
             </div>
+
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  setImageFile(file);
+                  setImagePreview(URL.createObjectURL(file));
+
+                  const formData = new FormData();
+                  formData.append("file", file);
+
+                  try {
+                    const res = await fetch(`http://localhost:8080/students/${student.studentCode}/upload-image`, {
+                      method: "POST",
+                      body: formData,
+                    });
+
+                    if (!res.ok) throw new Error("Error al subir imagen");
+
+                    await fetchStudentData();
+                  } catch (err) {
+                    alert("Error al subir imagen");
+                    console.error(err);
+                  }
+                }
+              }}
+              style={{ display: "none" }}
+            />
           </div>
 
           <h2 className="text-center text-2xl font-bold text-red-800 mb-6">{user.name}</h2>
