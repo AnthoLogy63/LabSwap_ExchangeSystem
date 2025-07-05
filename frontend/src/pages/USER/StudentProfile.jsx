@@ -13,9 +13,9 @@ function StudentProfile() {
     studentEmail: user.email,
   });
 
-  const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
+  const tempUrlRef = useRef(null); // ⬅️ para limpiar URL.createObjectURL
 
   const fetchStudentData = async () => {
     try {
@@ -31,7 +31,7 @@ function StudentProfile() {
       });
 
       if (data.profileImageName) {
-        setImagePreview(`http://localhost:8080/students/${data.studentCode}/profile-image`);
+        setImagePreview(`http://localhost:8080/uploads/profile-images/${data.profileImageName}`);
       }
 
       if (!data.studentPhone || !data.studentAltEmail || !data.yearStudy) {
@@ -47,6 +47,9 @@ function StudentProfile() {
     if (user?.email) {
       fetchStudentData();
     }
+    return () => {
+      if (tempUrlRef.current) URL.revokeObjectURL(tempUrlRef.current); // limpiar URL temporal al desmontar
+    };
   }, [user.email]);
 
   const handleChange = (e) => {
@@ -75,10 +78,38 @@ function StudentProfile() {
 
       alert("Datos actualizados con éxito");
       setEditMode(false);
-      await fetchStudentData();
+      await fetchStudentData(); // ⬅️ para actualizar imagen si se subió también
     } catch (err) {
       alert("Error al guardar datos");
       console.error(err);
+    }
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const tempUrl = URL.createObjectURL(file);
+      setImagePreview(tempUrl);
+      tempUrlRef.current = tempUrl;
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const res = await fetch(`http://localhost:8080/students/${student.studentCode}/upload-image`, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!res.ok) throw new Error("Error al subir imagen");
+
+        await fetchStudentData();
+        URL.revokeObjectURL(tempUrl); // limpia preview temporal después de cargar real
+        tempUrlRef.current = null;
+      } catch (err) {
+        alert("Error al subir imagen");
+        console.error(err);
+      }
     }
   };
 
@@ -111,40 +142,15 @@ function StudentProfile() {
                   <UserCircle2 className="text-white w-12 h-12" />
                 </div>
               )}
-
               <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition">
                 <Pencil className="text-white w-6 h-6" />
               </div>
             </div>
-
             <input
               type="file"
               accept="image/*"
               ref={fileInputRef}
-              onChange={async (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                  setImageFile(file);
-                  setImagePreview(URL.createObjectURL(file));
-
-                  const formData = new FormData();
-                  formData.append("file", file);
-
-                  try {
-                    const res = await fetch(`http://localhost:8080/students/${student.studentCode}/upload-image`, {
-                      method: "POST",
-                      body: formData,
-                    });
-
-                    if (!res.ok) throw new Error("Error al subir imagen");
-
-                    await fetchStudentData();
-                  } catch (err) {
-                    alert("Error al subir imagen");
-                    console.error(err);
-                  }
-                }
-              }}
+              onChange={handleImageUpload}
               style={{ display: "none" }}
             />
           </div>

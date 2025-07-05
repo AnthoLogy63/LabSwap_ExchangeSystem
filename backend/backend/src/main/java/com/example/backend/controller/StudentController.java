@@ -66,7 +66,7 @@ public class StudentController {
         Optional<Student> optional = studentRepository.findById(id);
         if (optional.isPresent()) {
             String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-            Path uploadPath = Paths.get("uploads/profile-images");
+            Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads", "profile-images");
             Files.createDirectories(uploadPath);
             Path filePath = uploadPath.resolve(fileName);
             file.transferTo(filePath.toFile());
