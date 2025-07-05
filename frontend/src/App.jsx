@@ -63,7 +63,7 @@ function App() {
           }
         />
         <Route
-          path="/intercambio"
+          path="/intercambio/:exchangeCode"
           element={
             <ProtectedRoute allowedRoles={['student']}>
               <MainLayout><ContactSwap /></MainLayout>

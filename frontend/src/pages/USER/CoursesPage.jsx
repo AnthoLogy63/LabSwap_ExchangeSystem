@@ -24,7 +24,7 @@ const groupOptions = [
   "Grupo H"
 ];
 
-const ExchangeCard = ({ name, offer, need }) => (
+const ExchangeCard = ({ exchangeCode, name, offer, need }) => (
   <div className="border-[1.5px] border-[#08484F] rounded-md px-4 py-4 shadow-sm bg-white">
     <div className="flex items-center gap-4 mb-4">
       <div className="bg-[#761A11] p-1 rounded-full shrink-0">
@@ -48,7 +48,7 @@ const ExchangeCard = ({ name, offer, need }) => (
     </div>
 
     <div className="flex justify-end">
-      <Link to="/intercambio">
+      <Link to={`/intercambio/${exchangeCode}`}>
         <button className="text-base bg-[#b12a2a] text-white px-4 py-2 rounded-xl">
           Contactar
         </button>
@@ -148,6 +148,7 @@ const CourseFilters = () => {
           filteredExchanges.map((ex, idx) => (
             <ExchangeCard
               key={ex.exchangeCode || idx}
+              exchangeCode={ex.exchangeCode}  
               name={ex.student1.studentName}
               offer={`${ex.offeredCourseGroup.course.courseName} - ${ex.offeredCourseGroup.groupName}`}
               need={`${ex.desiredCourseGroup.course.courseName} - ${ex.desiredCourseGroup.groupName}`}

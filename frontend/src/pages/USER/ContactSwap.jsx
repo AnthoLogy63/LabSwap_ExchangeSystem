@@ -1,26 +1,57 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import ConfirmSwapModal from "../../components/ConfirmSwapModal"; // Nuevo modal importado
+import ConfirmSwapModal from "../../components/ConfirmSwapModal";
+import axios from "axios";
 
 const ContactSwap = () => {
+  const { exchangeCode } = useParams();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [exchange, setExchange] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const student = {
-    nombre: "José Carlos Quispe Zapata",
-    anio: "5to",
-    numero: "923423419",
-    correoUnsa: "pcarrilla@unsa.edu.pe",
-    correoAdicional: "pcarrilla@gmail.com",
-    ofrece: "Investigación de Operaciones - C",
-    necesita: "Investigación de Operaciones - A",
-  };
+  // Cargar datos reales del intercambio
+  useEffect(() => {
+    if (!exchangeCode) return;
+    setLoading(true);
+    axios.get(`http://localhost:8080/exchanges/${exchangeCode}`)
+      .then(res => {
+        setExchange(res.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error al obtener el intercambio:", err);
+        setLoading(false);
+      });
+  }, [exchangeCode]);
 
   const handleConfirm = () => {
+    // Aquí irá la lógica para enviar la solicitud de intercambio.
     console.log("Solicitud de contacto enviada.");
     setShowModal(false);
   };
+
+  // Si está cargando o no encontró el intercambio
+  if (loading) {
+    return <div className="p-10 text-center text-lg">Cargando intercambio...</div>;
+  }
+  if (!exchange) {
+    return <div className="p-10 text-center text-red-700">No se encontró el intercambio.</div>;
+  }
+
+  // Extraer los datos del estudiante y cursos
+  const student = exchange.student1 || {};
+  const year = student.yearStudy ? `${student.yearStudy}º` : "-";
+  const phone = student.studentPhone || "-";
+  const emailUnsa = student.studentEmail || "-";
+  const altEmail = student.altEmail || "-";
+  const offer = exchange.offeredCourseGroup
+    ? `${exchange.offeredCourseGroup.course.courseName} - ${exchange.offeredCourseGroup.groupName}`
+    : "-";
+  const need = exchange.desiredCourseGroup
+    ? `${exchange.desiredCourseGroup.course.courseName} - ${exchange.desiredCourseGroup.groupName}`
+    : "-";
 
   return (
     <div className="p-6">
@@ -54,7 +85,7 @@ const ContactSwap = () => {
           </svg>
         </div>
         <h2 className="text-5xl text-teal-900 font-medium text-center">
-          {student.nombre}
+          {student.studentName || "Estudiante"}
         </h2>
       </div>
 
@@ -67,26 +98,23 @@ const ContactSwap = () => {
               <div>Correo UNSA:</div>
               <div>Correo adicional:</div>
             </div>
-
             <div className="space-y-4 text-left text-2xl">
-              <div>{student.anio}</div>
-              <div>{student.numero}</div>
-              <div>{student.correoUnsa}</div>
-              <div>{student.correoAdicional}</div>
+              <div>{year}</div>
+              <div>{phone}</div>
+              <div>{emailUnsa}</div>
+              <div>{altEmail}</div>
             </div>
           </div>
 
           <div className="mt-6 bg-cyan-100 p-4 rounded-md flex text-2xl">
             <div className="flex-1 pr-4">
               <span className="text-teal-700 font-semibold">Ofrezco:</span><br />
-              {student.ofrece}
+              {offer}
             </div>
-
             <div className="border-l border-gray-400 mx-2"></div>
-
             <div className="flex-1 pl-4">
               <span className="text-red-700 font-semibold">Necesito:</span><br />
-              {student.necesita}
+              {need}
             </div>
           </div>
         </div>
