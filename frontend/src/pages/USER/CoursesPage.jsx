@@ -64,16 +64,22 @@ const CourseFilters = () => {
   const [yearFilter, setYearFilter] = useState("Todos los años");
   const [groupFilter, setGroupFilter] = useState("Todos los grupos");
   const [exchanges, setExchanges] = useState([]);
+  const [isRotating, setIsRotating] = useState(false);
 
   const fetchExchanges = () => {
+    setIsRotating(true);
+    axios
+      .get("http://localhost:8080/exchanges")
+      .then((res) => setExchanges(res.data))
+      .catch((err) => console.error("Error al obtener intercambios:", err))
+      .finally(() => setTimeout(() => setIsRotating(false), 500));
+  };
+
+  useEffect(() => {
     axios
       .get("http://localhost:8080/exchanges")
       .then((res) => setExchanges(res.data))
       .catch((err) => console.error("Error al obtener intercambios:", err));
-  };
-
-  useEffect(() => {
-    fetchExchanges();
   }, []);
 
   const filteredExchanges = exchanges.filter((ex) => {
@@ -103,18 +109,18 @@ const CourseFilters = () => {
       </h1>
 
       <div className="relative border-[1.5px] border-[#08484F] shadow-md px-4 sm:px-6 py-6 mb-10 rounded-md bg-white">
-        {/* Botón de actualizar en esquina superior derecha */}
+        {/* Botón actualizar en esquina superior derecha */}
         <button
           onClick={fetchExchanges}
           title="Actualizar lista"
-          className="absolute top-4 right-4 hover:bg-[#08484F]/10 transition-colors"
+          className="absolute top-3 right-3 hover:bg-[#08484F]/10 transition-colors"
           style={{
             backgroundColor: "transparent",
             color: "#08484F",
             border: "none"
           }}
         >
-          <RefreshCcw size={22} strokeWidth={2.5} />
+          <RefreshCcw size={22} strokeWidth={2.5} className={isRotating ? "animate-spin-fast" : ""} />
         </button>
 
         <div className="flex flex-col lg:flex-row gap-6">
