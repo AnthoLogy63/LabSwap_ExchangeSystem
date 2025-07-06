@@ -76,7 +76,10 @@ const CourseFilters = () => {
   };
 
   useEffect(() => {
-    fetchExchanges();
+    axios
+      .get("http://localhost:8080/exchanges")
+      .then((res) => setExchanges(res.data))
+      .catch((err) => console.error("Error al obtener intercambios:", err));
   }, []);
 
   const filteredExchanges = exchanges.filter((ex) => {
