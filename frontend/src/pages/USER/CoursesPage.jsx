@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { UserCircle2 } from 'lucide-react';
+import { UserCircle2, RefreshCcw } from 'lucide-react';
+import { useAuth } from "../../context/AuthContext";
 
 const yearOptions = [
   "Todos los años",
@@ -28,8 +29,8 @@ const ExchangeCard = ({ exchangeCode, name, offer, need }) => (
   <div className="border-[1.5px] border-[#08484F] rounded-md px-4 py-4 shadow-sm bg-white">
     <div className="flex items-center gap-4 mb-4">
       <div className="bg-[#761A11] p-1 rounded-full shrink-0">
-            <UserCircle2 className="text-white w-8 h-8" />
-          </div>
+        <UserCircle2 className="text-white w-8 h-8" />
+      </div>
       <h3 className="text-lg sm:text-xl md:text-2xl">{name}</h3>
     </div>
 
@@ -58,10 +59,21 @@ const ExchangeCard = ({ exchangeCode, name, offer, need }) => (
 );
 
 const CourseFilters = () => {
+  const { user } = useAuth();
   const [courseNameFilter, setCourseNameFilter] = useState("");
   const [yearFilter, setYearFilter] = useState("Todos los años");
   const [groupFilter, setGroupFilter] = useState("Todos los grupos");
   const [exchanges, setExchanges] = useState([]);
+  const [isRotating, setIsRotating] = useState(false);
+
+  const fetchExchanges = () => {
+    setIsRotating(true);
+    axios
+      .get("http://localhost:8080/exchanges")
+      .then((res) => setExchanges(res.data))
+      .catch((err) => console.error("Error al obtener intercambios:", err))
+      .finally(() => setTimeout(() => setIsRotating(false), 500));
+  };
 
   useEffect(() => {
     axios
@@ -71,7 +83,8 @@ const CourseFilters = () => {
   }, []);
 
   const filteredExchanges = exchanges.filter((ex) => {
-    const name = ex.student1?.studentName?.toLowerCase() || "";
+    if (!ex.student1 || ex.student1.studentCode === user?.studentCode) return false;
+
     const offerCourse = ex.offeredCourseGroup?.course?.courseName?.toLowerCase() || "";
     const offerGroup = ex.offeredCourseGroup?.groupName || "";
     const courseYear = ex.offeredCourseGroup?.course?.courseYear || "";
@@ -95,12 +108,24 @@ const CourseFilters = () => {
         Lista de intercambios
       </h1>
 
-      <div className="border-[1.5px] border-[#08484F] shadow-md px-4 sm:px-6 py-6 mb-10 rounded-md bg-white">
+      <div className="relative border-[1.5px] border-[#08484F] shadow-md px-4 sm:px-6 py-6 mb-10 rounded-md bg-white">
+        {/* Botón actualizar en esquina superior derecha */}
+        <button
+          onClick={fetchExchanges}
+          title="Actualizar lista"
+          className="absolute top-3 right-3 hover:bg-[#08484F]/10 transition-colors"
+          style={{
+            backgroundColor: "transparent",
+            color: "#08484F",
+            border: "none"
+          }}
+        >
+          <RefreshCcw size={22} strokeWidth={2.5} className={isRotating ? "animate-spin-fast" : ""} />
+        </button>
+
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex flex-col w-full">
-            <label className="text-xl sm:text-2xl font-semibold mb-2 text-black">
-              Filtros
-            </label>
+            <label className="text-xl sm:text-2xl font-semibold mb-2 text-black">Filtros</label>
             <input
               type="text"
               placeholder="Buscar por nombre del curso"
@@ -118,9 +143,7 @@ const CourseFilters = () => {
               onChange={(e) => setYearFilter(e.target.value)}
             >
               {yearOptions.map((option, idx) => (
-                <option key={idx} value={option}>
-                  {option}
-                </option>
+                <option key={idx} value={option}>{option}</option>
               ))}
             </select>
           </div>
@@ -133,9 +156,7 @@ const CourseFilters = () => {
               onChange={(e) => setGroupFilter(e.target.value)}
             >
               {groupOptions.map((option, idx) => (
-                <option key={idx} value={option}>
-                  {option}
-                </option>
+                <option key={idx} value={option}>{option}</option>
               ))}
             </select>
           </div>
@@ -148,7 +169,7 @@ const CourseFilters = () => {
           filteredExchanges.map((ex, idx) => (
             <ExchangeCard
               key={ex.exchangeCode || idx}
-              exchangeCode={ex.exchangeCode}  
+              exchangeCode={ex.exchangeCode}
               name={ex.student1.studentName}
               offer={`${ex.offeredCourseGroup.course.courseName} - ${ex.offeredCourseGroup.groupName}`}
               need={`${ex.desiredCourseGroup.course.courseName} - ${ex.desiredCourseGroup.groupName}`}

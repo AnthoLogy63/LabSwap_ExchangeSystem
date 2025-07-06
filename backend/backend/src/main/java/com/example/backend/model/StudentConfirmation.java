@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class StudentConfirmation {
     @Id
-    @Column(name = "student_confirmation_code", length = 20)
+    @Column(name = "student_confirmation_code", length = 30)
     private String studentConfirmationCode;
 
     @Column(name = "confirmation_status")

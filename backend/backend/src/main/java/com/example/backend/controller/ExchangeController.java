@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.model.AdminConfirmation;
 import com.example.backend.model.Exchange;
 import com.example.backend.model.StudentConfirmation;
+import com.example.backend.repo.AdminConfirmationRepository;
 import com.example.backend.repo.ExchangeRepository;
 import com.example.backend.repo.StudentConfirmationRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,9 @@ public class ExchangeController {
 
     @Autowired
     private StudentConfirmationRepository studentConfirmationRepository;
+
+    @Autowired
+    private AdminConfirmationRepository adminConfirmationRepository;
 
     @Operation(summary = "Registrar un nuevo intercambio")
     @PostMapping
@@ -54,7 +58,9 @@ public class ExchangeController {
         AdminConfirmation adminConf = new AdminConfirmation();
         adminConf.setAdminConfirmationCode("ADM" + newCode);
         adminConf.setConfirmationStatus(0); // Pendiente
-        adminConf.setConfirmationDate(null); // aún sin confirmar
+        adminConf.setConfirmationDate(null);
+
+        adminConfirmationRepository.save(adminConf);
         exchange.setAdminConfirmation(adminConf);
 
         return exchangeRepository.save(exchange);
