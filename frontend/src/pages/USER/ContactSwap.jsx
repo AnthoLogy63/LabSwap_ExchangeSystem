@@ -117,7 +117,7 @@ const ContactSwap = () => {
         </button>
       </div>
 
-      <div className="flex items-center justify-center mb-4">
+      <div className="flex items-center justify-center mb-8">
         <div className="bg-red-500 rounded-full p-4 mr-4">
           <svg
             className="w-9 h-9 text-white"
@@ -138,16 +138,16 @@ const ContactSwap = () => {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-8 border p-6 rounded-md shadow-md bg-white">
-        <div className="md:col-span-1">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-8 border p-8 rounded-2xl shadow-md bg-white min-h-[450px]">
+        <div className="flex-1 flex flex-col justify-between">
           <div className="grid grid-cols-2 gap-x-6 text-base text-gray-800">
-            <div className="space-y-4 text-left font-semibold text-2xl">
+            <div className="space-y-8 text-left font-semibold text-2xl">
               <div>Año:</div>
               <div>Número:</div>
               <div>Correo UNSA:</div>
               <div>Correo adicional:</div>
             </div>
-            <div className="space-y-4 text-left text-2xl">
+            <div className="space-y-8 text-left text-2xl">
               <div>{year}</div>
               <div>{phone}</div>
               <div>{emailUnsa}</div>
@@ -168,7 +168,8 @@ const ContactSwap = () => {
           </div>
         </div>
 
-        <div className="flex flex-col justify-between text-2xl">
+        <div className="w-full md:w-[90%] flex flex-col justify-between text-2xl">
+
           <div>
             <h3 className="font-semibold mb-2">Confirmar Intercambio de curso:</h3>
             <div className="bg-gray-100 p-4 rounded-md text-xl mb-4">
@@ -179,7 +180,7 @@ const ContactSwap = () => {
           </div>
           <div className="flex justify-end">
             <button
-              className="bg-[#b12a2a] text-white text-sm px-4 py-2 rounded-md"
+              className="bg-[#b12a2a] text-white text-xl px-6 py-3 rounded-md"
               onClick={() => setShowModal(true)}
             >
               Enviar Solicitud
