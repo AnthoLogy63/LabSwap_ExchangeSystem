@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.List;
+import java.util.UUID;
 
 @Tag(name = "Confirmación de Estudiantes", description = "Operaciones para gestionar confirmaciones de estudiantes")
 @RestController
@@ -20,11 +21,15 @@ public class StudentConfirmationController {
 
     @Operation(summary = "Crear una confirmación de estudiante")
     @PostMapping
-    public void create(@RequestBody StudentConfirmation confirmation) {
-        confirmation.setConfirmationStatus(0); 
-        repo.save(confirmation);
+    public StudentConfirmation create(@RequestBody StudentConfirmation confirmation) {
+    if (confirmation.getStudentConfirmationCode() == null || confirmation.getStudentConfirmationCode().isBlank()) {
+    confirmation.setStudentConfirmationCode("SCF" + UUID.randomUUID().toString().replace("-", "").substring(0, 10).toUpperCase());
+}
+    if (confirmation.getConfirmationStatus() == null) {
+        confirmation.setConfirmationStatus(0);
     }
-
+    return repo.save(confirmation);
+}
     @Operation(summary = "Consultar confirmaciones por estudiante")
     @GetMapping("/by-student/{studentCode}")
     public List<StudentConfirmation> getByStudent(@PathVariable String studentCode) {

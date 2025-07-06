@@ -3,20 +3,26 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import ConfirmSwapModal from "../../components/ConfirmSwapModal";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext"; 
 
 const ContactSwap = () => {
+  const { user } = useAuth();
   const { exchangeCode } = useParams();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [exchange, setExchange] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [error, setError] = useState("");
+  const [uploading, setUploading] = useState(false);
+
 
   // Cargar datos reales del intercambio
   useEffect(() => {
     if (!exchangeCode) return;
     setLoading(true);
     axios.get(`http://localhost:8080/exchanges/${exchangeCode}`)
-      .then(res => {
+      .then(res => {  
         setExchange(res.data);
         setLoading(false);
       })
@@ -26,11 +32,54 @@ const ContactSwap = () => {
       });
   }, [exchangeCode]);
 
-  const handleConfirm = () => {
-    // Aquí irá la lógica para enviar la solicitud de intercambio.
-    console.log("Solicitud de contacto enviada.");
-    setShowModal(false);
+  const handleConfirm = async (dniFile) => {
+    setError("");
+    setUploading(true);
+
+    try {
+      // 1. Crear la confirmación del estudiante (POST /student-confirmations)
+      const confirmPayload = {
+        confirmationStatus: 1,
+        student: { studentCode: user.studentCode }
+      };
+
+      const confirmRes = await axios.post(
+        "http://localhost:8080/student-confirmations",
+        confirmPayload
+      );
+
+      const studentConfirmationCode = confirmRes.data.studentConfirmationCode;
+
+      // 2. Actualizar el intercambio para asignar el código de confirmación 2 (PUT /exchanges/{exchangeCode}/student2)
+      await axios.put(
+        `http://localhost:8080/exchanges/${exchange.exchangeCode}/student2`,
+        { student2: { studentCode: user.studentCode } } 
+      );  
+
+      // 3. Subir el archivo del DNI (POST /confirmation-documents/{confirmationCode})
+       const formData = new FormData();
+      formData.append("file", dniFile);
+
+      await axios.post(
+        `http://localhost:8080/confirmation-documents/${studentConfirmationCode}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+
+      // 4. Mostrar éxito y limpiar modal
+      setSuccessMessage("¡Intercambio confirmado correctamente! Espera la validación del laboratorio.");
+      setShowModal(false);
+
+    } catch (err) {
+      setError(
+        err?.response?.data?.message ||
+        "Hubo un error al confirmar el intercambio. Intenta de nuevo."
+      );
+    }
+
+    setUploading(false);
   };
+
 
   // Si está cargando o no encontró el intercambio
   if (loading) {
@@ -142,9 +191,16 @@ const ContactSwap = () => {
       {/* Modal separado */}
       {showModal && (
         <ConfirmSwapModal
+          exchange={exchange} 
           onClose={() => setShowModal(false)}
           onConfirm={handleConfirm}
         />
+      )}
+      {/* Mensaje de éxito */}
+      {successMessage && (
+        <div className="mt-8 text-green-700 text-xl text-center font-semibold">
+          {successMessage}
+        </div>
       )}
     </div>
   );

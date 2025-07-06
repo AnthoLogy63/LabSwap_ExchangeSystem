@@ -2,7 +2,6 @@ package com.example.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.UUID;
 
 @Entity
 @Table(name = "confirmation_documents")
@@ -13,17 +12,17 @@ public class ConfirmationDocument {
 
     private String filename;
 
+    private String filePath; // <---- NUEVO CAMPO: aquí irá la ruta donde se guarda el archivo en el servidor
+
     @OneToOne
     @JoinColumn(name = "studentConfirmationCode", unique = true)
     private StudentConfirmation studentConfirmation;
 
+    // Opcional: Genera un código si no lo mandas desde el controlador.
     @PrePersist
     public void generateDocumentCode() {
         if (documentCode == null || documentCode.isEmpty()) {
-            String prefix = "DOC";
-            long timestamp = System.currentTimeMillis() % 1000000;
-            this.documentCode = prefix + String.format("%06d", timestamp);
+            this.documentCode = "DOC-" + (studentConfirmation != null ? studentConfirmation.getStudentConfirmationCode() : System.currentTimeMillis());
         }
     }
-
 }

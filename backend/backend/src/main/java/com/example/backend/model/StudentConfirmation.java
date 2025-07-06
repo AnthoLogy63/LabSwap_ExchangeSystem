@@ -8,10 +8,13 @@ import lombok.Data;
 @Data
 public class StudentConfirmation {
     @Id
+    @Column(name = "student_confirmation_code", length = 20)
     private String studentConfirmationCode;
-    private int confirmationStatus; 
+
+    @Column(name = "confirmation_status")
+    private Integer confirmationStatus;  // Mejor Integer para permitir null
 
     @ManyToOne
-    @JoinColumn(name = "studentCode")
+    @JoinColumn(name = "student_code")
     private Student student;
 }
