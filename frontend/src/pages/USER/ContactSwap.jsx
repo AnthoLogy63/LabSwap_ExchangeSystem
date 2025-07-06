@@ -103,8 +103,8 @@ const ContactSwap = () => {
     : "-";
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className="p-6 w-full overflow-x-hidden">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <h1 className="text-5xl font-bold text-teal-800">
           Contactar para el Intercambio
         </h1>
@@ -117,7 +117,7 @@ const ContactSwap = () => {
         </button>
       </div>
 
-      <div className="flex items-center justify-center mb-8">
+      <div className="flex flex-col sm:flex-row items-center justify-center text-center mb-8 gap-4">
         <div className="bg-red-500 rounded-full p-4 mr-4">
           <svg
             className="w-9 h-9 text-white"
@@ -138,8 +138,9 @@ const ContactSwap = () => {
         </h2>
       </div>
 
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-8 border p-8 rounded-2xl shadow-md bg-white min-h-[450px]">
-        <div className="flex-1 flex flex-col justify-between">
+      <div className="w-full max-w-5xl mx-auto flex flex-col md:flex-row gap-6 border p-4 sm:p-6 rounded-2xl shadow-md bg-white min-h-[450px]">
+
+        <div className="w-full md:w-[60%] flex flex-col justify-between">
           <div className="grid grid-cols-2 gap-x-6 text-base text-gray-800">
             <div className="space-y-8 text-left font-semibold text-2xl">
               <div>Año:</div>
@@ -147,7 +148,7 @@ const ContactSwap = () => {
               <div>Correo UNSA:</div>
               <div>Correo adicional:</div>
             </div>
-            <div className="space-y-8 text-left text-2xl">
+            <div className="space-y-8 text-left text-2xl break-all">
               <div>{year}</div>
               <div>{phone}</div>
               <div>{emailUnsa}</div>
@@ -155,21 +156,20 @@ const ContactSwap = () => {
             </div>
           </div>
 
-          <div className="mt-6 bg-cyan-100 p-4 rounded-md flex text-2xl">
-            <div className="flex-1 pr-4">
+          <div className="mt-6 bg-cyan-100 p-4 rounded-md flex flex-col md:flex-row text-2xl">
+            <div className="flex-1 md:pr-4 mb-4 md:mb-0">
               <span className="text-teal-700 font-semibold">Ofrezco:</span><br />
               {offer}
             </div>
-            <div className="border-l border-gray-400 mx-2"></div>
-            <div className="flex-1 pl-4">
+            <div className="hidden md:block border-l border-gray-400 mx-2"></div>
+            <div className="flex-1 md:pl-4">
               <span className="text-red-700 font-semibold">Necesito:</span><br />
               {need}
             </div>
           </div>
         </div>
 
-        <div className="w-full md:w-[90%] flex flex-col justify-between text-2xl">
-
+        <div className="w-full md:w-[40%] flex flex-col justify-between text-xl sm:text-2xl">
           <div>
             <h3 className="font-semibold mb-2">Confirmar Intercambio de curso:</h3>
             <div className="bg-gray-100 p-4 rounded-md text-xl mb-4">
