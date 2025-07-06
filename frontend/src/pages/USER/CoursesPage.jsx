@@ -87,6 +87,7 @@ const CourseFilters = () => {
 
     const offerCourse = ex.offeredCourseGroup?.course?.courseName?.toLowerCase() || "";
     const offerGroup = ex.offeredCourseGroup?.groupName || "";
+    const desiredGroup = ex.desiredCourseGroup?.groupName || "";
     const courseYear = ex.offeredCourseGroup?.course?.courseYear || "";
 
     const nameMatch = offerCourse.includes(courseNameFilter.toLowerCase());
@@ -97,7 +98,10 @@ const CourseFilters = () => {
       (yearFilter.includes("Tercer") && courseYear === 3) ||
       (yearFilter.includes("Cuarto") && courseYear === 4) ||
       (yearFilter.includes("Quinto") && courseYear === 5);
-    const groupMatch = groupFilter === "Todos los grupos" || offerGroup === groupFilter.split(" ")[1];
+    const groupMatch =
+      groupFilter === "Todos los grupos" ||
+      offerGroup === groupFilter.split(" ")[1] ||
+      desiredGroup === groupFilter.split(" ")[1];
 
     return nameMatch && yearMatch && groupMatch;
   });
@@ -120,7 +124,11 @@ const CourseFilters = () => {
             border: "none"
           }}
         >
-          <RefreshCcw size={22} strokeWidth={2.5} className={isRotating ? "animate-spin-fast" : ""} />
+          <RefreshCcw
+            size={22}
+            strokeWidth={2.5}
+            className={isRotating ? "animate-spin-fast" : ""}
+          />
         </button>
 
         <div className="flex flex-col lg:flex-row gap-6">
