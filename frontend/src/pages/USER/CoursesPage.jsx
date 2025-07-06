@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { UserCircle2 } from 'lucide-react';
+import { UserCircle2, RefreshCcw } from 'lucide-react';
 import { useAuth } from "../../context/AuthContext";
 
 const yearOptions = [
@@ -65,15 +65,18 @@ const CourseFilters = () => {
   const [groupFilter, setGroupFilter] = useState("Todos los grupos");
   const [exchanges, setExchanges] = useState([]);
 
-  useEffect(() => {
+  const fetchExchanges = () => {
     axios
       .get("http://localhost:8080/exchanges")
       .then((res) => setExchanges(res.data))
       .catch((err) => console.error("Error al obtener intercambios:", err));
+  };
+
+  useEffect(() => {
+    fetchExchanges();
   }, []);
 
   const filteredExchanges = exchanges.filter((ex) => {
-    // ✅ Excluir los intercambios del usuario logueado (como estudiante 1)
     if (!ex.student1 || ex.student1.studentCode === user?.studentCode) return false;
 
     const offerCourse = ex.offeredCourseGroup?.course?.courseName?.toLowerCase() || "";
@@ -99,12 +102,24 @@ const CourseFilters = () => {
         Lista de intercambios
       </h1>
 
-      <div className="border-[1.5px] border-[#08484F] shadow-md px-4 sm:px-6 py-6 mb-10 rounded-md bg-white">
+      <div className="relative border-[1.5px] border-[#08484F] shadow-md px-4 sm:px-6 py-6 mb-10 rounded-md bg-white">
+        {/* Botón de actualizar en esquina superior derecha */}
+        <button
+          onClick={fetchExchanges}
+          title="Actualizar lista"
+          className="absolute top-4 right-4 hover:bg-[#08484F]/10 transition-colors"
+          style={{
+            backgroundColor: "transparent",
+            color: "#08484F",
+            border: "none"
+          }}
+        >
+          <RefreshCcw size={22} strokeWidth={2.5} />
+        </button>
+
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex flex-col w-full">
-            <label className="text-xl sm:text-2xl font-semibold mb-2 text-black">
-              Filtros
-            </label>
+            <label className="text-xl sm:text-2xl font-semibold mb-2 text-black">Filtros</label>
             <input
               type="text"
               placeholder="Buscar por nombre del curso"
@@ -122,9 +137,7 @@ const CourseFilters = () => {
               onChange={(e) => setYearFilter(e.target.value)}
             >
               {yearOptions.map((option, idx) => (
-                <option key={idx} value={option}>
-                  {option}
-                </option>
+                <option key={idx} value={option}>{option}</option>
               ))}
             </select>
           </div>
@@ -137,9 +150,7 @@ const CourseFilters = () => {
               onChange={(e) => setGroupFilter(e.target.value)}
             >
               {groupOptions.map((option, idx) => (
-                <option key={idx} value={option}>
-                  {option}
-                </option>
+                <option key={idx} value={option}>{option}</option>
               ))}
             </select>
           </div>
