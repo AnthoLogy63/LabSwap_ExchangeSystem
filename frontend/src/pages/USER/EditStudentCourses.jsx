@@ -143,31 +143,43 @@ const EditStudentCourses = () => {
               exchangeCode,
               offeredCourseGroup,
               desiredCourseGroup,
-              studentConfirmation1
+              studentConfirmation1,
+              studentConfirmation2,
+              student2
             } = exchange;
 
             const offerCourseName = offeredCourseGroup.course.courseName;
             const offerGroupName = offeredCourseGroup.groupName;
             const desiredGroupName = desiredCourseGroup.groupName;
-            const confirmationStatus = studentConfirmation1?.confirmationStatus;
 
-            const statusKey =
-              confirmationStatus === 0 ? "confirmation_required" :
-              confirmationStatus === 1 ? "waiting_acceptance" :
-              "under_review";
+            const confirmedByStudent1 = studentConfirmation1?.confirmationStatus === 1;
+            const confirmedByStudent2 = studentConfirmation2?.confirmationStatus === 1;
+
+            let statusKey = "waiting_acceptance";
+
+            if (student2) {
+              if (confirmedByStudent2 && !confirmedByStudent1) {
+                statusKey = "confirmation_required";
+              } else if (confirmedByStudent1) {
+                statusKey = "under_review";
+              }
+            }
 
             return (
               <div key={exchangeCode} className="bg-[#d9f0f6] rounded-md p-6 relative">
-                <button
-                  onClick={() => {
-                    setSelectedCourseId(exchangeCode);
-                    setIsModalOpen(true);
-                  }}
-                  className="absolute top-3 right-3 bg-[#0e8a99] p-2 rounded-md text-white"
-                  title="Eliminar intercambio"
-                >
-                  <Trash2 size={24} />
-                </button>
+                {/* Botón de eliminar solo si NO está en under_review */}
+                {statusKey !== "under_review" && (
+                  <button
+                    onClick={() => {
+                      setSelectedCourseId(exchangeCode);
+                      setIsModalOpen(true);
+                    }}
+                    className="absolute top-3 right-3 bg-[#0e8a99] p-2 rounded-md text-white"
+                    title="Eliminar intercambio"
+                  >
+                    <Trash2 size={24} />
+                  </button>
+                )}
 
                 <div className="flex flex-col sm:flex-row justify-between border-b border-gray-400 pb-3 mb-3 gap-4">
                   <div className="flex-1">
@@ -180,8 +192,11 @@ const EditStudentCourses = () => {
                   </div>
                 </div>
 
-                <p className="text-base"><b>Estado: </b>{statusMessages[statusKey]}</p>
+                <p className="text-base">
+                  <b>Estado: </b>{statusMessages[statusKey]}
+                </p>
 
+                {/* Botón de confirmación solo si status requiere confirmación */}
                 {statusKey === "confirmation_required" && (
                   <button
                     onClick={() => handleConfirm(exchangeCode)}
@@ -193,6 +208,7 @@ const EditStudentCourses = () => {
               </div>
             );
           })}
+
         </div>
 
         <div className="w-full lg:w-[50%] flex flex-col gap-6">
