@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import ConfirmExchangeModal from "../../components/ConfirmExchangeModal";
 import RejectExchangeModal from "../../components/RejectExchangeModal";
+import jsPDF from "jspdf";
 
 const AdminCoursesPanel = () => {
   const [exchanges, setExchanges] = useState([]);
   const [selectedExchange, setSelectedExchange] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [rejectOpen, setRejectOpen] = useState(false);
+
+  // NUEVO: Estado para el PDF
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const fetchExchanges = async () => {
     try {
@@ -38,6 +43,65 @@ const AdminCoursesPanel = () => {
       console.error("Error al actualizar:", err);
       alert("Error al actualizar el estado del intercambio");
     }
+  };
+
+  // NUEVO: Función para generar el PDF igual que en AdminHistoryPanel, pero con estado "PENDIENTE"
+  const generarPDFBlob = (exchange) => {
+    const doc = new jsPDF();
+
+    // Título en dos líneas
+    doc.setFont(undefined, 'bold');
+    doc.setFontSize(35);
+    doc.setTextColor(13, 84, 79);
+    doc.text('Información del', 105, 25, { align: 'center' });
+    doc.text('intercambio', 105, 40, { align: 'center' });
+
+    // Subtítulo
+    doc.setFontSize(16);
+    doc.setTextColor(13, 84, 79);
+    doc.text('Datos del Intercambio:', 20, 55);
+
+    // Info principal
+    doc.setFontSize(13);
+    let y = 67;
+    const lineSpacing = 10;
+    doc.setFont(undefined, 'normal');
+
+    doc.setTextColor(13, 84, 79);
+    doc.text('Estudiante que ofrece el curso:', 20, y);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`${exchange.offeringStudentName} (${exchange.offeringStudentEmail})`, 90, y);
+
+    y += lineSpacing;
+    doc.setTextColor(13, 84, 79);
+    doc.text('Estudiante que recibe el curso:', 20, y);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`${exchange.receivingStudentName} (${exchange.receivingStudentEmail})`, 90, y);
+
+    y += lineSpacing;
+    doc.setTextColor(13, 84, 79);
+    doc.text('Curso ofrecido:', 20, y);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`${exchange.offeredCourseName}`, 57, y);
+
+    y += lineSpacing;
+    doc.setTextColor(13, 84, 79);
+    doc.text('Curso solicitado:', 20, y);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`${exchange.desiredCourseName}`, 60, y);
+
+    y += lineSpacing * 4;
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(13, 84, 79);
+    doc.text('Estado del intercambio:', 20, y);
+    doc.setTextColor(0, 0, 0);
+    doc.text('PENDIENTE', 75, y);
+
+    // Guardar y mostrar
+    const blob = doc.output("blob");
+    const url = URL.createObjectURL(blob);
+    setPdfUrl(url);
+    setModalOpen(true);
   };
 
   return (
@@ -86,7 +150,7 @@ const AdminCoursesPanel = () => {
             <div className="flex flex-col md:flex-row w-full md:w-[30%] gap-2 justify-center items-center mt-4 md:mt-0">
               <button
                 className="bg-[#1db4c4] text-white px-6 py-2 text-base md:text-lg rounded-xl hover:bg-[#168d9b] transition w-full md:w-auto"
-                onClick={() => alert(JSON.stringify(exchange, null, 2))}
+                onClick={() => generarPDFBlob(exchange)}
               >
                 Revisar Datos
               </button>
@@ -113,6 +177,25 @@ const AdminCoursesPanel = () => {
             </div>
           </div>
         ))
+      )}
+
+      {/* Modal PDF */}
+      {modalOpen && pdfUrl && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl w-[80%] h-[90%] relative p-5 shadow-lg">
+            <button
+              onClick={() => setModalOpen(false)}
+              className="absolute top-0 right-1.5 text-red-500 font-bold text-xl hover:text-red-700"
+            >
+              ✕
+            </button>
+            <iframe
+              src={pdfUrl}
+              title="PDF del Intercambio"
+              className="w-full h-full border rounded-md"
+            />
+          </div>
+        </div>
       )}
 
       {/* Modal Confirmar */}
