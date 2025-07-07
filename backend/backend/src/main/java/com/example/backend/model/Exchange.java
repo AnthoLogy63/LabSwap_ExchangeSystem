@@ -29,15 +29,15 @@ public class Exchange {
     @JoinColumn(name = "desiredCourseGroupCode")
     private CourseGroup desiredCourseGroup;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "studentConfirmationCode1")
     private StudentConfirmation studentConfirmation1;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "studentConfirmationCode2")
     private StudentConfirmation studentConfirmation2;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "adminConfirmationCode")
     private AdminConfirmation adminConfirmation;
 
