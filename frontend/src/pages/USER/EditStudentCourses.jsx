@@ -139,76 +139,80 @@ const EditStudentCourses = () => {
       <div className="flex flex-col lg:flex-row gap-6 sm:gap-10">
         {/* Lista de intercambios */}
         <div className="w-full lg:w-[50%] p-2 sm:p-4 rounded-md space-y-4 sm:space-y-6 max-h-[600px] overflow-y-auto pr-0 sm:pr-4 lg:pr-8">
-          {studentCourses.map((exchange) => {
-            const {
-              exchangeCode,
-              offeredCourseGroup,
-              desiredCourseGroup,
-              studentConfirmation1,
-              studentConfirmation2,
-              student2
-            } = exchange;
+          {studentCourses.length === 0 ? (
+            <p className="text-gray-600 text-xl text-center sm:text-left mt-4">
+              No tienes intercambios actualmente.
+            </p>
+          ) : (
+            studentCourses.map((exchange) => {
+              const {
+                exchangeCode,
+                offeredCourseGroup,
+                desiredCourseGroup,
+                studentConfirmation1,
+                studentConfirmation2,
+                student2
+              } = exchange;
 
-            const offerCourseName = offeredCourseGroup.course.courseName;
-            const offerGroupName = offeredCourseGroup.groupName;
-            const desiredGroupName = desiredCourseGroup.groupName;
+              const offerCourseName = offeredCourseGroup.course.courseName;
+              const offerGroupName = offeredCourseGroup.groupName;
+              const desiredGroupName = desiredCourseGroup.groupName;
 
-            const confirmedByStudent1 = studentConfirmation1?.confirmationStatus === 1;
-            const confirmedByStudent2 = studentConfirmation2?.confirmationStatus === 1;
+              const confirmedByStudent1 = studentConfirmation1?.confirmationStatus === 1;
+              const confirmedByStudent2 = studentConfirmation2?.confirmationStatus === 1;
 
-            let statusKey = "waiting_acceptance";
+              let statusKey = "waiting_acceptance";
 
-            if (student2) {
-              if (confirmedByStudent2 && !confirmedByStudent1) {
-                statusKey = "confirmation_required";
-              } else if (confirmedByStudent1) {
-                statusKey = "under_review";
+              if (student2) {
+                if (confirmedByStudent2 && !confirmedByStudent1) {
+                  statusKey = "confirmation_required";
+                } else if (confirmedByStudent1) {
+                  statusKey = "under_review";
+                }
               }
-            }
 
-            return (
-              <div key={exchangeCode} className="bg-[#d9f0f6] rounded-md p-4 sm:p-6 relative mb-2 sm:mb-0">
-                {/* Botón de eliminar solo si NO está en under_review */}
-                {statusKey !== "under_review" && (
-                  <button
-                    onClick={() => {
-                      setSelectedCourseId(exchangeCode);
-                      setIsModalOpen(true);
-                    }}
-                    className="absolute top-3 right-3 bg-[#0e8a99] p-2 rounded-md text-white"
-                    title="Eliminar intercambio"
-                  >
-                    <Trash2 size={24} />
-                  </button>
-                )}
+              return (
+                <div key={exchangeCode} className="bg-[#d9f0f6] rounded-md p-4 sm:p-6 relative mb-2 sm:mb-0">
+                  {statusKey !== "under_review" && (
+                    <button
+                      onClick={() => {
+                        setSelectedCourseId(exchangeCode);
+                        setIsModalOpen(true);
+                      }}
+                      className="absolute top-3 right-3 bg-[#0e8a99] p-2 rounded-md text-white"
+                      title="Eliminar intercambio"
+                    >
+                      <Trash2 size={24} />
+                    </button>
+                  )}
 
-                <div className="flex flex-col sm:flex-row justify-between border-b border-gray-400 pb-3 mb-3 gap-4">
-                  <div className="flex-1">
-                    <p className="text-teal-700 font-semibold text-2xl">Ofreces:</p>
-                    <p className="text-xl">{`${offerCourseName} - ${offerGroupName}`}</p>
+                  <div className="flex flex-col sm:flex-row justify-between border-b border-gray-400 pb-3 mb-3 gap-4">
+                    <div className="flex-1">
+                      <p className="text-teal-700 font-semibold text-2xl">Ofreces:</p>
+                      <p className="text-xl">{`${offerCourseName} - ${offerGroupName}`}</p>
+                    </div>
+                    <div className="sm:border-l sm:border-gray-600 sm:px-8 flex-1">
+                      <p className="text-red-700 font-semibold text-2xl">Necesitas:</p>
+                      <p className="text-xl">{`${offerCourseName} - ${desiredGroupName}`}</p>
+                    </div>
                   </div>
-                  <div className="sm:border-l sm:border-gray-600 sm:px-8 flex-1">
-                    <p className="text-red-700 font-semibold text-2xl">Necesitas:</p>
-                    <p className="text-xl">{`${offerCourseName} - ${desiredGroupName}`}</p>
-                  </div>
+
+                  <p className="text-base">
+                    <b>Estado: </b>{statusMessages[statusKey]}
+                  </p>
+
+                  {statusKey === "confirmation_required" && (
+                    <button
+                      onClick={() => handleConfirm(exchangeCode)}
+                      className="mt-4 bg-red-700 text-white px-6 py-2 rounded-md text-lg"
+                    >
+                      Confirmar Intercambio
+                    </button>
+                  )}
                 </div>
-
-                <p className="text-base">
-                  <b>Estado: </b>{statusMessages[statusKey]}
-                </p>
-
-                {/* Botón de confirmación solo si status requiere confirmación */}
-                {statusKey === "confirmation_required" && (
-                  <button
-                    onClick={() => handleConfirm(exchangeCode)}
-                    className="mt-4 bg-red-700 text-white px-6 py-2 rounded-md text-lg"
-                  >
-                    Confirmar Intercambio
-                  </button>
-                )}
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
 
         {/* Formulario */}
