@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+//import autoTable from 'jspdf-autotable';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -22,29 +22,64 @@ const AdminHistoryPanel = () => {
 
   const generarPDFBlob = (entry) => {
     const doc = new jsPDF();
-    doc.setFontSize(18);
-    doc.text('Detalles del Intercambio', 14, 22);
 
-    autoTable(doc, {
-      startY: 30,
-      head: [['Rol', 'Curso', 'Grupo', 'Alumno', 'Correo']],
-      body: [
-        ['Ofrece',
-          entry.offeredCourseGroup.course.courseName,
-          entry.offeredCourseGroup.groupName,
-          entry.student1.studentName,
-          entry.student1.studentEmail],
-        ['Desea',
-          entry.desiredCourseGroup.course.courseName,
-          entry.desiredCourseGroup.groupName,
-          entry.student2.studentName,
-          entry.student2.studentEmail],
-      ],
-    });
+    // Título en dos líneas
+    doc.setFont(undefined, 'bold');
+    doc.setFontSize(35);
+    doc.setTextColor(13, 84, 79); // Verde oscuro
+    doc.text('Información del', 105, 25, { align: 'center' });
+    doc.text('intercambio', 105, 40, { align: 'center' }); // Segunda línea, un poco más abajo
 
+    // Subtítulo
+    doc.setTextColor(13, 84, 79);
+    doc.setFontSize(16);
+    doc.text('Datos del Intercambio:', 20, 55);
+
+    // Info principal
+    doc.setFontSize(13);
+    let y = 67;
+    const lineSpacing = 10;
+    doc.setFont(undefined, 'normal');
+
+    
+    doc.setTextColor(13, 84, 79);
+    doc.text('Estudiante que ofrece el curso:', 20, y);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`${entry.student1.studentName} (${entry.student1.studentEmail})`, 90, y);
+
+    y += lineSpacing;
+    doc.setTextColor(13, 84, 79);
+    doc.text('Estudiante que recibe el curso:', 20, y);
+    doc.setTextColor(0, 0, 0);
+    doc.setFont(undefined, 'normal');
+    doc.text(`${entry.student2.studentName} (${entry.student2.studentEmail})`, 90, y);
+
+    y += lineSpacing;
+    doc.setTextColor(13, 84, 79);
+    doc.text('Curso ofrecido:', 20, y);
+    doc.setTextColor(0, 0, 0);
+    doc.setFont(undefined, 'normal');
+    doc.text(`${entry.offeredCourseGroup.course.courseName} - Grupo ${entry.offeredCourseGroup.groupName}`, 57, y);
+
+    y += lineSpacing;
+    doc.setTextColor(13, 84, 79);
+    doc.text('Curso solicitado:', 20, y);
+    doc.setTextColor(0, 0, 0);
+    doc.setFont(undefined, 'normal');
+    doc.text(`${entry.desiredCourseGroup.course.courseName} - Grupo ${entry.desiredCourseGroup.groupName}`, 60, y);
+
+    y += lineSpacing;
+    y += lineSpacing;
+    y += lineSpacing;
+    y += lineSpacing;
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(13, 84, 79);
+    doc.text('Estado del intercambio:', 20, y);
+    doc.setTextColor(0, 0, 0);
     const estado = entry.adminConfirmation?.confirmationStatus === 1 ? 'ACEPTADO' : 'RECHAZADO';
-    doc.text(`Estado del Intercambio: ${estado}`, 14, doc.lastAutoTable.finalY + 10);
+    doc.text(estado, 75, y);
 
+    // Guardar y mostrar
     const blob = doc.output("blob");
     const url = URL.createObjectURL(blob);
     setPdfUrl(url);
