@@ -1,21 +1,33 @@
 import React, { useState } from "react";
 
-const ConfirmSwapModal = ({ onClose, onConfirm, exchange, student2Name }) => {
+const ConfirmSwapModal = ({ onClose, onConfirm, exchange, currentStudentCode }) => {
   const [dniFile, setDniFile] = useState(null);
   const [fileError, setFileError] = useState("");
 
-  // Para mostrar nombre de estudiantes/cursos dinámico
-  const otherStudent =
-    student2Name ||
-    (exchange?.student1?.studentName ?? "Otro estudiante");
-  const offer =
-    exchange?.offeredCourseGroup
-      ? `${exchange.offeredCourseGroup.course.courseName} - ${exchange.offeredCourseGroup.groupName}`
-      : "—";
-  const need =
-    exchange?.desiredCourseGroup
-      ? `${exchange.desiredCourseGroup.course.courseName} - ${exchange.desiredCourseGroup.groupName}`
-      : "—";
+  // Soy el student1 o el student2
+  const isStudent1 = currentStudentCode === exchange?.student1?.studentCode;
+
+  // Determinar con quién estoy intercambiando
+  const otherStudent = isStudent1
+    ? exchange?.student2?.studentName ?? "Otro estudiante"
+    : exchange?.student1?.studentName ?? "Otro estudiante";
+
+  // Determinar qué ofrezco y qué obtengo según mi rol
+  const offerGroup = isStudent1
+    ? exchange?.offeredCourseGroup
+    : exchange?.desiredCourseGroup;
+
+  const needGroup = isStudent1
+    ? exchange?.desiredCourseGroup
+    : exchange?.offeredCourseGroup;
+
+  const offer = offerGroup
+    ? `${offerGroup.course.courseName} - ${offerGroup.groupName}`
+    : "—";
+
+  const need = needGroup
+    ? `${needGroup.course.courseName} - ${needGroup.groupName}`
+    : "—";
 
   const handleFileChange = (e) => {
     setFileError("");
@@ -43,11 +55,11 @@ const ConfirmSwapModal = ({ onClose, onConfirm, exchange, student2Name }) => {
             {otherStudent}
           </div>
           <div>
-            <span className="font-semibold text-teal-800">Estas Ofreciendo (Perderás) el curso de:</span>{" "}
+            <span className="font-semibold text-teal-800">Estás ofreciendo (perderás) el curso de:</span>{" "}
             {offer}
           </div>
           <div>
-            <span className="font-semibold text-teal-800">Estas Solicitando (Obtendrás) el curso de:</span>{" "}
+            <span className="font-semibold text-teal-800">Estás solicitando (obtendrás) el curso de:</span>{" "}
             {need}
           </div>
           <p className="text-sm italic text-gray-600 mt-2 text-center">
@@ -62,7 +74,7 @@ const ConfirmSwapModal = ({ onClose, onConfirm, exchange, student2Name }) => {
               El uso de este sistema implica el compromiso de actuar con responsabilidad y veracidad en todo momento. Cada estudiante acepta los términos al continuar.
             </p>
           </div>
-          <div className="mt-8 ">
+          <div className="mt-8">
             <label className="font-semibold text-teal-800">Subir DNI:</label>
             <input
               type="file"

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Trash2 } from "lucide-react";
 import ConfirmDeleteModal from "../../components/ConfirmDeleteModal";
+import ConfirmSwapModal from "../../components/ConfirmSwapModal";
 import { useAuth } from "../../context/AuthContext";
 
 const statusMessages = {
@@ -21,6 +23,9 @@ const EditStudentCourses = () => {
   const [availableGroups, setAvailableGroups] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
+  const navigate = useNavigate();
+  const [selectedExchange, setSelectedExchange] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [errorCurso, setErrorCurso] = useState(false);
   const [errorGrupoActual, setErrorGrupoActual] = useState(false);
@@ -68,13 +73,37 @@ const EditStudentCourses = () => {
       });
   }, [user]);
 
-  const handleConfirm = (exchangeCode) => {
-    setStudentCourses(
-      studentCourses.map((c) =>
-        c.exchangeCode === exchangeCode ? { ...c, status: "waiting_acceptance" } : c
-      )
-    );
+  const handleModalConfirm = async (dniFile) => {
+    try {
+      // 1. Actualizar confirmación del estudiante 1
+      await axios.put(
+        `http://localhost:8080/exchanges/${selectedExchange.exchangeCode}/studentConfirmation1`,
+        { confirmationStatus: 1 }
+      );
+
+      // 2. Subir archivo del DNI para studentConfirmation1
+      const studentConfirmationCode = selectedExchange.studentConfirmation1.studentConfirmationCode;
+
+      const formData = new FormData();
+      formData.append("file", dniFile);
+
+      await axios.post(
+        `http://localhost:8080/confirmation-documents/${studentConfirmationCode}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+
+      // 3. Cerrar modal y actualizar
+      setShowConfirmModal(false);
+
+      const res = await axios.get(`http://localhost:8080/exchanges/student/${user.studentCode}`);
+      setStudentCourses(res.data);
+
+    } catch (err) {
+      console.error("Error al confirmar como estudiante 1:", err);
+    }
   };
+
 
   const handleDelete = async (exchangeCode) => {
     try {
@@ -203,7 +232,10 @@ const EditStudentCourses = () => {
 
                   {statusKey === "confirmation_required" && (
                     <button
-                      onClick={() => handleConfirm(exchangeCode)}
+                      onClick={() => {
+                        setSelectedExchange(exchange);
+                        setShowConfirmModal(true);
+                      }}
                       className="mt-4 bg-red-700 text-white px-6 py-2 rounded-md text-lg"
                     >
                       Confirmar Intercambio
@@ -310,6 +342,15 @@ const EditStudentCourses = () => {
           }
         }}
       />
+
+      {showConfirmModal && selectedExchange && (
+        <ConfirmSwapModal
+          exchange={selectedExchange}
+          onClose={() => setShowConfirmModal(false)}
+          onConfirm={handleModalConfirm}
+          currentStudentCode={user.studentCode}
+        />
+      )}
     </div>
   );
 };
