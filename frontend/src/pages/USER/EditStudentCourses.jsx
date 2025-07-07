@@ -238,7 +238,7 @@ const EditStudentCourses = () => {
           <b>Estado: </b>{estadoMensaje}
         </p>
 
-        {statusKey === "confirmation_required" && (
+        {statusKey === "confirmation_required" && student1?.studentCode === user.studentCode && (
           <button
             onClick={() => {
               setSelectedExchange(exchange);
