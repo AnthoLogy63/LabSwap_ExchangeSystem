@@ -78,7 +78,7 @@ const EditStudentCourses = () => {
     try {
       // 1. Actualizar confirmación del estudiante 1
       await axios.put(
-        `http://localhost:8080/exchanges/${selectedExchange.exchangeCode}/studentConfirmation1`,
+        `http://localhost:8080/student-confirmations/${selectedExchange.studentConfirmation1.studentConfirmationCode}`,
         { confirmationStatus: 1 }
       );
 
