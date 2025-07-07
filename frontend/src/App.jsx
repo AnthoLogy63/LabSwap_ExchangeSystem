@@ -39,7 +39,7 @@ function App() {
           }
         />
         <Route
-          path="/cursos"
+          path="/intercambios"
           element={
             <ProtectedRoute allowedRoles={['student']}>
               <MainLayout><CoursesPage /></MainLayout>
@@ -47,7 +47,7 @@ function App() {
           }
         />
         <Route
-          path="/mis-cursos"
+          path="/mis-intercambios"
           element={
             <ProtectedRoute allowedRoles={['student']}>
               <MainLayout><EditStudentCourses /></MainLayout>

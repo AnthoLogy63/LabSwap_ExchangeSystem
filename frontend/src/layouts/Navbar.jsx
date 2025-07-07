@@ -68,8 +68,8 @@ const Navbar = () => {
             {user?.role === 'student' && (
               <>
                 {navLink('/inicio', <Home size={20} />, 'Inicio')}
-                {navLink('/cursos', <BookOpen size={20} />, 'Lista de Intercambios', ['/cursos', '/intercambio'])}
-                {navLink('/mis-cursos', <GraduationCap size={20} />, 'Mis Intercambios')}
+                {navLink('/intercambios', <BookOpen size={20} />, 'Lista de Intercambios', ['/intercambios', '/intercambio'])}
+                {navLink('/mis-intercambios', <GraduationCap size={20} />, 'Mis Intercambios')}
               </>
             )}
 

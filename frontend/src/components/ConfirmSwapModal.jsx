@@ -51,7 +51,7 @@ const ConfirmSwapModal = ({ onClose, onConfirm, exchange, student2Name }) => {
             {need}
           </div>
           <p className="text-sm italic text-gray-600 mt-2 text-center">
-            Nota: El estado del intercambio de curso se verá en el apartado de “Mis cursos”,<br />
+            Nota: El estado del intercambio de curso se verá en el apartado de “Mis intercambios”,<br />
             es necesaria la verificación del encargado de Laboratorio y el otro Estudiante.
           </p>
           <div>

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function ConfirmModal({ message, onConfirm, onCancel, title = "Confirmación Para Borrar Oferta de Curso" }) {
+export default function ConfirmModal({ message, onConfirm, onCancel, title = "Confirmación Para Borrar Oferta de Intercambio" }) {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-[90%] max-w-md border-4 border-cyan-900">

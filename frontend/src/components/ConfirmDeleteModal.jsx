@@ -7,8 +7,8 @@ const ConfirmDeleteModal = ({ isOpen, onCancel, onConfirm }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 border-1">
       <div className="bg-white w-full max-w-3xl p-16 rounded-3xl shadow-xl border-4 border-teal-800 text-teal-900">
-        <h2 className="text-5xl font-bold mb-8 text-center">Confirmacion Para Borrar<br></br> Oferta De Curso</h2>
-        <p className="text-2xl mb-10 text-center">Estas por borrar tu oferta del curso,<br></br> necesitas confirmar la acción.</p>
+        <h2 className="text-5xl font-bold mb-8 text-center">Confirmacion Para Borrar<br></br> Oferta De Intercambio</h2>
+        <p className="text-2xl mb-10 text-center">Estas por borrar tu oferta del intercambio,<br></br> necesitas confirmar la acción.</p>
         <div className="flex justify-center gap-20 text-xl">
           <button
             onClick={onCancel}
