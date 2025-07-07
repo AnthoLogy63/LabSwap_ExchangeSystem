@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
+import ConfirmExchangeModal from "../../components/ConfirmExchangeModal";
+import RejectExchangeModal from "../../components/RejectExchangeModal";
 
 const AdminCoursesPanel = () => {
   const [exchanges, setExchanges] = useState([]);
+  const [selectedExchange, setSelectedExchange] = useState(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [rejectOpen, setRejectOpen] = useState(false);
 
   const fetchExchanges = async () => {
     try {
@@ -17,15 +22,16 @@ const AdminCoursesPanel = () => {
     fetchExchanges();
   }, []);
 
-  const handleStatusUpdate = async (exchangeCode, status) => {
+  const handleStatusUpdate = async (exchangeCode, status, reason = "") => {
     try {
       const res = await fetch(`http://localhost:8080/exchanges/${exchangeCode}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ estado: status }),
+        body: JSON.stringify({ estado: status, motivo: reason }),
       });
 
       if (!res.ok) throw new Error("No se pudo actualizar el estado");
+
       alert(`Intercambio ${status.toLowerCase()} correctamente`);
       setExchanges((prev) => prev.filter((e) => e.exchangeCode !== exchangeCode));
     } catch (err) {
@@ -87,13 +93,19 @@ const AdminCoursesPanel = () => {
               <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                 <button
                   className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl font-semibold text-base md:text-lg"
-                  onClick={() => handleStatusUpdate(exchange.exchangeCode, "ACEPTADO")}
+                  onClick={() => {
+                    setSelectedExchange(exchange);
+                    setConfirmOpen(true);
+                  }}
                 >
                   ✓ Aceptar
                 </button>
                 <button
                   className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl font-semibold text-base md:text-lg"
-                  onClick={() => handleStatusUpdate(exchange.exchangeCode, "RECHAZADO")}
+                  onClick={() => {
+                    setSelectedExchange(exchange);
+                    setRejectOpen(true);
+                  }}
                 >
                   ✗ Rechazar
                 </button>
@@ -102,6 +114,30 @@ const AdminCoursesPanel = () => {
           </div>
         ))
       )}
+
+      {/* Modal Confirmar */}
+      <ConfirmExchangeModal
+        visible={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={() => {
+          handleStatusUpdate(selectedExchange.exchangeCode, "ACEPTADO");
+          setConfirmOpen(false);
+        }}
+        courseA={selectedExchange?.offeredCourseName}
+        courseB={selectedExchange?.desiredCourseName}
+      />
+
+      {/* Modal Rechazar */}
+      <RejectExchangeModal
+        visible={rejectOpen}
+        onClose={() => setRejectOpen(false)}
+        onReject={(reason) => {
+          handleStatusUpdate(selectedExchange.exchangeCode, "RECHAZADO", reason);
+          setRejectOpen(false);
+        }}
+        courseA={selectedExchange?.offeredCourseName}
+        courseB={selectedExchange?.desiredCourseName}
+      />
     </div>
   );
 };
