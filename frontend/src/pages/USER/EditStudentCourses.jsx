@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Trash2 } from "lucide-react";
 import ConfirmDeleteModal from "../../components/ConfirmDeleteModal";
@@ -23,7 +22,6 @@ const EditStudentCourses = () => {
   const [availableGroups, setAvailableGroups] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
-  const navigate = useNavigate();
   const [selectedExchange, setSelectedExchange] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -163,50 +161,98 @@ const EditStudentCourses = () => {
   };
 
   const renderExchangeCard = (exchange, canDelete) => {
-      const { exchangeCode, offeredCourseGroup, desiredCourseGroup, studentConfirmation1, studentConfirmation2, student2 } = exchange;
-      const offerCourseName = offeredCourseGroup.course.courseName;
-      const offerGroupName = offeredCourseGroup.groupName;
-      const desiredGroupName = desiredCourseGroup.groupName;
-      const confirmedByStudent1 = studentConfirmation1?.confirmationStatus === 1;
-      const confirmedByStudent2 = studentConfirmation2?.confirmationStatus === 1;
-  
-      let statusKey = "waiting_acceptance";
-      if (student2) {
-        if (confirmedByStudent2 && !confirmedByStudent1) statusKey = "confirmation_required";
-        else if (confirmedByStudent1) statusKey = "under_review";
-      }
-  
-      return (
-        <div key={exchangeCode} className="bg-[#d9f0f6] rounded-md p-4 sm:p-6 relative mb-2 sm:mb-0">
-          {canDelete && statusKey !== "under_review" && (
-            <button onClick={() => { setSelectedCourseId(exchangeCode); setIsModalOpen(true); }}
-              className="absolute top-3 right-3 bg-[#0e8a99] p-2 rounded-md text-white" title="Eliminar intercambio">
-              <Trash2 size={24} />
-            </button>
-          )}
-  
-          <div className="flex flex-col sm:flex-row justify-between border-b border-gray-400 pb-3 mb-3 gap-4">
-            <div className="flex-1">
-              <p className="text-teal-700 font-semibold text-2xl">Ofreces:</p>
-              <p className="text-xl">{`${offerCourseName} - ${offerGroupName}`}</p>
-            </div>
-            <div className="sm:border-l sm:border-gray-600 sm:px-8 flex-1">
-              <p className="text-red-700 font-semibold text-2xl">Necesitas:</p>
-              <p className="text-xl">{`${offerCourseName} - ${desiredGroupName}`}</p>
-            </div>
-          </div>
-  
-          <p className="text-base"><b>Estado: </b>{statusMessages[statusKey]}</p>
-  
-          {statusKey === "confirmation_required" && (
-            <button onClick={() => { setSelectedExchange(exchange); setShowConfirmModal(true); }}
-              className="mt-4 bg-red-700 text-white px-6 py-2 rounded-md text-lg">
-              Confirmar Intercambio
-            </button>
+    const {
+      exchangeCode,
+      offeredCourseGroup,
+      desiredCourseGroup,
+      studentConfirmation1,
+      studentConfirmation2,
+      student2,
+      student1
+    } = exchange;
+
+    const offerCourseName = offeredCourseGroup.course.courseName;
+    const offerGroupName = offeredCourseGroup.groupName;
+    const desiredGroupName = desiredCourseGroup.groupName;
+    const confirmedByStudent1 = studentConfirmation1?.confirmationStatus === 1;
+    const confirmedByStudent2 = studentConfirmation2?.confirmationStatus === 1;
+
+    // Saber si tú eres el que lo recibió (student2)
+    const isUserStudent2 = student2?.studentCode === user.studentCode;
+
+    // Asignar estado adecuado
+    let statusKey = "waiting_acceptance";
+    if (student2) {
+      if (confirmedByStudent2 && !confirmedByStudent1) statusKey = "confirmation_required";
+      else if (confirmedByStudent1) statusKey = "under_review";
+    }
+
+    // Mensaje final de estado
+    const estadoMensaje =
+      statusKey === "waiting_acceptance" && isUserStudent2
+        ? "El otro estudiante debe aceptar tu solicitud de este intercambio."
+        : statusMessages[statusKey];
+
+    return (
+      <div key={exchangeCode} className="bg-[#d9f0f6] rounded-md p-4 sm:p-6 relative mb-2 sm:mb-0">
+        {canDelete && statusKey !== "under_review" && (
+          <button
+            onClick={() => {
+              setSelectedCourseId(exchangeCode);
+              setIsModalOpen(true);
+            }}
+            className="absolute top-3 right-3 bg-[#0e8a99] p-2 rounded-md text-white"
+            title="Eliminar intercambio"
+          >
+            <Trash2 size={24} />
+          </button>
+        )}
+
+        <div className="flex flex-col sm:flex-row justify-between border-b border-gray-400 pb-3 mb-3 gap-4">
+          {isUserStudent2 ? (
+            <>
+              <div className="flex-1">
+                <p className="text-teal-700 font-semibold text-2xl">Ofrecerás:</p>
+                <p className="text-xl">{`${offerCourseName} - ${desiredGroupName}`}</p>
+              </div>
+              <div className="sm:border-l sm:border-gray-600 sm:px-8 flex-1">
+                <p className="text-red-700 font-semibold text-2xl">Recibirás:</p>
+                <p className="text-xl">{`${offerCourseName} - ${offerGroupName}`}</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex-1">
+                <p className="text-teal-700 font-semibold text-2xl">Ofreces:</p>
+                <p className="text-xl">{`${offerCourseName} - ${offerGroupName}`}</p>
+              </div>
+              <div className="sm:border-l sm:border-gray-600 sm:px-8 flex-1">
+                <p className="text-red-700 font-semibold text-2xl">Necesitas:</p>
+                <p className="text-xl">{`${offerCourseName} - ${desiredGroupName}`}</p>
+              </div>
+            </>
           )}
         </div>
-      );
-    };
+
+        <p className="text-base">
+          <b>Estado: </b>{estadoMensaje}
+        </p>
+
+        {statusKey === "confirmation_required" && (
+          <button
+            onClick={() => {
+              setSelectedExchange(exchange);
+              setShowConfirmModal(true);
+            }}
+            className="mt-4 bg-red-700 text-white px-6 py-2 rounded-md text-lg"
+          >
+            Confirmar Intercambio
+          </button>
+        )}
+      </div>
+    );
+  };
+
 
   return (
     <div className="px-2 sm:px-4 lg:px-10 py-4 sm:py-6 overflow-x-auto min-h-screen bg-white">
