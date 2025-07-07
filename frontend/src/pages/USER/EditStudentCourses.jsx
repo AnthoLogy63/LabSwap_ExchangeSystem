@@ -7,8 +7,8 @@ import ConfirmSwapModal from "../../components/ConfirmSwapModal";
 import { useAuth } from "../../context/AuthContext";
 
 const statusMessages = {
-  confirmation_required: "Es necesaria tu confirmación para el intercambio",
-  waiting_acceptance: "Es necesario que alguien acepte tu intercambio.",
+  confirmation_required: "Es necesaria tu confirmación para finalizar el intercambio y pasar a revisión.",
+  waiting_acceptance: "Es necesario que un estudiante acepte tu intercambio.",
   under_review: "En revisión para el encargado de Laboratorio."
 };
 
@@ -72,6 +72,9 @@ const EditStudentCourses = () => {
         console.error("Error al obtener intercambios del estudiante:", err);
       });
   }, [user]);
+
+  const myExchanges = studentCourses.filter(e => e.student1?.studentCode === user.studentCode);
+  const requestedToMe = studentCourses.filter(e => e.student2?.studentCode === user.studentCode);
 
   const handleModalConfirm = async (dniFile) => {
     try {
@@ -159,93 +162,72 @@ const EditStudentCourses = () => {
     setErrorGruposIguales(offerGroup && needGroup && offerGroup === needGroup);
   };
 
+  const renderExchangeCard = (exchange, canDelete) => {
+      const { exchangeCode, offeredCourseGroup, desiredCourseGroup, studentConfirmation1, studentConfirmation2, student2 } = exchange;
+      const offerCourseName = offeredCourseGroup.course.courseName;
+      const offerGroupName = offeredCourseGroup.groupName;
+      const desiredGroupName = desiredCourseGroup.groupName;
+      const confirmedByStudent1 = studentConfirmation1?.confirmationStatus === 1;
+      const confirmedByStudent2 = studentConfirmation2?.confirmationStatus === 1;
+  
+      let statusKey = "waiting_acceptance";
+      if (student2) {
+        if (confirmedByStudent2 && !confirmedByStudent1) statusKey = "confirmation_required";
+        else if (confirmedByStudent1) statusKey = "under_review";
+      }
+  
+      return (
+        <div key={exchangeCode} className="bg-[#d9f0f6] rounded-md p-4 sm:p-6 relative mb-2 sm:mb-0">
+          {canDelete && statusKey !== "under_review" && (
+            <button onClick={() => { setSelectedCourseId(exchangeCode); setIsModalOpen(true); }}
+              className="absolute top-3 right-3 bg-[#0e8a99] p-2 rounded-md text-white" title="Eliminar intercambio">
+              <Trash2 size={24} />
+            </button>
+          )}
+  
+          <div className="flex flex-col sm:flex-row justify-between border-b border-gray-400 pb-3 mb-3 gap-4">
+            <div className="flex-1">
+              <p className="text-teal-700 font-semibold text-2xl">Ofreces:</p>
+              <p className="text-xl">{`${offerCourseName} - ${offerGroupName}`}</p>
+            </div>
+            <div className="sm:border-l sm:border-gray-600 sm:px-8 flex-1">
+              <p className="text-red-700 font-semibold text-2xl">Necesitas:</p>
+              <p className="text-xl">{`${offerCourseName} - ${desiredGroupName}`}</p>
+            </div>
+          </div>
+  
+          <p className="text-base"><b>Estado: </b>{statusMessages[statusKey]}</p>
+  
+          {statusKey === "confirmation_required" && (
+            <button onClick={() => { setSelectedExchange(exchange); setShowConfirmModal(true); }}
+              className="mt-4 bg-red-700 text-white px-6 py-2 rounded-md text-lg">
+              Confirmar Intercambio
+            </button>
+          )}
+        </div>
+      );
+    };
+
   return (
     <div className="px-2 sm:px-4 lg:px-10 py-4 sm:py-6 overflow-x-auto min-h-screen bg-white">
       <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-[#08484F] mb-4 sm:mb-6 text-center sm:text-left">
-        Mis intercambios ofrecidos
+        Mis intercambios
       </h1>
 
       <div className="flex flex-col lg:flex-row gap-6 sm:gap-10">
-        {/* Lista de intercambios */}
-        <div className="w-full lg:w-[50%] p-2 sm:p-4 rounded-md space-y-4 sm:space-y-6 max-h-[600px] overflow-y-auto pr-0 sm:pr-4 lg:pr-8">
-          {studentCourses.length === 0 ? (
-            <p className="text-gray-600 text-xl text-center sm:text-left mt-4">
-              No tienes intercambios actualmente.
-            </p>
-          ) : (
-            studentCourses.map((exchange) => {
-              const {
-                exchangeCode,
-                offeredCourseGroup,
-                desiredCourseGroup,
-                studentConfirmation1,
-                studentConfirmation2,
-                student2
-              } = exchange;
-
-              const offerCourseName = offeredCourseGroup.course.courseName;
-              const offerGroupName = offeredCourseGroup.groupName;
-              const desiredGroupName = desiredCourseGroup.groupName;
-
-              const confirmedByStudent1 = studentConfirmation1?.confirmationStatus === 1;
-              const confirmedByStudent2 = studentConfirmation2?.confirmationStatus === 1;
-
-              let statusKey = "waiting_acceptance";
-
-              if (student2) {
-                if (confirmedByStudent2 && !confirmedByStudent1) {
-                  statusKey = "confirmation_required";
-                } else if (confirmedByStudent1) {
-                  statusKey = "under_review";
-                }
-              }
-
-              return (
-                <div key={exchangeCode} className="bg-[#d9f0f6] rounded-md p-4 sm:p-6 relative mb-2 sm:mb-0">
-                  {statusKey !== "under_review" && (
-                    <button
-                      onClick={() => {
-                        setSelectedCourseId(exchangeCode);
-                        setIsModalOpen(true);
-                      }}
-                      className="absolute top-3 right-3 bg-[#0e8a99] p-2 rounded-md text-white"
-                      title="Eliminar intercambio"
-                    >
-                      <Trash2 size={24} />
-                    </button>
-                  )}
-
-                  <div className="flex flex-col sm:flex-row justify-between border-b border-gray-400 pb-3 mb-3 gap-4">
-                    <div className="flex-1">
-                      <p className="text-teal-700 font-semibold text-2xl">Ofreces:</p>
-                      <p className="text-xl">{`${offerCourseName} - ${offerGroupName}`}</p>
-                    </div>
-                    <div className="sm:border-l sm:border-gray-600 sm:px-8 flex-1">
-                      <p className="text-red-700 font-semibold text-2xl">Necesitas:</p>
-                      <p className="text-xl">{`${offerCourseName} - ${desiredGroupName}`}</p>
-                    </div>
-                  </div>
-
-                  <p className="text-base">
-                    <b>Estado: </b>{statusMessages[statusKey]}
-                  </p>
-
-                  {statusKey === "confirmation_required" && (
-                    <button
-                      onClick={() => {
-                        setSelectedExchange(exchange);
-                        setShowConfirmModal(true);
-                      }}
-                      className="mt-4 bg-red-700 text-white px-6 py-2 rounded-md text-lg"
-                    >
-                      Confirmar Intercambio
-                    </button>
-                  )}
-                </div>
-              );
-            })
-          )}
+        <div className="w-full lg:w-[50%] p-2 sm:p-4 rounded-md space-y-8 max-h-[600px] overflow-y-auto">
+          <div>
+            <h2 className="text-xl font-bold text-[#08484F] mb-4">Mis intercambios ofrecidos</h2>
+            {myExchanges.length === 0 ? <p className="text-gray-600">No tienes intercambios.</p>
+              : myExchanges.map((e) => renderExchangeCard(e, true))}
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-[#08484F] mt-6 mb-4">Intercambios solicitados por mí</h2>
+            {requestedToMe.length === 0 ? <p className="text-gray-600">No te han solicitado intercambios.</p>
+              : requestedToMe.map((e) => renderExchangeCard(e, false))}
+          </div>
         </div>
+        
 
         {/* Formulario */}
         <div className="w-full lg:w-[50%] flex flex-col gap-4 sm:gap-6">
