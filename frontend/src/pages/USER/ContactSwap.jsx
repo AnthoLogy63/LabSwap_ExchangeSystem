@@ -37,27 +37,19 @@ const ContactSwap = () => {
     setUploading(true);
 
     try {
-      // 1. Crear la confirmación del estudiante (POST /student-confirmations)
-      const confirmPayload = {
-        confirmationStatus: 1,
-        student: { studentCode: user.studentCode }
-      };
-
-      const confirmRes = await axios.post(
-        "http://localhost:8080/student-confirmations",
-        confirmPayload
+      // 1. Confirmar estudiante 2 (esto crea internamente el studentConfirmation2)
+      const response = await axios.put(
+        `http://localhost:8080/exchanges/${exchange.exchangeCode}/student2`,
+        {
+          student2: { studentCode: user.studentCode }
+        }
       );
 
-      const studentConfirmationCode = confirmRes.data.studentConfirmationCode;
+      // 2. Extraer el código de confirmación 2 retornado por el backend
+      const studentConfirmationCode = response.data.studentConfirmation2.studentConfirmationCode;
 
-      // 2. Actualizar el intercambio para asignar el código de confirmación 2 (PUT /exchanges/{exchangeCode}/student2)
-      await axios.put(
-        `http://localhost:8080/exchanges/${exchange.exchangeCode}/student2`,
-        { student2: { studentCode: user.studentCode } } 
-      );  
-
-      // 3. Subir el archivo del DNI (POST /confirmation-documents/{confirmationCode})
-       const formData = new FormData();
+      // 3. Subir el archivo del DNI
+      const formData = new FormData();
       formData.append("file", dniFile);
 
       await axios.post(
@@ -66,10 +58,13 @@ const ContactSwap = () => {
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      // 4. Mostrar éxito y limpiar modal
+      await axios.put(`http://localhost:8080/student-confirmations/${studentConfirmationCode}`, {
+        confirmationStatus: 1
+      });
+
+      // 4. Mostrar éxito
       setSuccessMessage("¡Intercambio confirmado correctamente! Espera la validación del laboratorio.");
       setShowModal(false);
-
     } catch (err) {
       setError(
         err?.response?.data?.message ||
@@ -79,7 +74,6 @@ const ContactSwap = () => {
 
     setUploading(false);
   };
-
 
   // Si está cargando o no encontró el intercambio
   if (loading) {

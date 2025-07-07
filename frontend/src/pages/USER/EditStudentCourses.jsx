@@ -269,7 +269,7 @@ const EditStudentCourses = () => {
           </div>
           <div>
             <h2 className="text-xl font-bold text-[#08484F] mt-6 mb-4">Intercambios solicitados por mí</h2>
-            {requestedToMe.length === 0 ? <p className="text-gray-600">No te han solicitado intercambios.</p>
+            {requestedToMe.length === 0 ? <p className="text-gray-600">No has solicitado intercambios.</p>
               : requestedToMe.map((e) => renderExchangeCard(e, false))}
           </div>
         </div>
