@@ -111,13 +111,22 @@ const AdminHistoryPanel = () => {
                 {entry.desiredCourseGroup.course.courseName}<br />
                 Grupo {entry.desiredCourseGroup.groupName}
               </p>
-              <p className="text-base sm:text-lg break-words">
-                <span className="font-bold">Alumno:</span> {entry.student2.studentName}
-              </p>
-              <p className="text-base sm:text-lg break-words">
-                <span className="font-bold">Correo:</span> {entry.student2.studentEmail}
-              </p>
+              {entry.student2 ? (
+                <>
+                  <p className="text-base sm:text-lg break-words">
+                    <span className="font-bold">Alumno:</span> {entry.student2.studentName}
+                  </p>
+                  <p className="text-base sm:text-lg break-words">
+                    <span className="font-bold">Correo:</span> {entry.student2.studentEmail}
+                  </p>
+                </>
+              ) : (
+                <p className="text-base sm:text-lg text-gray-400 italic">
+                  Alumno aún no asignado
+                </p>
+              )}
             </div>
+
           </div>
 
           <div className="w-full md:w-[15%] mt-4 md:mt-0 flex justify-center md:justify-end">
