@@ -208,7 +208,7 @@ const EditStudentCourses = () => {
     }
 
     return (
-      <div key={exchangeCode} className="bg-[#d9f0f6] rounded-md p-4 sm:p-6 relative mb-2 sm:mb-0">
+      <div key={exchangeCode} className="bg-[#d9f0f6] rounded-md p-4 sm:p-6 relative mb-4 sm:mb-6">
         {canDelete && statusKey !== "under_review" && (
           <button
             onClick={() => {
