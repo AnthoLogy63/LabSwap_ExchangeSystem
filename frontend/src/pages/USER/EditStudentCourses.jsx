@@ -188,10 +188,24 @@ const EditStudentCourses = () => {
     }
 
     // Mensaje final de estado
-    const estadoMensaje =
-      statusKey === "waiting_acceptance" && isUserStudent2
-        ? "El otro estudiante debe aceptar tu solicitud de este intercambio."
-        : statusMessages[statusKey];
+    let estadoMensaje = "";
+
+    if (isUserStudent2) {
+      if (!confirmedByStudent1) {
+        estadoMensaje = "El otro estudiante debe aceptar tu solicitud de este intercambio.";
+      } else {
+        estadoMensaje = statusMessages["under_review"];
+      }
+    } else {
+      // Soy student1
+      if (!confirmedByStudent1 && confirmedByStudent2) {
+        estadoMensaje = statusMessages["confirmation_required"];
+      } else if (!confirmedByStudent2) {
+        estadoMensaje = statusMessages["waiting_acceptance"];
+      } else {
+        estadoMensaje = statusMessages["under_review"];
+      }
+    }
 
     return (
       <div key={exchangeCode} className="bg-[#d9f0f6] rounded-md p-4 sm:p-6 relative mb-2 sm:mb-0">
