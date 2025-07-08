@@ -89,7 +89,8 @@ public class AuthController {
                 "email", email,
                 "name", name,
                 "role", selectedRole,
-                "studentCode", student.getStudentCode()
+                "studentCode", student.getStudentCode(),
+                "profileImageName", student.getProfileImageName()
             );
         } else {
             // Para admin
