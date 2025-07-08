@@ -287,20 +287,22 @@ const EditStudentCourses = () => {
         )}
 
         {isUserStudent2 && !confirmedByStudent1 && (
-          <button
-            onClick={async () => {
-              try {
-                await axios.put(`http://localhost:8080/exchanges/${exchangeCode}/reject-student2`);
-                const updated = await axios.get(`http://localhost:8080/exchanges/student/${user.studentCode}`);
-                setStudentCourses(updated.data);
-              } catch (err) {
-                console.error("Error al rechazar el intercambio como estudiante 2:", err);
-              }
-            }}
-            className="mt-4 bg-yellow-700 text-white px-6 py-2 rounded-md text-lg"
-          >
-            Cancelar Solicitud
-          </button>
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={async () => {
+                try {
+                  await axios.put(`http://localhost:8080/exchanges/${exchangeCode}/reject-student2`);
+                  const updated = await axios.get(`http://localhost:8080/exchanges/student/${user.studentCode}`);
+                  setStudentCourses(updated.data);
+                } catch (err) {
+                  console.error("Error al rechazar el intercambio como estudiante 2:", err);
+                }
+              }}
+              className="bg-orange-700 hover:bg-orange-800 text-white px-6 py-2 rounded-md text-lg"
+            >
+              Cancelar Solicitud
+            </button>
+          </div>
         )}
       </div>
     );
