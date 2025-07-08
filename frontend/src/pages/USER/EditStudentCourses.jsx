@@ -189,15 +189,21 @@ const EditStudentCourses = () => {
 
     // Mensaje final de estado
     let estadoMensaje = "";
+    const confirmedByAdmin = exchange.adminConfirmation?.confirmationStatus === 1;
 
-    if (isUserStudent2) {
+    if (confirmedByAdmin) {
+      estadoMensaje = (
+        <span className="text-green-700 font-bold uppercase">
+          EL INTERCAMBIO FUÉ ACEPTADO POR EL ENCARGADO
+        </span>
+      );
+    } else if (isUserStudent2) {
       if (!confirmedByStudent1) {
         estadoMensaje = "El otro estudiante debe aceptar tu solicitud de este intercambio.";
       } else {
         estadoMensaje = statusMessages["under_review"];
       }
     } else {
-      // Soy student1
       if (!confirmedByStudent1 && confirmedByStudent2) {
         estadoMensaje = statusMessages["confirmation_required"];
       } else if (!confirmedByStudent2) {
