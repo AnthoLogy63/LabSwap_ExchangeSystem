@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.backend.model.ExchangeDTO;
 
@@ -243,5 +244,29 @@ public class ExchangeController {
             }
             return exchangeRepository.save(exchange);
         }).orElseThrow(() -> new IllegalArgumentException("Intercambio no encontrado con código: " + exchangeCode));
+    }
+
+    @Operation(summary = "Rechazar al estudiante 2 de un intercambio")
+    @PutMapping("/{exchangeCode}/reject-student2")
+    public ResponseEntity<?> rejectStudent2(@PathVariable String exchangeCode) {
+        Exchange exchange = exchangeRepository.findById(exchangeCode)
+                .orElse(null);
+
+        if (exchange == null || exchange.getStudent2() == null) {
+            return ResponseEntity.badRequest().body("Intercambio no válido o sin estudiante 2 asignado.");
+        }
+
+        // Eliminar confirmación del estudiante 2 si existe
+        if (exchange.getStudentConfirmation2() != null) {
+            String confirmationCode = exchange.getStudentConfirmation2().getStudentConfirmationCode();
+            studentConfirmationRepository.deleteById(confirmationCode);
+            exchange.setStudentConfirmation2(null);
+        }
+
+        // Quitar al estudiante 2 del intercambio
+        exchange.setStudent2(null);
+        exchangeRepository.save(exchange);
+
+        return ResponseEntity.ok("Estudiante 2 eliminado del intercambio.");
     }
 }

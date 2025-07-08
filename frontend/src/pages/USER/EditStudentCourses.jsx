@@ -268,6 +268,23 @@ const EditStudentCourses = () => {
             Confirmar Intercambio
           </button>
         )}
+
+        {isUserStudent2 && !confirmedByStudent1 && (
+          <button
+            onClick={async () => {
+              try {
+                await axios.put(`http://localhost:8080/exchanges/${exchangeCode}/reject-student2`);
+                const updated = await axios.get(`http://localhost:8080/exchanges/student/${user.studentCode}`);
+                setStudentCourses(updated.data);
+              } catch (err) {
+                console.error("Error al rechazar el intercambio como estudiante 2:", err);
+              }
+            }}
+            className="mt-4 bg-yellow-700 text-white px-6 py-2 rounded-md text-lg"
+          >
+            Cancelar Solicitud
+          </button>
+        )}
       </div>
     );
   };
