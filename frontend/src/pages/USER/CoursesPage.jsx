@@ -25,38 +25,52 @@ const groupOptions = [
   "Grupo H"
 ];
 
-const ExchangeCard = ({ exchangeCode, name, offer, need }) => (
-  <div className="border-[1.5px] border-[#08484F] rounded-md px-4 py-4 shadow-sm bg-white">
-    <div className="flex items-center gap-4 mb-4">
-      <div className="bg-[#761A11] p-1 rounded-full shrink-0">
-        <UserCircle2 className="text-white w-8 h-8" />
+const ExchangeCard = ({ exchange, user }) => {
+  const { exchangeCode, student1, student2, studentConfirmation2, offeredCourseGroup, desiredCourseGroup } = exchange;
+
+  const isUserStudent2Confirmed =
+    student2?.studentCode === user?.studentCode &&
+    studentConfirmation2?.confirmationStatus === 1;
+
+  return (
+    <div className="border-[1.5px] border-[#08484F] rounded-md px-4 py-4 shadow-sm bg-white">
+      <div className="flex items-center gap-4 mb-4">
+        <div className="bg-[#761A11] p-1 rounded-full shrink-0">
+          <UserCircle2 className="text-white w-8 h-8" />
+        </div>
+        <h3 className="text-lg sm:text-xl md:text-2xl">{student1.studentName}</h3>
       </div>
-      <h3 className="text-lg sm:text-xl md:text-2xl">{name}</h3>
-    </div>
 
-    <div className="flex flex-col sm:flex-row items-start justify-between border-y border-gray-300 py-3 mb-4 text-base sm:text-lg">
-      <div className="w-full sm:w-1/2 sm:pr-2 sm:pl-2 mb-4 sm:mb-0">
-        <p className="text-xl text-[#2e8ba5] font-semibold">Ofrezco:</p>
-        <p>{offer}</p>
+      <div className="flex flex-col sm:flex-row items-start justify-between border-y border-gray-300 py-3 mb-4 text-base sm:text-lg">
+        <div className="w-full sm:w-1/2 sm:pr-2 sm:pl-2 mb-4 sm:mb-0">
+          <p className="text-xl text-[#2e8ba5] font-semibold">Ofrezco:</p>
+          <p>{offeredCourseGroup.course.courseName} - {offeredCourseGroup.groupName}</p>
+        </div>
+
+        <div className="hidden sm:block w-[2px] bg-gray-600 self-stretch mx-2"></div>
+
+        <div className="w-full sm:w-1/2 sm:pl-6">
+          <p className="text-xl text-[#b12a2a] font-semibold">Necesito:</p>
+          <p>{desiredCourseGroup.course.courseName} - {desiredCourseGroup.groupName}</p>
+        </div>
       </div>
 
-      <div className="hidden sm:block w-[2px] bg-gray-600 self-stretch mx-2"></div>
-
-      <div className="w-full sm:w-1/2 sm:pl-6">
-        <p className="text-xl text-[#b12a2a] font-semibold">Necesito:</p>
-        <p>{need}</p>
-      </div>
+      <div className="flex justify-between items-center">
+  {isUserStudent2Confirmed ? (
+    <span className="text-sm text-yellow-800 font-semibold">
+      Puedes revisar el estado de tu solicitud en "Mis intercambios".
+    </span>
+  ) : (
+    <Link to={`/intercambio/${exchangeCode}`} className="ml-auto">
+      <button className="text-base bg-[#b12a2a] text-white px-4 py-2 rounded-xl">
+        Contactar
+      </button>
+    </Link>
+  )}
+</div>
     </div>
-
-    <div className="flex justify-end">
-      <Link to={`/intercambio/${exchangeCode}`}>
-        <button className="text-base bg-[#b12a2a] text-white px-4 py-2 rounded-xl">
-          Contactar
-        </button>
-      </Link>
-    </div>
-  </div>
-);
+  );
+};
 
 const CourseFilters = () => {
   const { user } = useAuth();
@@ -113,16 +127,11 @@ const CourseFilters = () => {
       </h1>
 
       <div className="relative border-[1.5px] border-[#08484F] shadow-md px-4 sm:px-6 py-6 mb-10 rounded-md bg-white">
-        {/* Botón actualizar en esquina superior derecha */}
         <button
           onClick={fetchExchanges}
           title="Actualizar lista"
           className="absolute top-3 right-3 hover:bg-[#08484F]/10 transition-colors"
-          style={{
-            backgroundColor: "transparent",
-            color: "#08484F",
-            border: "none"
-          }}
+          style={{ backgroundColor: "transparent", color: "#08484F", border: "none" }}
         >
           <RefreshCcw
             size={22}
@@ -175,13 +184,7 @@ const CourseFilters = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[550px] overflow-y-auto custom-scrollbar pr-1">
         {filteredExchanges.length > 0 ? (
           filteredExchanges.map((ex, idx) => (
-            <ExchangeCard
-              key={ex.exchangeCode || idx}
-              exchangeCode={ex.exchangeCode}
-              name={ex.student1.studentName}
-              offer={`${ex.offeredCourseGroup.course.courseName} - ${ex.offeredCourseGroup.groupName}`}
-              need={`${ex.desiredCourseGroup.course.courseName} - ${ex.desiredCourseGroup.groupName}`}
-            />
+            <ExchangeCard key={ex.exchangeCode || idx} exchange={ex} user={user} />
           ))
         ) : (
           <p className="text-gray-500 text-xl col-span-3">

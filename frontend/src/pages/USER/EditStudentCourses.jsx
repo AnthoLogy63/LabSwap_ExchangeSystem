@@ -142,7 +142,6 @@ const EditStudentCourses = () => {
 
     try {
       const response = await axios.post("http://localhost:8080/exchanges", payload);
-      console.log("Intercambio creado:", response.data);
       setStudentCourses([...studentCourses, response.data]);
       setOfferCourse("");
       setOfferGroup("");
