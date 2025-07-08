@@ -1,5 +1,7 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,4 +19,8 @@ public class StudentConfirmation {
     @ManyToOne
     @JoinColumn(name = "student_code")
     private Student student;
+
+    @OneToOne(mappedBy = "studentConfirmation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private ConfirmationDocument confirmationDocument;
 }

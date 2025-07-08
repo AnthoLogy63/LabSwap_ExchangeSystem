@@ -1,5 +1,7 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,7 +18,9 @@ public class ConfirmationDocument {
 
     @OneToOne
     @JoinColumn(name = "studentConfirmationCode", unique = true)
+    @JsonBackReference
     private StudentConfirmation studentConfirmation;
+
 
     // Opcional: Genera un código si no lo mandas desde el controlador.
     @PrePersist
