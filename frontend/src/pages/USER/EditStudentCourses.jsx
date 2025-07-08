@@ -258,15 +258,32 @@ const EditStudentCourses = () => {
         </p>
 
         {statusKey === "confirmation_required" && student1?.studentCode === user.studentCode && (
-          <button
-            onClick={() => {
-              setSelectedExchange(exchange);
-              setShowConfirmModal(true);
-            }}
-            className="mt-4 bg-red-700 text-white px-6 py-2 rounded-md text-lg"
-          >
-            Confirmar Intercambio
-          </button>
+          <div className="mt-4 flex flex-col sm:flex-row gap-3 sm:justify-end">
+            <button
+              onClick={() => {
+                setSelectedExchange(exchange);
+                setShowConfirmModal(true);
+              }}
+              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md text-lg w-full sm:w-auto"
+            >
+              Confirmar Intercambio
+            </button>
+
+            <button
+              onClick={async () => {
+                try {
+                  await axios.put(`http://localhost:8080/exchanges/${exchangeCode}/reject-student2`);
+                  const updated = await axios.get(`http://localhost:8080/exchanges/student/${user.studentCode}`);
+                  setStudentCourses(updated.data);
+                } catch (err) {
+                  console.error("Error al rechazar la solicitud del estudiante 2:", err);
+                }
+              }}
+              className="bg-red-700 hover:bg-red-800 text-white px-6 py-2 rounded-md text-lg w-full sm:w-auto"
+            >
+              Rechazar Solicitud
+            </button>
+          </div>
         )}
 
         {isUserStudent2 && !confirmedByStudent1 && (
