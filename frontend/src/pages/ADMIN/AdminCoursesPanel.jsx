@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ConfirmExchangeModal from "../../components/ConfirmExchangeModal";
 import RejectExchangeModal from "../../components/RejectExchangeModal";
+import CustomAlert from "../../components/CustomAlert";
 import jsPDF from "jspdf";
 
 const AdminCoursesPanel = () => {
@@ -8,8 +9,8 @@ const AdminCoursesPanel = () => {
   const [selectedExchange, setSelectedExchange] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [rejectOpen, setRejectOpen] = useState(false);
+  const [alert, setAlert] = useState({ visible: false, message: '', type: 'success' });
 
-  // NUEVO: Estado para el PDF
   const [pdfUrl, setPdfUrl] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -37,31 +38,27 @@ const AdminCoursesPanel = () => {
 
       if (!res.ok) throw new Error("No se pudo actualizar el estado");
 
-      alert(`Intercambio ${status.toLowerCase()} correctamente`);
+      setAlert({ visible: true, message: `Intercambio ${status.toLowerCase()} correctamente`, type: 'success' });
       setExchanges((prev) => prev.filter((e) => e.exchangeCode !== exchangeCode));
     } catch (err) {
       console.error("Error al actualizar:", err);
-      alert("Error al actualizar el estado del intercambio");
+      setAlert({ visible: true, message: "Error al actualizar el estado del intercambio", type: 'error' });
     }
   };
 
-  // NUEVO: Función para generar el PDF igual que en AdminHistoryPanel, pero con estado "PENDIENTE"
   const generarPDFBlob = (exchange) => {
     const doc = new jsPDF();
 
-    // Título en dos líneas
     doc.setFont(undefined, 'bold');
     doc.setFontSize(35);
     doc.setTextColor(13, 84, 79);
     doc.text('Información del', 105, 25, { align: 'center' });
     doc.text('intercambio', 105, 40, { align: 'center' });
 
-    // Subtítulo
     doc.setFontSize(16);
     doc.setTextColor(13, 84, 79);
     doc.text('Datos del Intercambio:', 20, 55);
 
-    // Info principal
     doc.setFontSize(13);
     let y = 67;
     const lineSpacing = 10;
@@ -97,7 +94,6 @@ const AdminCoursesPanel = () => {
     doc.setTextColor(0, 0, 0);
     doc.text('PENDIENTE', 75, y);
 
-    // Guardar y mostrar
     const blob = doc.output("blob");
     const url = URL.createObjectURL(blob);
     setPdfUrl(url);
@@ -110,6 +106,14 @@ const AdminCoursesPanel = () => {
         Intercambios Pendientes
       </h1>
 
+      {alert.visible && (
+        <CustomAlert
+          message={alert.message}
+          type={alert.type}
+          onClose={() => setAlert({ ...alert, visible: false })}
+        />
+      )}
+
       {exchanges.length === 0 ? (
         <p className="text-gray-600 text-center">No hay intercambios pendientes.</p>
       ) : (
@@ -119,7 +123,6 @@ const AdminCoursesPanel = () => {
             className="flex flex-col md:flex-row justify-between items-center bg-[#e9fbff] rounded-2xl px-4 sm:px-6 md:px-8 py-6 mb-6 shadow-sm gap-6"
           >
             <div className="flex flex-col md:flex-row w-full md:w-[60%] gap-4">
-              {/* Ofrecido */}
               <div className="md:w-1/2 border-b md:border-b-0 md:border-r border-black pr-0 md:pr-6 pb-4 md:pb-0">
                 <p className="text-2xl font-semibold text-[#08484F] mb-2">
                   {exchange.offeredCourseName}
@@ -132,7 +135,6 @@ const AdminCoursesPanel = () => {
                 </p>
               </div>
 
-              {/* Deseado */}
               <div className="md:w-1/2 pl-0 md:pl-6">
                 <p className="text-2xl font-semibold text-[#b12a2a] mb-2">
                   {exchange.desiredCourseName}
@@ -146,7 +148,6 @@ const AdminCoursesPanel = () => {
               </div>
             </div>
 
-            {/* Botones */}
             <div className="flex flex-col md:flex-row w-full md:w-[30%] gap-2 justify-center items-center mt-4 md:mt-0">
               <button
                 className="bg-[#1db4c4] text-white px-6 py-2 text-base md:text-lg rounded-xl hover:bg-[#168d9b] transition w-full md:w-auto"
@@ -179,7 +180,6 @@ const AdminCoursesPanel = () => {
         ))
       )}
 
-      {/* Modal PDF */}
       {modalOpen && pdfUrl && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl w-[80%] h-[90%] relative p-5 shadow-lg">
@@ -198,7 +198,6 @@ const AdminCoursesPanel = () => {
         </div>
       )}
 
-      {/* Modal Confirmar */}
       <ConfirmExchangeModal
         visible={confirmOpen}
         onClose={() => setConfirmOpen(false)}
@@ -210,7 +209,6 @@ const AdminCoursesPanel = () => {
         courseB={selectedExchange?.desiredCourseName}
       />
 
-      {/* Modal Rechazar */}
       <RejectExchangeModal
         visible={rejectOpen}
         onClose={() => setRejectOpen(false)}
