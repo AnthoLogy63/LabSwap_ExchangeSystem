@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-//import autoTable from 'jspdf-autotable';
+import { PDFDocument } from 'pdf-lib'; // <--- Agrega esto
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -20,7 +20,7 @@ const AdminHistoryPanel = () => {
       .catch(console.error);
   }, []);
 
-  const generarPDFBlob = (entry) => {
+  const generarPDFBlob = async (entry) => {
     const doc = new jsPDF();
 
     // Título en dos líneas
@@ -79,8 +79,48 @@ const AdminHistoryPanel = () => {
     const estado = entry.adminConfirmation?.confirmationStatus === 1 ? 'ACEPTADO' : 'RECHAZADO';
     doc.text(estado, 75, y);
 
-    // Guardar y mostrar
-    const blob = doc.output("blob");
+    // Guardar el PDF generado como ArrayBuffer
+    const mainPdfBytes = doc.output('arraybuffer');
+
+    // --- INICIO: Insertar PDF del DNI ---
+    let finalPdfBytes = mainPdfBytes;
+
+    // Busca el código de confirmación del estudiante 2
+    const studentConfirmationCode = entry.studentConfirmation2?.studentConfirmationCode;
+    if (studentConfirmationCode) {
+      try {
+        // 1. Pide los metadatos del documento
+        const metaRes = await fetch(`http://localhost:8080/confirmation-documents/by-confirmation/${studentConfirmationCode}`);
+        if (metaRes.ok) {
+          const meta = await metaRes.json();
+          // 2. Obtén el filePath
+          const filePath = meta.filePath;
+          if (filePath) {
+            // 3. Descarga el PDF real
+            const dniRes = await fetch(filePath);
+            if (dniRes.ok) {
+              const dniPdfBytes = await dniRes.arrayBuffer();
+
+              // 4. Fusiona ambos PDFs usando pdf-lib
+              const mainPdfDoc = await PDFDocument.load(mainPdfBytes);
+              const dniPdfDoc = await PDFDocument.load(dniPdfBytes);
+
+              const dniPages = await mainPdfDoc.copyPages(dniPdfDoc, dniPdfDoc.getPageIndices());
+              dniPages.forEach((page) => mainPdfDoc.addPage(page));
+
+              finalPdfBytes = await mainPdfDoc.save();
+            }
+          }
+        }
+      } catch (e) {
+        // Si falla, solo muestra el PDF principal
+        console.error("No se pudo adjuntar el PDF del DNI:", e);
+      }
+    }
+    // --- FIN: Insertar PDF del DNI ---
+
+    // Mostrar el PDF final
+    const blob = new Blob([finalPdfBytes], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
     setPdfUrl(url);
     setModalOpen(true);
