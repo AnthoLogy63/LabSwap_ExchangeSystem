@@ -5,6 +5,7 @@ import ConfirmSwapModal from "../../components/ConfirmSwapModal";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext"; 
 
+
 const ContactSwap = () => {
   const { user } = useAuth();
   const { exchangeCode } = useParams();
@@ -15,6 +16,9 @@ const ContactSwap = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [studentCode, setStudentCode] = useState(null);
+
+console.log("Usuario cargado:", user);
 
 
   // Cargar datos reales del intercambio
@@ -32,16 +36,26 @@ const ContactSwap = () => {
       });
   }, [exchangeCode]);
 
+  useEffect(() => {
+    if (user?.email) {
+      fetch(`http://localhost:8080/students/by-email?email=${user.email}`)
+        .then(res => res.json())
+        .then(data => setStudentCode(data.studentCode))
+        .catch(() => setStudentCode(null));
+    }
+  }, [user.email]);
+
   const handleConfirm = async (dniFile) => {
     setError("");
     setUploading(true);
 
     try {
       // 1. Confirmar estudiante 2 (esto crea internamente el studentConfirmation2)
+      console.log("Student Code que se envía:", studentCode);
       const response = await axios.put(
         `http://localhost:8080/exchanges/${exchange.exchangeCode}/student2`,
         {
-          student2: { studentCode: user.studentCode }
+          student2: { studentCode } // <-- CORRECTO
         }
       );
 
