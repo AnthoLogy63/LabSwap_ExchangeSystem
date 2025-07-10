@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-import { PDFDocument } from 'pdf-lib'; // <--- Agrega esto
+import { PDFDocument } from 'pdf-lib';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -23,25 +23,21 @@ const AdminHistoryPanel = () => {
   const generarPDFBlob = async (entry) => {
     const doc = new jsPDF();
 
-    // Título en dos líneas
     doc.setFont(undefined, 'bold');
     doc.setFontSize(35);
-    doc.setTextColor(13, 84, 79); // Verde oscuro
+    doc.setTextColor(13, 84, 79);
     doc.text('Información del', 105, 25, { align: 'center' });
-    doc.text('intercambio', 105, 40, { align: 'center' }); // Segunda línea, un poco más abajo
+    doc.text('intercambio', 105, 40, { align: 'center' });
 
-    // Subtítulo
     doc.setTextColor(13, 84, 79);
     doc.setFontSize(16);
     doc.text('Datos del Intercambio:', 20, 55);
 
-    // Info principal
     doc.setFontSize(13);
     let y = 67;
     const lineSpacing = 10;
     doc.setFont(undefined, 'normal');
 
-    
     doc.setTextColor(13, 84, 79);
     doc.text('Estudiante que ofrece el curso:', 20, y);
     doc.setTextColor(0, 0, 0);
@@ -51,27 +47,21 @@ const AdminHistoryPanel = () => {
     doc.setTextColor(13, 84, 79);
     doc.text('Estudiante que recibe el curso:', 20, y);
     doc.setTextColor(0, 0, 0);
-    doc.setFont(undefined, 'normal');
     doc.text(`${entry.student2.studentName} (${entry.student2.studentEmail})`, 90, y);
 
     y += lineSpacing;
     doc.setTextColor(13, 84, 79);
     doc.text('Curso ofrecido:', 20, y);
     doc.setTextColor(0, 0, 0);
-    doc.setFont(undefined, 'normal');
     doc.text(`${entry.offeredCourseGroup.course.courseName} - Grupo ${entry.offeredCourseGroup.groupName}`, 57, y);
 
     y += lineSpacing;
     doc.setTextColor(13, 84, 79);
     doc.text('Curso solicitado:', 20, y);
     doc.setTextColor(0, 0, 0);
-    doc.setFont(undefined, 'normal');
     doc.text(`${entry.desiredCourseGroup.course.courseName} - Grupo ${entry.desiredCourseGroup.groupName}`, 60, y);
 
-    y += lineSpacing;
-    y += lineSpacing;
-    y += lineSpacing;
-    y += lineSpacing;
+    y += 4 * lineSpacing;
     doc.setFont(undefined, 'bold');
     doc.setTextColor(13, 84, 79);
     doc.text('Estado del intercambio:', 20, y);
@@ -79,47 +69,34 @@ const AdminHistoryPanel = () => {
     const estado = entry.adminConfirmation?.confirmationStatus === 1 ? 'ACEPTADO' : 'RECHAZADO';
     doc.text(estado, 75, y);
 
-    // Guardar el PDF generado como ArrayBuffer
     const mainPdfBytes = doc.output('arraybuffer');
-
-    // --- INICIO: Insertar PDF del DNI ---
     let finalPdfBytes = mainPdfBytes;
 
-    // Busca el código de confirmación del estudiante 2
+    // --- PDF del DNI directo desde carpeta pública ---
     const studentConfirmationCode = entry.studentConfirmation2?.studentConfirmationCode;
     if (studentConfirmationCode) {
+      const dniUrl = `http://localhost:8080/uploads/DNIS/DNI-${studentConfirmationCode}.pdf`;
+
       try {
-        // 1. Pide los metadatos del documento
-        const metaRes = await fetch(`http://localhost:8080/confirmation-documents/by-confirmation/${studentConfirmationCode}`);
-        if (metaRes.ok) {
-          const meta = await metaRes.json();
-          // 2. Obtén el filePath
-          const filePath = meta.filePath;
-          if (filePath) {
-            // 3. Descarga el PDF real
-            const dniRes = await fetch(filePath);
-            if (dniRes.ok) {
-              const dniPdfBytes = await dniRes.arrayBuffer();
+        const dniRes = await fetch(dniUrl);
+        if (dniRes.ok) {
+          const dniPdfBytes = await dniRes.arrayBuffer();
 
-              // 4. Fusiona ambos PDFs usando pdf-lib
-              const mainPdfDoc = await PDFDocument.load(mainPdfBytes);
-              const dniPdfDoc = await PDFDocument.load(dniPdfBytes);
+          const mainPdfDoc = await PDFDocument.load(mainPdfBytes);
+          const dniPdfDoc = await PDFDocument.load(dniPdfBytes);
 
-              const dniPages = await mainPdfDoc.copyPages(dniPdfDoc, dniPdfDoc.getPageIndices());
-              dniPages.forEach((page) => mainPdfDoc.addPage(page));
+          const dniPages = await mainPdfDoc.copyPages(dniPdfDoc, dniPdfDoc.getPageIndices());
+          dniPages.forEach((page) => mainPdfDoc.addPage(page));
 
-              finalPdfBytes = await mainPdfDoc.save();
-            }
-          }
+          finalPdfBytes = await mainPdfDoc.save();
+        } else {
+          console.warn("No se encontró el PDF del DNI en:", dniUrl);
         }
       } catch (e) {
-        // Si falla, solo muestra el PDF principal
-        console.error("No se pudo adjuntar el PDF del DNI:", e);
+        console.error("Error al cargar el PDF del DNI:", e);
       }
     }
-    // --- FIN: Insertar PDF del DNI ---
 
-    // Mostrar el PDF final
     const blob = new Blob([finalPdfBytes], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
     setPdfUrl(url);
