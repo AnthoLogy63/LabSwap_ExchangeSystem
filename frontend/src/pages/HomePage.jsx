@@ -1,7 +1,7 @@
 // src/pages/PaginaDeInicio.jsx
-import publicaImg from '../assets/PaginaDeInicio/generic.jpg';
-import buscaImg from '../assets/PaginaDeInicio/generic.jpg';
-import cambiaImg from '../assets/PaginaDeInicio/generic.jpg';
+import publicaImg from '../assets/PaginaDeInicio/publica.jpg';
+import buscaImg from '../assets/PaginaDeInicio/busca.jpg';
+import cambiaImg from '../assets/PaginaDeInicio/cambia.jpg';
 
 const HomePage = () => {
   const pasos = [
